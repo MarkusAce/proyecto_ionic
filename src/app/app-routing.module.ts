@@ -48,10 +48,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/editarzapa/editarzapa.module').then( m => m.EditarzapaPageModule)
   },
   {
-    path: 'deshabilitarzapa',
-    loadChildren: () => import('./pages/deshabilitarzapa/deshabilitarzapa.module').then( m => m.DeshabilitarzapaPageModule)
-  },
-  {
     path: 'agregarmarca',
     loadChildren: () => import('./pages/agregarmarca/agregarmarca.module').then( m => m.AgregarmarcaPageModule)
   },

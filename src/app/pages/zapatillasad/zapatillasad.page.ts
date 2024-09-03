@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-zapatillasad',
@@ -9,10 +10,20 @@ import { Router } from '@angular/router';
 export class ZapatillasadPage implements OnInit {
 
   terminoBusqueda: string = "";
-  constructor(private router: Router) { }
+  opaco: boolean = false;
+  constructor(private router: Router,private alertController: AlertController) { }
 
   ngOnInit() {
   }
+  async presentAlert(titulo: string, msj: string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      message: msj,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
   irProducto(){
     this.router.navigate(['/producto'])
   }
@@ -29,6 +40,7 @@ export class ZapatillasadPage implements OnInit {
     this.router.navigate(['/agregarmarca'])
   }
   ocultar(){
-
+    this.presentAlert('Exito', 'El producto ha sido deshabilitado')
+    this.opaco = !this.opaco;
   }
 }
