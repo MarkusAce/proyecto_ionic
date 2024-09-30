@@ -20,7 +20,7 @@
             <p *ngIf="registroForm.get('usuario1')?.hasError('minlength')">El usuario debe tener al menos 4 caracteres.</p>
           </div>
 
-          <ion-input formControlName="email1" label="Email" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su email"></ion-input>
+          <ion-input formControlName="email1" label="Correo" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su email"></ion-input>
           <div *ngIf="registroForm.get('email1')?.invalid && (registroForm.get('email1')?.dirty) || registroForm.get('email1')?.touched">
             <p *ngIf="registroForm.get('email1')?.hasError('required')">El email no puede estar vacio </p>
             <p *ngIf="registroForm.get('email1')?.hasError('email')">Por favor ingrese un email valido.</p>
