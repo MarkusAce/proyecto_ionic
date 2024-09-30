@@ -3,7 +3,7 @@ ion-content{
 }
 .contenedor-registrar{
     width: 85%;
-    height: 85%;
+    min-height: 70%;
     background-color: #D03739;
 }
 
@@ -46,4 +46,12 @@ ion-input{
 
 .tamano-letras{
     font-size: 13px;
+}
+
+.espacio{
+    margin-bottom: 5px;
+}
+.btn-color{
+    --background: black;
+    color: white;
 }
