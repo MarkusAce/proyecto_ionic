@@ -10,17 +10,26 @@ import { ServicesbdService } from 'src/app/services/servicesbd.service';
 export class InicioPage implements OnInit {
 
   terminoBusqueda: string = "";
-  usuario: string = "";
+  idUsuario: string = '';
+  idRol: string = '';
   
   constructor(private router: Router, private activerouter: ActivatedRoute, private bd: ServicesbdService) {
-    this.activerouter.queryParams.subscribe(params => {
-      if(this.router.getCurrentNavigation()?.extras.state){
-        this.usuario = this.router.getCurrentNavigation()?.extras?.state?.['user'];
-      }
-    })
    }
 
   ngOnInit() {
+    this.bd.dbState().subscribe(data =>{
+      if(data){
+        this.bd.fetchTipoUsuario().subscribe(res =>{
+          if(res.length> 0){
+            this.idUsuario = res[0].idUsuario;
+            this.idRol = res[0].idRol;
+          }else{
+            this.idUsuario = '';
+            this.idRol = '1';
+          }
+        });
+      }
+    });
   }
 
   irZapatillasad(){

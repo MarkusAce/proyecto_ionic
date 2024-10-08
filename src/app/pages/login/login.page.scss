@@ -3,7 +3,7 @@ ion-content{
 }
 .contenedor-login{
     width: 85%;
-    height: 62%;
+    min-height: 62%;
     background-color: #D03739;
 }
 
@@ -42,6 +42,10 @@ ion-input{
     --background: white;
     color: black;
     --highlight-color-valid: black;
+}
+
+.espacio{
+    margin-bottom: 5px;
 }
 
 .tamano-letras{

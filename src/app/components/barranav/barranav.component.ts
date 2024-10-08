@@ -14,10 +14,10 @@ export class BarranavComponent  implements OnInit {
 
   ngOnInit() {}
   irPerfil(){
-    if(this.tipousuario=="MarkusAce"){
+    if(this.tipousuario==="2"){
       this.router.navigate(['/perfil'])
     }
-    else if(this.tipousuario=="NicolasMa"){
+    else if(this.tipousuario==="3"){
       this.router.navigate(['/perfil'])
     }
     else{

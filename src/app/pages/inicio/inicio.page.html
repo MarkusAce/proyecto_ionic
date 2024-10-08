@@ -1,6 +1,6 @@
 <ion-header >
 
-  <app-barranav titulo="Bienvenido {{ usuario }}" [tipousuario]="usuario"></app-barranav>
+  <app-barranav titulo="Bienvenido {{ idRol }}" [tipousuario]="idRol"></app-barranav>
 
 </ion-header>
 
@@ -38,9 +38,9 @@
 
 <ion-footer>
 
-  <app-barrafooter *ngIf="usuario == 'MarkusAce' || usuario == '' "></app-barrafooter>
+  <app-barrafooter *ngIf="idRol=='2' || idRol=='1'"></app-barrafooter>
 
-  <app-barrafooter2 *ngIf="usuario == 'NicolasMa'"></app-barrafooter2>
+  <app-barrafooter2 *ngIf="idRol=='3'"></app-barrafooter2>
 
   
 </ion-footer>

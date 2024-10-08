@@ -38,18 +38,33 @@
               <p *ngIf="registroForm.get('telefono')?.hasError('pattern')">El teléfono debe tener entre 9 y 10 digitos.</p>
             </div>
 
-            <ion-input formControlName="direccion" label="Direccion" label-placement="floating" fill="outline" class="espacio" type="number" placeholder="Ingrese su dirección"></ion-input>
+            <ion-input formControlName="direccion" label="Direccion" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su dirección"></ion-input>
             <div *ngIf="registroForm.get('direccion')?.invalid && (registroForm.get('direccion')?.dirty || registroForm.get('direccion')?.touched)">
               <p *ngIf="registroForm.get('direccion')?.hasError('required')">La dirección no puede estar vacia.</p>
               <p *ngIf="registroForm.get('direccion')?.hasError('minlength')">La dirección no puede tener menos de 5 caracteres.</p>
+              <p *ngIf="registroForm.get('direccion')?.hasError('pattern')">La dirección tiene que contener números.</p>
             </div>
 
-          <ion-input formControlName="fechanac" label="Fecha de Nacimiento" label-placement="floating" fill="outline" class="espacio" type="date" placeholder="Ingrese su fecha de nacimiento."></ion-input>
+            <div class="margin-auto espacio">
+              <ion-list class="sin-padding">
+                <ion-item class="seleccomuna">
+                  <ion-select aria-label="Comuna" interface="action-sheet" placeholder="Seleccione su comuna" formControlName="comuna" class="seleccomuna">
+                    <ion-select-option *ngFor="let comuna of arregloComunas" [value]="comuna.idcomuna"> {{comuna.comnombre}} </ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div *ngIf="registroForm.get('comuna')?.invalid && (registroForm.get('comuna')?.dirty || registroForm.get('comuna')?.touched)">
+              <p *ngIf="registroForm.get('comuna')?.hasError('required')">Se debe seleccionar una comuna.</p>
+            </div>
+
+          <ion-input formControlName="fechanac" label="Fecha de Nacimiento" label-placement="floating" fill="outline" class="espacio" type="text" placeholder="Ingrese su fecha de nacimiento."></ion-input>
             <div *ngIf="registroForm.get('fechanac')?.invalid && registroForm.get('fechanac')?.dirty || registroForm.get('fechanac')?.touched">
               <p *ngIf="registroForm.get('fechanac')?.hasError('required')">La fecha de nacimiento no puede estar vacia.</p>
               <p *ngIf="registroForm.get('fechanac')?.hasError('menorDeEdad')">No se puede registrar a un menor de 16 años.</p>
               <p *ngIf="registroForm.get('fechanac')?.hasError('maximoEdad')">No se puede registrar a una persona con más de 130 años.</p>
-              <p *ngIf="registroForm.get('fechanac')?.hasError('fechaInvalida')">La fecha de nacimiento no puede ser en el futuro.</p>
+              <p *ngIf="registroForm.get('fechanac')?.hasError('fechaInvalida')">La fecha es invalida, asegurate que el formato sea DD/MM/YYYY.</p>
+              <p *ngIf="registroForm.get('fechanac')?.hasError('fechaMayor')">La fecha de nacimiento no puede ser en el futuro.</p>
             </div>
 
           <ion-input formControlName="contrasena1" label="Contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese su contraseña"></ion-input>
@@ -67,7 +82,7 @@
               <p >Las contraseñas no coinciden</p>
             </div>
 
-          <ion-button expand="full" type="submit" [disabled]="registroForm.invalid" class="btn-color">Registrar</ion-button>
+          <ion-button expand="full" type="submit" [disabled]="registroForm.invalid" class="btn-color"><ion-icon slot="start" name="person-add-outline"></ion-icon>Registrar</ion-button>
         </form>
       </div>
 

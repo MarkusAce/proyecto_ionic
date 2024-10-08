@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
   selector: 'app-login',
@@ -9,56 +10,44 @@ import { AlertController } from '@ionic/angular';
 })
 export class LoginPage implements OnInit {
 
-  usuario2: string = 'MarkusAce';
-  contrasena2: string = 'Mar0921@';
-  usuario3: string = 'NicolasMa';
-  contrasena3: string = 'Nico0101@';
-  usuario1: string = '';
-  contrasena1: string = '';
+  loginForm!: FormGroup;
 
 
-  constructor(private router: Router,private alertController: AlertController) { 
-    
-  }
+  constructor(private router: Router, private formBuilder: FormBuilder, private bd: ServicesbdService) { }
 
   
   ngOnInit() {
+    this.loginForm = this.formBuilder.group({
+      usuario: ['', Validators.required],
+      contrasena: [null, [Validators.required]]
+    })
   }
 
   
-  async presentAlert(titulo: string, msj: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      message: msj,
-      buttons: ['OK']
-    });
-    await alert.present();
-  }
-  validarUsuario(){
-    let navigationextras: NavigationExtras = {
-      state:{
-        user: this.usuario1
-      }
-    }
+  validarLogin(){
+    const usuario: string = this.loginForm.get('usuario')?.value;
+    const contrasena: string = this.loginForm.get('contrasena')?.value;
 
-    if(this.usuario1 == "" || this.contrasena1 == ""){
-      this.presentAlert('Error','Los campos no pueden estar vacios.')
+    if (this.loginForm.valid){
+      this.bd.validarUsuarioLogin(usuario, contrasena).then(res =>{
+        if(res){
+          this.bd.guardarTipoUsuario(usuario);
+          this.bd.presentAlert('Acceso','Inicio de sesión exitoso.')
+          
+          let NavigationExtras: NavigationExtras = {
+            state:{
+              user: usuario
+            }
+          }
+          this.router.navigate(['/inicio'], NavigationExtras);
+        }else{
+          this.bd.presentAlert('Acceso denegado', 'Los datos son incorrectos.')
+        }
+      })
+      
     }
-
-    else if((this.usuario1 != this.usuario2 || this.contrasena1 != this.contrasena2) && (this.usuario1 != this.usuario3 || this.contrasena1 != this.contrasena3)){
-      this.presentAlert('Error','Los datos son incorrectos')
     }
-
-    else if(this.usuario1== this.usuario2 && this.contrasena1 == this.contrasena2){
-      this.presentAlert('Exito','Usted ha accedido exitosamente.')
-      this.router.navigate(['/inicio'], navigationextras);
-    }
-    else if(this.usuario1== this.usuario3 && this.contrasena1 == this.contrasena3){
-      this.presentAlert('Exito','Usted ha accedido exitosamente.')
-      this.router.navigate(['/inicio'], navigationextras);
-    }
-    
-  }
+  
   irRegistro(){
     this.router.navigate(['/registrar']);
   }

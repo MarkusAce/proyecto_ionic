@@ -44,6 +44,19 @@ ion-input{
     --highlight-color-valid: black;
 }
 
+.seleccomuna{
+    --background: white;
+    color: black;
+    --highlight-color-valid: black;
+    --border-color: white;
+    --color-focused: black;
+    
+}
+
+.sin-padding{
+    padding: 0px;
+}
+
 .tamano-letras{
     font-size: 13px;
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
   selector: 'app-agregarmarca',
@@ -11,30 +12,25 @@ export class AgregarmarcaPage implements OnInit {
 
   marca: string = '';
   
-  constructor(private router: Router,private alertController: AlertController) { }
+  constructor(private router: Router, private bd:ServicesbdService) { }
 
   ngOnInit() {
   }
 
-  async presentAlert(titulo: string, msj: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      message: msj,
-      buttons: ['OK']
-    });
-    await alert.present();
-  }
-
   validarMarca(){
     if(this.marca==''){
-      this.presentAlert('Error','Los campos no pueden estar vacios.')
+      this.bd.presentAlert('Error','Los campos no pueden estar vacios.')
     }
     else if(this.marca=='Puma', 'Adidas'){
-      this.presentAlert('Error','La marca ingresada ya existe.')
+      this.bd.presentAlert('Error','La marca ingresada ya existe.')
     }
     else{
-      this.presentAlert('Exito','La marca se ha ingresado exitosamente')
+      this.bd.presentAlert('Exito','La marca se ha ingresado exitosamente')
       this.router.navigate(['/zapatillasad'])
     }
+  }
+
+  insertar(){
+    this.bd.insertarMarca(this.marca);
   }
 }

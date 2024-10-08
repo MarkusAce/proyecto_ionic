@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder,FormGroup, ValidationErrors, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Comuna } from 'src/app/services/comuna';
+import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
   selector: 'app-registrar',
@@ -10,8 +12,14 @@ import { Router } from '@angular/router';
 export class RegistrarPage implements OnInit {
 
   registroForm!: FormGroup;
+  arregloComunas: any = [
+    {
+      id: '',
+      nombre: '',
+    }
+  ];
 
-  constructor(private router: Router, private formBuilder: FormBuilder) { }
+  constructor(private router: Router, private formBuilder: FormBuilder, private bd: ServicesbdService) { }
 
   
 
@@ -21,14 +29,40 @@ export class RegistrarPage implements OnInit {
       email1: ['', [Validators.required, Validators.email]],
       rut:['', [Validators.required, this.rutValidador]],
       telefono: ['',[Validators.required, Validators.pattern(/^[0-9]{9,10}$/)]],
-      direccion: ['', [Validators.required,Validators.minLength(5)]],
-      fechanac: ['', [Validators.required, this.fechaNacValidar]],
+      direccion: ['', [Validators.required,Validators.minLength(5), Validators.pattern(/.*\d+.*/)]],
+      comuna: ['', Validators.required],
+      fechanac: ['', [Validators.required, this.validarFechaNac.bind(this)]],
       contrasena1: [null, [Validators.required, this.contrasenaValidador]],
       contrasenarepetida: ['', Validators.required]
     }, {validator: this.contrasenasIguales});
 
+    this.bd.dbState().subscribe(data=>{
+      if(data){
+        this.bd.fetchComuna().subscribe(res=>{
+          this.arregloComunas = res;
+        })
+      }
+    })
   }
 
+  // validarUsuario(){
+  //   const usuarioControl = this.registroForm.get('usuario1');
+  //   const usuario = usuarioControl?.value;
+
+  //   if (usuario){
+  //     this.bd.verificarUsuario(usuario).then(existe =>{
+  //       if (existe){
+  //         usuarioControl?.setErrors({usuarioExistente:true});
+  //       }else{
+  //         usuarioControl?.setErrors(null);
+  //       }
+  //     });
+  //   }
+  // }
+
+  validarCorreo(){
+
+  }
   contrasenaValidador(control: AbstractControl): ValidationErrors | null {
     const contrasena = control.value;
     const errors: ValidationErrors = {};
@@ -80,28 +114,64 @@ export class RegistrarPage implements OnInit {
     return null;
   }
 
-  fechaNacValidar(control: AbstractControl): ValidationErrors | null {
-    const fechaNac = new Date(control.value);
-    const fechaActual = new Date();
-    const edadMinima = 16;
-    const edadMaxima = 130;
-    const edadUsuario = fechaActual.getFullYear() - fechaNac.getFullYear();
+  validarFechaNac(control: any){
+    const valor = control.value;
 
-    if (edadUsuario < edadMinima){
+    if(!valor){
+      return null;
+    }
+
+    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if(!regex.test(valor)){
+      return { fechaInvalida: true};
+    }
+
+    const [dia, mes, anio] = valor.split('/').map(Number);
+    const fecha = new Date(anio,mes -1, dia);
+
+    if(fecha.getFullYear() !== anio || fecha.getMonth() + 1 !== mes || fecha.getDate() !== dia){
+      return { fechaInvalida: true};
+    }
+
+    const hoy = new Date();
+    
+    if(fecha >  hoy){
+      return{fechaMayor: true};
+    }
+
+    const edad = hoy.getFullYear() - fecha.getFullYear();
+    const mesNacimiento = fecha.getMonth();
+    const mesActual = hoy.getMonth();
+    const diaNacimiento = fecha.getDate();
+    const diaActual = hoy.getDate();
+
+    if(edad < 16 || (edad === 16 &&(mesNacimiento > mesActual || (mesNacimiento === mesActual && diaNacimiento > diaActual)))){
       return {menorDeEdad: true};
     }
-    if (edadUsuario > edadMaxima){
+
+    if (edad > 130){
       return {maximoEdad: true};
     }
-    if (fechaNac >= fechaActual){
-      return {fechaInvalida: true};
-    }
-    return null;
+
+  return null;
   }
 
   validarRegistro(){
     if (this.registroForm.valid){
-      this.router.navigate(['/login']);
+      const usuario = this.registroForm.get('usuario1')?.value;
+      const email = this.registroForm.get('email1')?.value;
+      const rut = this.registroForm.get('rut')?.value;
+      const telefono = this.registroForm.get('telefono')?.value;
+      const fechanac = this.registroForm.get('fechanac')?.value;
+      const idComuna = this.registroForm.get('comuna')?.value;
+      const direccion = this.registroForm.get('direccion')?.value;
+      const contrasena = this.registroForm.get('contrasena1')?.value;
+      
+      this.bd.insertarUsuario(usuario, email, rut, telefono, fechanac, contrasena).then(idUsuario =>{
+        this.bd.insertarDireccion(direccion, idUsuario, idComuna).then(()=>{
+          this.router.navigate(['/login']);
+        })
+      })
     }
   }
 
