@@ -38,9 +38,6 @@
 
 <ion-footer>
 
-  <app-barrafooter *ngIf="idRol=='2' || idRol=='1'"></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
 
-  <app-barrafooter2 *ngIf="idRol=='3'"></app-barrafooter2>
-
-  
 </ion-footer>

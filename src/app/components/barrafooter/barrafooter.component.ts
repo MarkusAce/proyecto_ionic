@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
   selector: 'app-barrafooter',
@@ -8,7 +9,9 @@ import { Router } from '@angular/router';
 })
 export class BarrafooterComponent  implements OnInit {
 
-  constructor(private router: Router) { }
+  @Input() tipoUsuario: string = "";
+
+  constructor(private router: Router, private bd: ServicesbdService) { }
 
   ngOnInit() {}
   irInicio(){
@@ -18,9 +21,22 @@ export class BarrafooterComponent  implements OnInit {
     this.router.navigate(['/zapatillas'])
   }
   irCompras(){
-    this.router.navigate(['/listadocompras'])
+    if(this.tipoUsuario == "2" || this.tipoUsuario == "3"){
+      this.router.navigate(['/listadocompras'])
+    }
+    if(this.tipoUsuario =="1"){
+      this.bd.presentAlert('Ver compras', 'Primero tiene que acceder a su cuenta.')
+      this.router.navigate(['/login']);
+    }
+    
   }
   irCarrito(){
-    this.router.navigate(['/carrito'])
+    if(this.tipoUsuario == "2" || this.tipoUsuario == "3"){
+      this.router.navigate(['/carrito'])
+    }
+    if(this.tipoUsuario =="1"){
+      this.bd.presentAlert('Ver carrito', 'Primero tiene que acceder a su cuenta.')
+      this.router.navigate(['/login']);
+    }
   }
 }
