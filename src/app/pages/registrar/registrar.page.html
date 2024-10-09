@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
 
-  <app-barranav titulo="Registrar"></app-barranav>
+  <app-barranav titulo="Registrar" [tipousuario]="idRol"></app-barranav>
 
 </ion-header>
 
@@ -16,33 +16,37 @@
 
           <ion-input formControlName="usuario1" label="Usuario" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su usuario"></ion-input>
           <div *ngIf="registroForm.get('usuario1')?.invalid && (registroForm.get('usuario1')?.dirty) || registroForm.get('usuario1')?.touched">
-            <p *ngIf="registroForm.get('usuario1')?.hasError('required')">El nombre de Usuario no puede estar vacio.</p>
-            <p *ngIf="registroForm.get('usuario1')?.hasError('minlength')">El usuario debe tener al menos 4 caracteres.</p>
+            <p *ngIf="registroForm.get('usuario1')?.hasError('required')" class="color-negro negrita">El nombre de Usuario no puede estar vacio.</p>
+            <p *ngIf="registroForm.get('usuario1')?.hasError('minlength')" class="color-negro negrita">El usuario debe tener al menos 5 caracteres.</p>
+            <p *ngIf="registroForm.get('usuario1')?.hasError('usuarioExiste')" class="color-negro negrita">El usuario que desea registrar ya existe.</p>
           </div>
 
-          <ion-input formControlName="email1" label="Correo" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su email"></ion-input>
+          <ion-input formControlName="email1" label="Correo" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su email. Ej: correo@gmail.com"></ion-input>
           <div *ngIf="registroForm.get('email1')?.invalid && (registroForm.get('email1')?.dirty) || registroForm.get('email1')?.touched">
-            <p *ngIf="registroForm.get('email1')?.hasError('required')">El email no puede estar vacio </p>
-            <p *ngIf="registroForm.get('email1')?.hasError('email')">Por favor ingrese un email valido.</p>
+            <p *ngIf="registroForm.get('email1')?.hasError('required')" class="color-negro negrita">El email no puede estar vacio </p>
+            <p *ngIf="registroForm.get('email1')?.hasError('email')" class="color-negro negrita">Por favor ingrese un email valido.</p>
+            <p *ngIf="registroForm.get('email1')?.hasError('emailExiste')" class="color-negro negrita">El correo que desea registrar ya existe.</p>
           </div>
 
-          <ion-input formControlName="rut" label="Rut" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su rut."></ion-input>
-            <div *ngIf="registroForm.get('rut')?.invalid && registroForm.get('rut')?.dirty">
-              <p *ngIf="registroForm.get('rut')?.hasError('required')">El rut no puede estar vacio.</p>
-              <p *ngIf="registroForm.get('rut')?.hasError('rutInvalido')">Por favor ingrese un rut valido.</p>
+          <ion-input formControlName="rut" label="Rut" (blur)="registroForm.get('rut')?.markAsTouched()" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su rut. Ej: 11.111.111-1"></ion-input>
+            <div *ngIf="registroForm.get('rut')?.invalid && registroForm.get('rut')?.touched">
+              <p *ngIf="registroForm.get('rut')?.hasError('required')" class="color-negro negrita">El rut no puede estar vacio.</p>
+              <p *ngIf="registroForm.get('rut')?.hasError('rutInvalido')" class="color-negro negrita">Por favor ingrese un rut valido.</p>
+              <p *ngIf="registroForm.get('rut')?.hasError('dvInvalido')" class="color-negro negrita">Por favor ingrese un dv valido.</p>
+              <p *ngIf="registroForm.get('rut')?.hasError('rutExiste')" class="color-negro negrita">El RUT que desea registrar ya existe.</p>
             </div>
 
-          <ion-input formControlName="telefono" label="Telefono" label-placement="floating" fill="outline" class="espacio" type="number" placeholder="Ingrese su número de telefono"></ion-input>
+          <ion-input formControlName="telefono" label="Telefono" label-placement="floating" fill="outline" class="espacio" type="number" placeholder="Ingrese su número Ej: 912341234"></ion-input>
             <div *ngIf="registroForm.get('telefono')?.invalid && (registroForm.get('telefono')?.dirty || registroForm.get('telefono')?.touched)">
-              <p *ngIf="registroForm.get('telefono')?.hasError('required')">El teléfono no puede estar vacio.</p>
-              <p *ngIf="registroForm.get('telefono')?.hasError('pattern')">El teléfono debe tener entre 9 y 10 digitos.</p>
+              <p *ngIf="registroForm.get('telefono')?.hasError('required')" class="color-negro negrita">El teléfono no puede estar vacio.</p>
+              <p *ngIf="registroForm.get('telefono')?.hasError('pattern')" class="color-negro negrita">El teléfono debe tener entre 9 y 10 digitos.</p>
             </div>
 
-            <ion-input formControlName="direccion" label="Direccion" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su dirección"></ion-input>
+            <ion-input formControlName="direccion" label="Direccion" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su dirección. Ej: Calle 123"></ion-input>
             <div *ngIf="registroForm.get('direccion')?.invalid && (registroForm.get('direccion')?.dirty || registroForm.get('direccion')?.touched)">
-              <p *ngIf="registroForm.get('direccion')?.hasError('required')">La dirección no puede estar vacia.</p>
-              <p *ngIf="registroForm.get('direccion')?.hasError('minlength')">La dirección no puede tener menos de 5 caracteres.</p>
-              <p *ngIf="registroForm.get('direccion')?.hasError('pattern')">La dirección tiene que contener números.</p>
+              <p *ngIf="registroForm.get('direccion')?.hasError('required')" class="color-negro negrita">La dirección no puede estar vacia.</p>
+              <p *ngIf="registroForm.get('direccion')?.hasError('minlength')" class="color-negro negrita">La dirección no puede tener menos de 5 caracteres.</p>
+              <p *ngIf="registroForm.get('direccion')?.hasError('pattern')" class="color-negro negrita">La dirección tiene que contener números.</p>
             </div>
 
             <div class="margin-auto espacio">
@@ -55,31 +59,31 @@
               </ion-list>
             </div>
             <div *ngIf="registroForm.get('comuna')?.invalid && (registroForm.get('comuna')?.dirty || registroForm.get('comuna')?.touched)">
-              <p *ngIf="registroForm.get('comuna')?.hasError('required')">Se debe seleccionar una comuna.</p>
+              <p *ngIf="registroForm.get('comuna')?.hasError('required')" class="color-negro negrita">Se debe seleccionar una comuna.</p>
             </div>
 
           <ion-input formControlName="fechanac" label="Fecha de Nacimiento" label-placement="floating" fill="outline" class="espacio" type="text" placeholder="Ingrese su fecha de nacimiento."></ion-input>
             <div *ngIf="registroForm.get('fechanac')?.invalid && registroForm.get('fechanac')?.dirty || registroForm.get('fechanac')?.touched">
-              <p *ngIf="registroForm.get('fechanac')?.hasError('required')">La fecha de nacimiento no puede estar vacia.</p>
-              <p *ngIf="registroForm.get('fechanac')?.hasError('menorDeEdad')">No se puede registrar a un menor de 16 años.</p>
-              <p *ngIf="registroForm.get('fechanac')?.hasError('maximoEdad')">No se puede registrar a una persona con más de 130 años.</p>
-              <p *ngIf="registroForm.get('fechanac')?.hasError('fechaInvalida')">La fecha es invalida, asegurate que el formato sea DD/MM/YYYY.</p>
-              <p *ngIf="registroForm.get('fechanac')?.hasError('fechaMayor')">La fecha de nacimiento no puede ser en el futuro.</p>
+              <p *ngIf="registroForm.get('fechanac')?.hasError('required')" class="color-negro negrita">La fecha de nacimiento no puede estar vacia.</p>
+              <p *ngIf="registroForm.get('fechanac')?.hasError('menorDeEdad')" class="color-negro negrita">No se puede registrar a un menor de 16 años.</p>
+              <p *ngIf="registroForm.get('fechanac')?.hasError('maximoEdad')" class="color-negro negrita">No se puede registrar a una persona con más de 130 años.</p>
+              <p *ngIf="registroForm.get('fechanac')?.hasError('fechaInvalida')" class="color-negro negrita">La fecha es invalida, asegurate que el formato sea DD/MM/YYYY.</p>
+              <p *ngIf="registroForm.get('fechanac')?.hasError('fechaMayor')" class="color-negro negrita">La fecha de nacimiento no puede ser en el futuro.</p>
             </div>
 
           <ion-input formControlName="contrasena1" label="Contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese su contraseña"></ion-input>
           <div *ngIf="registroForm.get('contrasena1')?.invalid && (registroForm.get('contrasena1')?.dirty || registroForm.get('contrasena1')?.touched)">
-            <p *ngIf="registroForm.get('contrasena1')?.hasError('required')">La contraseña no puede estar vacia.</p>
-            <p *ngIf="registroForm.get('contrasena1')?.hasError('minimo')">La contraseña debe tener al menos 8 caracteres.</p>
-            <p *ngIf="registroForm.get('contrasena1')?.hasError('mayuscula')">La contraseña debe contener una mayuscula.</p>
-            <p *ngIf="registroForm.get('contrasena1')?.hasError('minuscula')">La contraseña debe contener una minuscula.</p>
-            <p *ngIf="registroForm.get('contrasena1')?.hasError('numero')">La contraseña debe contener un número.</p>
-            <p *ngIf="registroForm.get('contrasena1')?.hasError('especial')">La contraseña debe contener un caracter especial.</p>
+            <p *ngIf="registroForm.get('contrasena1')?.hasError('required')" class="color-negro negrita">La contraseña no puede estar vacia.</p>
+            <p *ngIf="registroForm.get('contrasena1')?.hasError('minimo')" class="color-negro negrita">La contraseña debe tener al menos 8 caracteres.</p>
+            <p *ngIf="registroForm.get('contrasena1')?.hasError('mayuscula')" class="color-negro negrita">La contraseña debe contener una mayuscula.</p>
+            <p *ngIf="registroForm.get('contrasena1')?.hasError('minuscula')" class="color-negro negrita">La contraseña debe contener una minuscula.</p>
+            <p *ngIf="registroForm.get('contrasena1')?.hasError('numero')" class="color-negro negrita">La contraseña debe contener un número.</p>
+            <p *ngIf="registroForm.get('contrasena1')?.hasError('especial')" class="color-negro negrita">La contraseña debe contener un caracter especial.</p>
           </div>
 
           <ion-input formControlName="contrasenarepetida" label="Repita su contraseña." label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Repita su contraseña."></ion-input>
-          <div *ngIf="registroForm.hasError('mismatch') && registroForm.get('contrasenarepetida')?.dirty">
-              <p >Las contraseñas no coinciden</p>
+          <div *ngIf="registroForm.hasError('mismatch') && registroForm.get('contrasenarepetida')?.touched">
+              <p class="color-negro negrita">Las contraseñas no coinciden</p>
             </div>
 
           <ion-button expand="full" type="submit" [disabled]="registroForm.invalid" class="btn-color"><ion-icon slot="start" name="person-add-outline"></ion-icon>Registrar</ion-button>
@@ -99,6 +103,6 @@
 
 <ion-footer>
 
-  <app-barrafooter></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
   
 </ion-footer>

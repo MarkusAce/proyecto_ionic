@@ -22,7 +22,7 @@ ion-input{
 
 .contenedor-agregar{
     width: 85%;
-    height: 45%;
+    min-height: 45%;
     background-color: #D03739;
 }
 
@@ -36,10 +36,6 @@ ion-input{
     margin: auto;
 }
 
-.tamano-letras{
-    font-size: 13px;
-}
-
 .centrar-eje{
     align-items: center;
 }
@@ -48,25 +44,13 @@ ion-input{
     width: 90%;
 }
 
-.centrar{
-    text-align: center;
+.negrita{
+    font-weight: 500;
 }
-
-.fondo{
-    --background: white;
+.color-negro{
     color: black;
 }
 
-.sin-padding{
-    padding: 0px;
-    background-color: white;
-}
-
-.contenedor-imagen{
-width: 55%;
-}
-
-.tamano-imagen{
-    width: 100%;
-    height: auto;
+.espacio{
+    margin-bottom: 10px;
 }

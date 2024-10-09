@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <app-barranav titulo="Agregar Marca"></app-barranav>
+  <app-barranav titulo="Agregar Marca" [tipousuario]="idRol"></app-barranav>
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -12,26 +12,27 @@
       
       <div class="contenedor-input margin-auto">
         <p>Por favor, ingrese el nombre de la nueva marca:</p>
-        <ion-input label="Nombre marca" label-placement="floating" fill="outline" type="text" placeholder="Ingrese la nueva marca." [(ngModel)]="marca"></ion-input>
+        <form [formGroup]="marcaForm" (ngSubmit)="validarMarca()">
+          <ion-input formControlName="marca" label="Nombre marca" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese la nueva marca."></ion-input>
+          <div *ngIf="marcaForm.get('marca')?.invalid && (marcaForm.get('marca')?.dirty) || marcaForm.get('marca')?.touched">
+            <p *ngIf="marcaForm.get('marca')?.hasError('required')" class="color-negro negrita">El nombre de la marca no puede estar vacio.</p>
+            <p *ngIf="marcaForm.get('marca')?.hasError('marcaExiste')" class="color-negro negrita">La marca que desea registrar ya existe.</p>
+          </div>
+
+          <ion-button  expand="full" type="submit" [disabled]="marcaForm.invalid" class="color"><ion-icon slot="start" name="add"></ion-icon>Agregar</ion-button>
+        </form>
+        
 
       </div>
 
       <br>
-
-      <div class="contenedor-input margin-auto centrar">
-        <ion-button class="color" (click)="validarMarca()">
-          <ion-icon slot="start" name="add"></ion-icon>
-          Agregar
-        </ion-button>
-      </div>
     </div>
   </div>
-
 
 </ion-content>
 
 <ion-footer>
 
-  <app-barrafooter></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
   
 </ion-footer>

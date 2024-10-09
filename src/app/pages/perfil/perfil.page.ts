@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
   selector: 'app-perfil',
@@ -9,29 +10,32 @@ import { AlertController } from '@ionic/angular';
 })
 export class PerfilPage implements OnInit {
 
-  usuario: string='';
+  idUsuario: string = '';
+  idRol: string = '';
 
-  constructor(private router: Router,private alertController: AlertController) { }
+  
+
+  constructor(private router: Router, private bd: ServicesbdService) { }
 
   ngOnInit() {
-  }
-
-  async presentAlert(titulo: string, msj: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      message: msj,
-      buttons: ['OK']
+    this.bd.dbState().subscribe(data =>{
+      if(data){
+        this.bd.fetchTipoUsuario().subscribe(res =>{
+          if(res.length> 0){
+            this.idUsuario = res[0].idUsuario;
+            this.idRol = res[0].idRol;
+          }else{
+            this.idUsuario = '';
+            this.idRol = '1';
+          }
+        });
+      }
     });
-    await alert.present();
   }
   
   cerrarSesion(){
-    let navigationextras: NavigationExtras = {
-      state:{
-        user: this.usuario
-      }
-    }
-    this.presentAlert('Adios','Usted ha cerrado sesion.')
-    this.router.navigate(['/inicio'], navigationextras);
+    this.bd.defaultTipoUsuario();
+    this.bd.presentAlert('Cerrando Sesion', 'Usted ha cerrado sesión')
+    this.router.navigate(['/inicio']);
   }
 }

@@ -31,14 +31,4 @@ export class InicioPage implements OnInit {
       }
     });
   }
-
-  irZapatillasad(){
-    this.router.navigate(['/zapatillasad'])
-  }
-  irListacomprasad(){
-    this.router.navigate(['/listacomprasad'])
-  }
-  irInicio(){
-    this.router.navigate(['/inicio'])
-  }
 }

@@ -1,6 +1,6 @@
 <ion-header >
   
-  <app-barranav titulo="Resultados"></app-barranav>
+  <app-barranav titulo="Resultados" [tipousuario]="idRol"></app-barranav>
 
 </ion-header>
 
@@ -36,6 +36,6 @@
 
 <ion-footer>
   
-  <app-barrafooter></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
 
 </ion-footer>

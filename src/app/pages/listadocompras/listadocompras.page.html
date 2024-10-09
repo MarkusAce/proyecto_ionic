@@ -1,5 +1,5 @@
 <ion-header >
-  <app-barranav titulo="Lista de pedidos"></app-barranav>
+  <app-barranav titulo="Lista de pedidos" [tipousuario]="idRol"></app-barranav>
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -100,6 +100,6 @@
 
 <ion-footer>
   
-  <app-barrafooter></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
 
 </ion-footer>

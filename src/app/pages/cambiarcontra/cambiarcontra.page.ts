@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
   selector: 'app-cambiarcontra',
@@ -10,29 +11,37 @@ import { AlertController } from '@ionic/angular';
 export class CambiarcontraPage implements OnInit {
 
   email1: string = "";
-  constructor(private router: Router,private alertController: AlertController) { }
+  idUsuario: string = '';
+  idRol: string = '';
+
+  constructor(private router: Router,private bd: ServicesbdService) { }
 
   ngOnInit() {
+    this.bd.dbState().subscribe(data =>{
+      if(data){
+        this.bd.fetchTipoUsuario().subscribe(res =>{
+          if(res.length> 0){
+            this.idUsuario = res[0].idUsuario;
+            this.idRol = res[0].idRol;
+          }else{
+            this.idUsuario = '';
+            this.idRol = '1';
+          }
+        });
+      }
+    });
   }
 
-  async presentAlert(titulo: string, msj: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      message: msj,
-      buttons: ['OK']
-    });
-    await alert.present();
-  }
   validarCambioContra(){
     const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(this.email1== ''){
-      this.presentAlert('Error','Los campos no pueden estar vacios.')
+      this.bd.presentAlert('Error','Los campos no pueden estar vacios.')
     }
     else if(!correoRegex.test(this.email1)){
-      this.presentAlert('Error','El email no es válido.')
+      this.bd.presentAlert('Error','El email no es válido.')
     }
     else{
-      this.presentAlert('Enviado','El correo fue enviado con exito.')
+      this.bd.presentAlert('Enviado','El correo fue enviado con exito.')
       this.router.navigate(['/cambiarcontrasena'])
     }
   }

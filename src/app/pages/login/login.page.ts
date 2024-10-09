@@ -11,6 +11,9 @@ import { ServicesbdService } from 'src/app/services/servicesbd.service';
 export class LoginPage implements OnInit {
 
   loginForm!: FormGroup;
+  
+  idUsuario: string = '';
+  idRol: string = '';
 
 
   constructor(private router: Router, private formBuilder: FormBuilder, private bd: ServicesbdService) { }
@@ -21,6 +24,19 @@ export class LoginPage implements OnInit {
       usuario: ['', Validators.required],
       contrasena: [null, [Validators.required]]
     })
+    this.bd.dbState().subscribe(data =>{
+      if(data){
+        this.bd.fetchTipoUsuario().subscribe(res =>{
+          if(res.length> 0){
+            this.idUsuario = res[0].idUsuario;
+            this.idRol = res[0].idRol;
+          }else{
+            this.idUsuario = '';
+            this.idRol = '1';
+          }
+        });
+      }
+    });
   }
 
   

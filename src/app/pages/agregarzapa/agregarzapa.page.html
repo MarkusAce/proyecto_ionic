@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <app-barranav titulo="Agregar zapatilla"></app-barranav>
+  <app-barranav titulo="Agregar zapatilla" [tipousuario]="idRol"></app-barranav>
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -72,6 +72,6 @@
 
 <ion-footer>
 
-  <app-barrafooter></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
   
 </ion-footer>

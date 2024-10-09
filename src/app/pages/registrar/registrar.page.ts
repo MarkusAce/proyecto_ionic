@@ -19,15 +19,18 @@ export class RegistrarPage implements OnInit {
     }
   ];
 
+  idUsuario: string = '';
+  idRol: string = '';
+  
   constructor(private router: Router, private formBuilder: FormBuilder, private bd: ServicesbdService) { }
 
   
 
   ngOnInit() {
     this.registroForm = this.formBuilder.group({
-      usuario1: ['', [Validators.required, Validators.minLength(5)]],
-      email1: ['', [Validators.required, Validators.email]],
-      rut:['', [Validators.required, this.rutValidador]],
+      usuario1: ['', [Validators.required, Validators.minLength(5)],[this.validarUsuario.bind(this)]],
+      email1: ['', [Validators.required, Validators.email],[this.validarCorreo.bind(this)]],
+      rut:['', [Validators.required, this.rutValidador.bind(this)], [this.validarExisteRut.bind(this)]],
       telefono: ['',[Validators.required, Validators.pattern(/^[0-9]{9,10}$/)]],
       direccion: ['', [Validators.required,Validators.minLength(5), Validators.pattern(/.*\d+.*/)]],
       comuna: ['', Validators.required],
@@ -43,25 +46,65 @@ export class RegistrarPage implements OnInit {
         })
       }
     })
+
+    this.bd.dbState().subscribe(data =>{
+      if(data){
+        this.bd.fetchTipoUsuario().subscribe(res =>{
+          if(res.length> 0){
+            this.idUsuario = res[0].idUsuario;
+            this.idRol = res[0].idRol;
+          }else{
+            this.idUsuario = '';
+            this.idRol = '1';
+          }
+        });
+      }
+    });
   }
 
-  // validarUsuario(){
-  //   const usuarioControl = this.registroForm.get('usuario1');
-  //   const usuario = usuarioControl?.value;
+   validarUsuario(control: AbstractControl): Promise<ValidationErrors | null>{
+     
+     const usuario = control?.value;
+     
+     if (usuario){
+        return this.bd.verificarUsuario(usuario).then(existe =>{
+         if (existe){
+           return { usuarioExiste:true };
+         }
+         return null;
+       });
+     }
+     return Promise.resolve(null);
+   }
 
-  //   if (usuario){
-  //     this.bd.verificarUsuario(usuario).then(existe =>{
-  //       if (existe){
-  //         usuarioControl?.setErrors({usuarioExistente:true});
-  //       }else{
-  //         usuarioControl?.setErrors(null);
-  //       }
-  //     });
-  //   }
-  // }
+  validarCorreo(control: AbstractControl): Promise<ValidationErrors | null>{
 
-  validarCorreo(){
+    const email = control?.value;
 
+    if (email){
+      return this.bd.verificarEmail(email).then(existe =>{
+        if (existe){
+          return { emailExiste:true};
+        }
+        return null;
+      });
+    }
+    return Promise.resolve(null);
+  }
+
+  validarExisteRut(control: AbstractControl): Promise<ValidationErrors | null>{
+    
+    const rut = control?.value;
+
+    if (rut){
+      return this.bd.verificarExisteRut(rut).then(existe =>{
+        if (existe){
+          return { rutExiste:true};
+        }
+        return null;
+      });
+    }
+    return Promise.resolve(null);
   }
   contrasenaValidador(control: AbstractControl): ValidationErrors | null {
     const contrasena = control.value;
@@ -102,16 +145,51 @@ export class RegistrarPage implements OnInit {
   }
 
   rutValidador(control: AbstractControl): ValidationErrors | null {
-    const rut = control.value;
+    const rut = control.value?.trim();
     
-    const rutLimpio = rut.replace(/[^0-9kK]/g, '');
+    if (!rut){
+      return { required:true }
+    }
+
+    const rutLimpio = rut.replace(/[.\-]/g, '');
 
     const rutRegex = /^[0-9]{7,8}[0-9kK]?$/;
 
     if (!rutRegex.test(rutLimpio)){
       return {rutInvalido: true}
     }
+
+    const cuerpoRut = rutLimpio.slice(0, -1);
+    const dv = rutLimpio.slice(-1).toUpperCase();
+
+    const digitoEsperado = this.calcularDV(cuerpoRut);
+
+    if (dv !== digitoEsperado){
+      return{dvInvalido: true};
+    }
+
     return null;
+  }
+
+  calcularDV(cuerpoRut: string):string{
+    let suma = 0;
+    let multiplicador = 2;
+
+    for (let i = cuerpoRut.length - 1; i >= 0; i--){
+      suma += parseInt(cuerpoRut.charAt(i),10)*multiplicador;
+      multiplicador = multiplicador === 7 ? 2 : multiplicador + 1
+    }
+
+    const resto = suma % 11;
+    const digitoCalculado = 11 - resto;
+
+    if (digitoCalculado === 11){
+      return '0';
+    }
+    if (digitoCalculado === 10){
+      return 'K';
+    }
+    return digitoCalculado.toString();
   }
 
   validarFechaNac(control: any){

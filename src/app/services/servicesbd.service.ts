@@ -8,6 +8,7 @@ import { Usuario } from './usuario';
 import { Direccion } from './direccion';
 import { Tipousuario } from './tipousuario';
 import { Rol } from './rol';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +70,7 @@ export class ServicesbdService {
   registroComuna32: string = "INSERT or IGNORE INTO comuna(idcomuna, comnombre) VALUES(32, 'Vitacura')"
 
   //registro Usuario
-  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '99.999.999-9', '999999999', '21/09/1990', 'Admin1234@', '3')"
+  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', '999999999', '21/09/1990', 'Admin1234@', '3')"
 
   listaMarca = new BehaviorSubject([]);
 
@@ -85,7 +86,7 @@ export class ServicesbdService {
 
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) { 
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private nativeStorage: NativeStorage) { 
     this.crearBD();
   }
   crearBD(){
@@ -336,6 +337,36 @@ export class ServicesbdService {
         }
       }
       this.listaTipoUsuario.next(items as any);
+    })
+  }
+
+  defaultTipoUsuario(){
+    const tipoUsuario = {
+      idUsuario: '',
+      idRol: '1'
+    };
+    this.listaTipoUsuario.next(tipoUsuario as any);
+  }
+
+  verificarUsuario(usuario:string){
+    return this.database.executeSql('SELECT * FROM usuario WHERE uusuario = ?',[usuario]).then(res=>{
+      return res.rows.length > 0;
+    })
+  }
+  
+  verificarEmail(email:string){
+    return this.database.executeSql('SELECT * FROM usuario WHERE ucorreo = ?',[email]).then(res=>{
+      return res.rows.length > 0;
+    })
+  }
+  verificarExisteRut(rut:string){
+    return this.database.executeSql('SELECT * FROM usuario WHERE urut = ?',[rut]).then(res=>{
+      return res.rows.length > 0;
+    })
+  }
+  verificarMarca(marca:string){
+    return this.database.executeSql('SELECT * FROM marca WHERE mnombre = ?', [marca]).then(res=>{
+      return res.rows.length > 0;
     })
   }
 }

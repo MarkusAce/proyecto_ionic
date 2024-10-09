@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
 
-  <app-barranav titulo="Cambiar Contraseña"></app-barranav>
+  <app-barranav titulo="Cambiar Contraseña" [tipousuario]="idRol"></app-barranav>
 
 </ion-header>
 
@@ -45,6 +45,6 @@
 
 <ion-footer>
 
-  <app-barrafooter></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
   
 </ion-footer>

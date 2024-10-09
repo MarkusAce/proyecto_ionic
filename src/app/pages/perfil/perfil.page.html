@@ -1,6 +1,6 @@
 <ion-header>
 
-  <app-barranav titulo="Perfil"></app-barranav>
+  <app-barranav titulo="Perfil" [tipousuario]="idRol"></app-barranav>
 
 </ion-header>
 
@@ -46,16 +46,22 @@
         <p class="negrita margin-top">&nbsp;21/09/2001</p>
       </div>
 
-      <div class="centrar espacio-arriba">
+      <div class="centrar espacio-abajo">
         <ion-button (click)="cerrarSesion()">
           <ion-icon slot="start" name="log-out"></ion-icon>
           Cerrar sesion
         </ion-button>
       </div>
-      <div class="centrar espacio-arriba">
+      <div class="centrar espacio-abajo">
         <ion-button>
           <ion-icon slot="start" name="pencil"></ion-icon>
           Cambiar contraseña
+        </ion-button>
+      </div>
+      <div *ngIf="idRol=='3'" class="centrar espacio-abajo">
+        <ion-button>
+          <ion-icon slot="start" name="add"></ion-icon>
+          Agregar Administrador
         </ion-button>
       </div>
       
@@ -67,6 +73,6 @@
 
 <ion-footer>
 
-  <app-barrafooter></app-barrafooter>
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
   
 </ion-footer>

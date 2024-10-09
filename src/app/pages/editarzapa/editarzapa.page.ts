@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
   selector: 'app-editarzapa',
@@ -14,29 +15,36 @@ export class EditarzapaPage implements OnInit {
   talla: string = '';
   marca: string = '';
 
-  constructor(private router: Router,private alertController: AlertController) { }
+  idUsuario: string = '';
+  idRol: string = '';
+
+  constructor(private router: Router,private bd:ServicesbdService) { }
 
   ngOnInit() {
-  }
-
-  async presentAlert(titulo: string, msj: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      message: msj,
-      buttons: ['OK']
+    this.bd.dbState().subscribe(data =>{
+      if(data){
+        this.bd.fetchTipoUsuario().subscribe(res =>{
+          if(res.length> 0){
+            this.idUsuario = res[0].idUsuario;
+            this.idRol = res[0].idRol;
+          }else{
+            this.idUsuario = '';
+            this.idRol = '1';
+          }
+        });
+      }
     });
-    await alert.present();
   }
 
   validarZapatilla(){
     if((this.zapatilla == '' ) || (this.cantidad == null) || (this.talla == '' ) || (this.marca == '' )){
-      this.presentAlert('Error','Los campos no pueden estar vacios.')
+      this.bd.presentAlert('Error','Los campos no pueden estar vacios.')
     }
     else if(this.cantidad < 0){
-      this.presentAlert('Error','La cantidad debe ser un numero positivo.')
+      this.bd.presentAlert('Error','La cantidad debe ser un numero positivo.')
     }
     else{
-      this.presentAlert('Exito','La zapatilla ha sido editada correctamente.')
+      this.bd.presentAlert('Exito','La zapatilla ha sido editada correctamente.')
       this.router.navigate(['/zapatillasad'])
     }
   }
