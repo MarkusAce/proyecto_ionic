@@ -9,6 +9,8 @@ import { Direccion } from './direccion';
 import { Tipousuario } from './tipousuario';
 import { Rol } from './rol';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { Zapatilla } from './zapatilla';
+import { Talla } from './talla';
 
 @Injectable({
   providedIn: 'root'
@@ -16,16 +18,15 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 export class ServicesbdService {
     public database!: SQLiteObject
 
-
-
   tablaRol: string = "CREATE TABLE IF NOT EXISTS rol(idrol INTEGER PRIMARY KEY AUTOINCREMENT, rnombre VARCHAR(255) NOT NULL, rtipo INTEGER);";
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(idcomuna INTEGER PRIMARY KEY AUTOINCREMENT, comnombre VARCHAR(255) NOT NULL);";
   tablaMarca: string = "CREATE TABLE IF NOT EXISTS marca(idmarca INTEGER PRIMARY KEY AUTOINCREMENT,mnombre VARCHAR(255) NOT NULL);";
-  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(idusuario INTEGER PRIMARY KEY AUTOINCREMENT, uusuario VARCHAR(255) NOT NULL, ucorreo VARCHAR(255) NOT NULL, urut VARCHAR(20), utelefono INTEGER NOT NULL, ufechanac DATE NOT NULL, ucontrasena VARCHAR(255) NOT NULL, idrol integer NOT NULL, FOREIGN KEY (idrol) REFERENCES rol(idrol));";
+  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(idusuario INTEGER PRIMARY KEY AUTOINCREMENT, uusuario VARCHAR(255) NOT NULL, ucorreo VARCHAR(255) NOT NULL, urut VARCHAR(20), utelefono INTEGER NOT NULL, ufechanac DATE NOT NULL, ucontrasena VARCHAR(255) NOT NULL, uimagen blob , idrol integer NOT NULL, FOREIGN KEY (idrol) REFERENCES rol(idrol));";
   tablaDireccion: string = "CREATE TABLE IF NOT EXISTS direccion(iddireccion INTEGER PRIMARY KEY AUTOINCREMENT, ddireccion VARCHAR(255) NOT NULL, uimagen VARCHAR(255), idusuario INTEGER NOT NULL, idcomuna INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario), FOREIGN KEY(idcomuna) REFERENCES comuna(idcomuna));"
-  tablaZapatilla: string = "CREATE TABLE IF NOT EXISTS zapatilla(idzapatilla INTEGER PRIMARY KEY AUTOINCREMENT, znombre VARCHAR(255) NOT NULL, zfoto VARCHAR(255) NOT NULL, zprecio INTEGER NOT NULL, zstock INTEGER NOT NULL, zestado BOOLEAN DEFAULT FALSE, ztalla INTEGER NOT NULL, idmarca INTEGER NOT NULL, FOREIGN KEY (idmarca) REFERENCES marca(idmarca));";
+  tablaZapatilla: string = "CREATE TABLE IF NOT EXISTS zapatilla(idzapatilla INTEGER PRIMARY KEY AUTOINCREMENT, znombre VARCHAR(255) NOT NULL, zfoto blob NOT NULL, zprecio INTEGER NOT NULL, zestado BOOLEAN DEFAULT FALSE, idmarca INTEGER NOT NULL, FOREIGN KEY (idmarca) REFERENCES marca(idmarca));";
   tablaCompra: string = "CREATE TABLE IF NOT EXISTS compra(idcompra INTEGER PRIMARY KEY AUTOINCREMENT, cfechaventa DATE NOT NULL, ctotal INTEGER NOT NULL, cestatus VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario));";
   tablaDetalle: string = "CREATE TABLE IF NOT EXISTS detalle(iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, dcantidad INTEGER NOT NULL, dsubtotal INTEGER NOT NULL, idcompra INTEGER NOT NULL, idzapatilla INTEGER NOT NULL, FOREIGN KEY(idcompra) REFERENCES compra(idcompra), FOREIGN KEY(idzapatilla) REFERENCES zapatilla(idzapatilla));";
+  tablaTalla: string = "CREATE TABLE IF NOT EXISTS talla(idtalla INTEGER PRIMARY KEY AUTOINCREMENT, idzapatilla INTEGER NOT NULL, tstock INTEGER NOT NULL, ttalla INTEGER NOT NULL, FOREIGN KEY(idzapatilla) REFERENCES zapatilla (idzapatilla));";
 
   //registro Marca
   registroMarca: string = "INSERT or IGNORE INTO marca(idmarca, mnombre) VALUES(1,'Adidas');";
@@ -84,6 +85,10 @@ export class ServicesbdService {
 
   listaDireccion = new BehaviorSubject([]);
 
+  listaZapatilla = new BehaviorSubject([]);
+
+  listaTalla = new BehaviorSubject([]);
+
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private nativeStorage: NativeStorage) { 
@@ -92,7 +97,7 @@ export class ServicesbdService {
   crearBD(){
     this.platform.ready().then(()=>{
       this.sqlite.create({
-        name: 'bdzapfast.db',
+        name: 'bdzapfastt.db',
         location: 'default'
       }).then((bd:SQLiteObject)=>{
         this.database = bd;
@@ -115,6 +120,7 @@ export class ServicesbdService {
       await this.database.executeSql(this.tablaZapatilla, []);
       await this.database.executeSql(this.tablaCompra, []);
       await this.database.executeSql(this.tablaDetalle, []);
+      await this.database.executeSql(this.tablaTalla, []);
 
       //Tabla Marca
       await this.database.executeSql(this.registroMarca, []);
@@ -163,6 +169,9 @@ export class ServicesbdService {
       this.seleccionarRol();
       this.seleccionarComuna();
       this.seleccionarUsuario();
+      this.seleccionarMarca();
+      this.seleccionarZapatilla();
+      this.seleccionarTalla();
     }catch(e){
       this.presentAlert('Crear BD', 'Error: ' + JSON.stringify(e));
     }
@@ -182,6 +191,12 @@ export class ServicesbdService {
   }
   fetchDireccion(): Observable<Comuna[]>{
     return this.listaDireccion.asObservable();
+  }
+  fetchZapatilla(): Observable<Zapatilla[]>{
+    return this.listaZapatilla.asObservable();
+  }
+  fetchTalla(): Observable<Talla[]>{
+    return this.listaTalla.asObservable();
   }
   fetchTipoUsuario(): Observable<Tipousuario[]>{
     return this.listaTipoUsuario.asObservable();
@@ -235,7 +250,7 @@ export class ServicesbdService {
       if (res.rows.length > 0){
         for (var i=0; i < res.rows.length; i++) {
           items.push({
-            idRol: res.rows.item(i).idRol,
+            idrol: res.rows.item(i).idrol,
             rnombre: res.rows.item(i).rnombre,
             rtipo: res.rows.item(i).rtipo
           });
@@ -243,6 +258,76 @@ export class ServicesbdService {
       }
       this.listaRol.next(items as any);
     })
+  }
+
+  seleccionarZapatilla(){
+    return this.database.executeSql('SELECT z.idzapatilla, z.znombre, z.zfoto, z.zprecio, z.zestado, m.idmarca, m.mnombre, GROUP_CONCAT(t.ttalla) as tallas, GROUP_CONCAT(t.tstock) as stocks FROM zapatilla z JOIN marca m ON z.idmarca=m.idmarca LEFT JOIN talla t ON z.idzapatilla = t.idzapatilla GROUP BY z.idzapatilla', []).then(res=>{
+      let items: Zapatilla[] = [];
+      if (res.rows.length > 0){
+        for (var i=0; i< res.rows.length; i++){
+          const tallasArray = res.rows.item(i).tallas ? res.rows.item(i).tallas.split(',') : [];
+          const stocksArray = res.rows.item(i).stocks ? res.rows.item(i).stocks.split(',') : [];
+
+          const tallasStock = tallasArray.map((talla : string, index: number)=>{
+            return { talla: talla, stock: stocksArray[index]};
+          });
+
+          items.push({
+            idzapatilla: res.rows.item(i).idzapatilla,
+            znombre: res.rows.item(i).znombre,
+            zfoto: res.rows.item(i).zfoto,
+            zprecio: res.rows.item(i).zprecio,
+            idmarca: res.rows.item(i).idmarca,
+            mnombre: res.rows.item(i).mnombre,
+            tallas: tallasStock
+          });
+        }
+      }
+      this.listaZapatilla.next(items as any);
+    })
+  }
+
+  seleccionarZapaId(id: string){
+    return this.database.executeSql('SELECT z.idzapatilla, z.znombre, z.zfoto, z.zprecio, z.zestado, m.idmarca, m.mnombre, GROUP_CONCAT(t.ttalla) as tallas, GROUP_CONCAT(t.tstock) as stocks FROM zapatilla z JOIN marca m ON z.idmarca=m.idmarca LEFT JOIN talla t ON z.idzapatilla = t.idzapatilla WHERE z.idzapatilla = ? GROUP BY z.idzapatilla', [id]).then(res=>{
+      let item: Zapatilla | null = null;
+
+      if (res.rows.length > 0){
+        const tallasArray = res.rows.item(0).tallas ? res.rows.item(0).tallas.split(',') : [];
+        const stocksArray = res.rows.item(0).stocks ? res.rows.item(0).stocks.split(',') : [];
+
+        const tallasStock = tallasArray.map((talla : string, index: number)=>{
+          return { talla: talla, stock: stocksArray[index]};
+          });
+
+          item = {
+            idzapatilla: res.rows.item(0).idzapatilla,
+            znombre: res.rows.item(0).znombre,
+            zfoto: res.rows.item(0).zfoto,
+            zprecio: res.rows.item(0).zprecio,
+            idmarca: res.rows.item(0).idmarca,
+            mnombre: res.rows.item(0).mnombre,
+            tallas: tallasStock
+          };
+      }
+      return item;
+    })
+  }
+
+  seleccionarTalla(){
+    return this.database.executeSql('SELECT * FROM talla', []).then(res=>{
+      let items: Talla[] = [];
+      if (res.rows.length > 0){
+        for (var i=0; i<res.rows.length; i++){
+          items.push({
+            idtalla: res.rows.item(i).idtalla,
+            idzapatilla: res.rows.item(i).idzapatilla,
+            tstock: res.rows.item(i).tstock,
+            ttalla: res.rows.item(i).ttalla
+          })
+        }
+      }
+      this.listaTalla.next(items as any);
+    }) 
   }
 
   seleccionarUsuario(){
@@ -263,6 +348,23 @@ export class ServicesbdService {
         }
       }
       this.listaUsuario.next(items as any);
+    })
+  }
+
+  seleccionarDireccion(){
+    return this.database.executeSql('SELECT * FROM direccion', []).then(res=>{
+      let items: Direccion[] = [];
+      if (res.rows.length > 0){
+        for (var i=0; i < res.rows.length; i++) {
+          items.push({
+            iddireccion: res.rows.item(i).iddireccion,
+            ddireccion: res.rows.item(i).ddireccion,
+            idusuario: res.rows.item(i).idusuario,
+            idcomuna: res.rows.item(i).idcomuna
+          });
+        }
+      }
+      this.listaDireccion.next(items as any);
     })
   }
 
@@ -296,13 +398,42 @@ export class ServicesbdService {
 
   insertarDireccion(nombre:string, idUsu:string, idComu:string){
     return this.database.executeSql('INSERT INTO direccion (ddireccion, idUsuario, idComuna) VALUES (?,?,?)', [nombre, idUsu, idComu]).then(res=>{
+      this.seleccionarDireccion();
     }).catch(e=>{
       this.presentAlert('Insertar', 'Error: ' + JSON.stringify(e));
     })
   }
 
+  insertarZapatilla(nombre:string,imagen:any,precio:number, idmarca:string){
+    return this.database.executeSql('INSERT INTO zapatilla (znombre, zfoto, zprecio, zestado, idmarca) VALUES (?,?,?,FALSE,?)', [nombre, imagen, precio, idmarca]).then(res=>{
+      const idZapatilla = res.insertId;
+      this.presentAlert("Registrar", "Zapatilla Registrada");
+      this.seleccionarZapatilla();
+      return idZapatilla;
+    }).catch(e=>{
+      this.presentAlert('Insertar', 'Error: ' + JSON.stringify(e));
+    })
+  }
+
+  insertarTalla( idZapatilla: string, stock: number, talla:string){
+    return this.database.executeSql('INSERT INTO talla(idzapatilla, tstock, ttalla) VALUES (?,?,?)', [idZapatilla, stock, talla]).then(res =>{
+      this.seleccionarTalla();
+    })
+  }
+
   insertarUsuario(uusuario:string, ucorreo:string, urut:string, utelefono:string, ufechanac:string, ucontrasena:string){
     return this.database.executeSql('INSERT INTO usuario(uusuario, ucorreo, urut, utelefono, ufechanac, ucontrasena, idrol) VALUES (?,?,?,?,?,?,2)', [uusuario, ucorreo, urut, utelefono, ufechanac, ucontrasena]).then(res=>{
+      const idUsuario = res.insertId;
+      this.presentAlert("Registrar", "Usuario Registrado");
+      this.seleccionarUsuario();
+      return idUsuario;
+    }).catch(e=>{
+      this.presentAlert('Registrar', 'Error: ' + JSON.stringify(e));
+    })
+  }
+
+  insertarUsuarioAdmin(uusuario:string, ucorreo:string, urut:string, utelefono:string, ufechanac:string, ucontrasena:string){
+    return this.database.executeSql('INSERT INTO usuario(uusuario, ucorreo, urut, utelefono, ufechanac, ucontrasena, idrol) VALUES (?,?,?,?,?,?,3)', [uusuario, ucorreo, urut, utelefono, ufechanac, ucontrasena]).then(res=>{
       const idUsuario = res.insertId;
       this.presentAlert("Registrar", "Usuario Registrado");
       this.seleccionarUsuario();

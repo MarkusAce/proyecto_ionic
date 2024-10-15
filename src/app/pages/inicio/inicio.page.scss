@@ -36,9 +36,30 @@ ion-toolbar{
 .agrandar-icono{
     font-size: 35px;
 }
-.centrar{
-    text-align: center;
-}
+
 .arreglar-lista{
     margin-top: 3px;
+}
+
+.contenedor-cards{
+    margin: auto;
+    width: 90%;
+    background-color: black;
+    border-radius: 10px;
+    
+}
+
+.margin-auto{
+    margin: auto;
+}
+
+.tamano-zapatilla{
+    width: 85%;
+    height: 85%;
+}
+.letras-negrita2{
+    font-weight: 500;
+}
+.margin-top{
+    margin-top: 10px;
 }

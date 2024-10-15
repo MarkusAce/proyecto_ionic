@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
@@ -12,6 +12,20 @@ export class ZapatillasPage implements OnInit {
   idRol: string = '';
   opaco: boolean = false;
   terminoBusqueda: string = "";
+
+  arregloZapatillas: any = [
+    {
+      id: '',
+      nombre: '',
+      foto: '',
+      precio: '',
+      stock: '',
+      estado: '',
+      talla: '',
+      idmarca:'',
+      mnombre: ''
+    }
+  ]
 
   constructor(private router: Router, private bd: ServicesbdService) { }
 
@@ -29,9 +43,23 @@ export class ZapatillasPage implements OnInit {
         });
       }
     });
+
+    this.bd.dbState().subscribe(data=>{
+      if(data){
+        this.bd.fetchZapatilla().subscribe(res=>{
+          this.arregloZapatillas = res;
+        })
+      }
+    })
+
   }
-  irProducto(){
-    this.router.navigate(['/producto'])
+  irProducto(idzapatilla: string){
+    let navigationExtras: NavigationExtras = {
+      state: {
+        id: idzapatilla
+      }
+    }
+    this.router.navigate(['/producto'], navigationExtras)
   }
   irInicio(){
     this.router.navigate(['/inicio'])

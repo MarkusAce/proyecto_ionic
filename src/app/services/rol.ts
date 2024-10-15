@@ -1,5 +1,5 @@
 export class Rol {
-    idRol!: string;
+    idrol!: string;
     rnombre!: string;
     rtipo!: string;
 

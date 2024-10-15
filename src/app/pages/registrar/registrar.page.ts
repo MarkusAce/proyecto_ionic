@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder,FormGroup, ValidationErrors, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Comuna } from 'src/app/services/comuna';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
@@ -21,6 +20,8 @@ export class RegistrarPage implements OnInit {
 
   idUsuario: string = '';
   idRol: string = '';
+
+  nombreRol: string = '';
   
   constructor(private router: Router, private formBuilder: FormBuilder, private bd: ServicesbdService) { }
 
@@ -60,6 +61,13 @@ export class RegistrarPage implements OnInit {
         });
       }
     });
+
+    if (this.idRol =='1'){
+      this.nombreRol = 'Usuario';
+    }
+    if(this.idRol =='3'){
+      this.nombreRol = 'Administrador';
+    }
   }
 
    validarUsuario(control: AbstractControl): Promise<ValidationErrors | null>{
@@ -248,6 +256,25 @@ export class RegistrarPage implements OnInit {
       this.bd.insertarUsuario(usuario, email, rut, telefono, fechanac, contrasena).then(idUsuario =>{
         this.bd.insertarDireccion(direccion, idUsuario, idComuna).then(()=>{
           this.router.navigate(['/login']);
+        })
+      })
+    }
+  }
+
+  validarRegistroAdmin(){
+    if (this.registroForm.valid){
+      const usuario = this.registroForm.get('usuario1')?.value;
+      const email = this.registroForm.get('email1')?.value;
+      const rut = this.registroForm.get('rut')?.value;
+      const telefono = this.registroForm.get('telefono')?.value;
+      const fechanac = this.registroForm.get('fechanac')?.value;
+      const idComuna = this.registroForm.get('comuna')?.value;
+      const direccion = this.registroForm.get('direccion')?.value;
+      const contrasena = this.registroForm.get('contrasena1')?.value;
+      
+      this.bd.insertarUsuarioAdmin(usuario, email, rut, telefono, fechanac, contrasena).then(idUsuario =>{
+        this.bd.insertarDireccion(direccion, idUsuario, idComuna).then(()=>{
+        this.router.navigate(['/perfil']);
         })
       })
     }

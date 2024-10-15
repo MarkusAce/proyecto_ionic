@@ -14,7 +14,7 @@ ion-input{
 }
 
 .contenedor-pag{
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -24,7 +24,7 @@ ion-input{
 
 .contenedor-agregar{
     width: 85%;
-    height: 95%;
+    min-height: 95%;
     background-color: #D03739;
 }
 
@@ -65,10 +65,60 @@ ion-input{
 }
 
 .contenedor-imagen{
-width: 55%;
+display: flex;
+justify-content: center;
+align-items: center;
+width: 200px;
+height: 200px;
+overflow: hidden;
 }
 
 .tamano-imagen{
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     height: auto;
+    width: auto;
+}
+
+.espacio{
+    margin-bottom: 5px;
+}
+.espacio-arriba{
+    margin-top: 15px;
+}
+
+.selecmarca{
+    --background: white;
+    color: black;
+    --highlight-color-valid: black;
+    --border-color: white;
+    --color-focused: black;
+    
+}
+
+.color-negro{
+    color: black;
+}
+.negrita{
+    font-weight: 500;
+}
+
+.linea{
+    border-top: 1px solid black;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.contenedor-flex{
+    display: flex;
+    justify-content: space-between;
+}
+
+.contenedor-talla{
+    width: 40%;
+}
+
+.espacio-arriba2{
+    margin-top: 5px;
 }

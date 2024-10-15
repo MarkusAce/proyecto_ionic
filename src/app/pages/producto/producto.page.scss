@@ -18,7 +18,7 @@ ion-item{
 
 .linea{
     width: 85%;
-    height: 75%;
+    min-height: 80%;
     border: 3px solid white;
 }
 
@@ -34,7 +34,7 @@ ion-item{
     margin: auto;
     width: 95%;
     background-color: black;
-    height: 95%;
+    min-height: 95%;
     margin-top: 10px;
 }
 
@@ -42,10 +42,8 @@ ion-item{
     text-align: center;
 }
 
-.tamano-zapatilla{
-    width: 85%;
-    height: 85%;
-    margin-top: 10px;
+.letras-negrita{
+    font-weight: 600;
 }
 
 .letras-negrita2{
@@ -69,6 +67,31 @@ ion-item{
     width: 80%;
 }
 
-.espacio-arriba{
-    margin-bottom: 40px;
+.espacio{
+    margin-bottom: 10px;
 }
+
+.espacio2{
+    margin-bottom: 5px;
+}
+.tamano-zapatilla{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    height: auto;
+    width: auto;
+}
+
+.margin-top{
+    margin-top: 10px;
+}
+
+.contenedor-imagen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    }
+

@@ -38,4 +38,8 @@ export class PerfilPage implements OnInit {
     this.bd.presentAlert('Cerrando Sesion', 'Usted ha cerrado sesión')
     this.router.navigate(['/inicio']);
   }
+  
+  agregarUsuario(){
+    this.router.navigate(['/registrar'])
+  }
 }

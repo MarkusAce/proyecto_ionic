@@ -36,14 +36,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
   },
   {
-    path: 'zapatillasad',
-    loadChildren: () => import('./pages/zapatillasad/zapatillasad.module').then( m => m.ZapatillasadPageModule)
-  },
-  {
-    path: 'listacomprasad',
-    loadChildren: () => import('./pages/listacomprasad/listacomprasad.module').then( m => m.ListacomprasadPageModule)
-  },
-  {
     path: 'editarzapa',
     loadChildren: () => import('./pages/editarzapa/editarzapa.module').then( m => m.EditarzapaPageModule)
   },

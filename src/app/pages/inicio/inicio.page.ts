@@ -31,4 +31,11 @@ export class InicioPage implements OnInit {
       }
     });
   }
+
+
+  irPagina(){
+    this.router.navigate(['/producto'])
+  }
 }
+
+
