@@ -28,7 +28,7 @@
             <p *ngIf="registroForm.get('email1')?.hasError('emailExiste')" class="color-negro negrita">El correo que desea registrar ya existe.</p>
           </div>
 
-          <ion-input formControlName="rut" label="Rut" (blur)="registroForm.get('rut')?.markAsTouched()" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su rut. Ej: 11.111.111-1"></ion-input>
+          <ion-input formControlName="rut" label="Rut" (blur)="registroForm.get('rut')?.markAsTouched()" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su rut. Ej: 1.111.111-1"></ion-input>
             <div *ngIf="registroForm.get('rut')?.invalid && registroForm.get('rut')?.touched">
               <p *ngIf="registroForm.get('rut')?.hasError('required')" class="color-negro negrita">El rut no puede estar vacio.</p>
               <p *ngIf="registroForm.get('rut')?.hasError('rutInvalido')" class="color-negro negrita">Por favor ingrese un rut valido.</p>

@@ -18,12 +18,12 @@
 
   <br>
 
-  <div class="contenedor-cards contenedor-flex" (click)="irPagina()">
-    <div class="margin-auto centrar"><img src="assets/zapatilla.png" alt="" class="tamano-zapatilla"></div>
+  <div *ngFor="let zapatilla of arregloZapatillas" class="contenedor-cards contenedor-flex espacio" (click)="irProducto(zapatilla.idzapatilla)">
+    <div class="margin-auto centrar contenedor-imagen"><img [src]="zapatilla.zfoto" alt="" class="tamano-imagen margin-top"></div>
     <div>
-      <p class="letras-negrita2 margin-top">RDB Game Hombre Celeste</p>
-      <p class="letras-negrita2">Puma</p>
-      <p class="letras-negrita2">$33.590</p>
+      <p class="letras-negrita2 margin-top">{{zapatilla.znombre}}</p>
+      <p class="letras-negrita2">{{zapatilla.mnombre}}</p>
+      <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}}</p>
     </div>
   </div>
 

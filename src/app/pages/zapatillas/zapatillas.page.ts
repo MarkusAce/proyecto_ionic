@@ -10,7 +10,6 @@ import { ServicesbdService } from 'src/app/services/servicesbd.service';
 export class ZapatillasPage implements OnInit {
   idUsuario: string = '';
   idRol: string = '';
-  opaco: boolean = false;
   terminoBusqueda: string = "";
 
   arregloZapatillas: any = [
@@ -64,18 +63,19 @@ export class ZapatillasPage implements OnInit {
   irInicio(){
     this.router.navigate(['/inicio'])
   }
-  irEditar(){
-    this.router.navigate(['/editarzapa'])
+  irEditar(idzapatilla: string){
+    let navigationExtras: NavigationExtras = {
+      state: {
+        id: idzapatilla
+      }
+    }
+    this.router.navigate(['/editarzapa'], navigationExtras)
   }
   irAgregarZapa(){
     this.router.navigate(['/agregarzapa'])
   }
   irAgregarMarca(){
     this.router.navigate(['/agregarmarca'])
-  }
-  ocultar(){
-    this.bd.presentAlert('Exito', 'El producto ha sido deshabilitado')
-    this.opaco = !this.opaco;
   }
 
 }

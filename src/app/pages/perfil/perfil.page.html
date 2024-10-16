@@ -15,41 +15,49 @@
   <div class="contenedor-perfil margin-auto bordear">
     <div class="centrar">
       <hr>
-      <img src="assets/imgperfil.png" alt="" class="tamano-perfil">
+      <img *ngIf="!datosUsuario.uimagen" src="assets/imgperfil.png" alt="" class="tamano-perfil">
+      <img *ngIf="datosUsuario.uimagen" [src]="datosUsuario.uimagen" alt="" class="tamano-perfil">
     </div>
 
     <hr>
 
     <div class="contenedor-datos margin-auto">
-      <div class="contenedor-flex espacio-precio letra-grande">
-        <p class="negrita2">Usuario:</p>
-        <p class="negrita">&nbsp;MarkusAce</p>
+      
+      <div class="letra-grande">
+        <ion-label class="custom-label">Usuario:</ion-label>
+        <ion-input class="custom-input" disabled="true" [value]="datosUsuario.uusuario"></ion-input>
       </div>
-      <div class="contenedor-flex letra-grande espacio-precio">
-        <p class="negrita2">Correo:</p>
-        <p class="negrita">&nbsp;correo&#64;gmail.com</p>
+      <div class="letra-grande">
+        <ion-label class="custom-label">Correo:</ion-label>
+        <ion-input class="custom-input" disabled="true" [value]="datosUsuario.ucorreo"></ion-input>
       </div>
-      <div class="contenedor-flex letra-grande espacio-precio">
-        <p class="negrita2">Rut:</p>
-        <p class="negrita margin-top">&nbsp;20.844.787-4</p>
+      <div class="letra-grande">
+        <ion-label class="custom-label">Rut:</ion-label>
+        <ion-input class="custom-input" disabled="true" [value]="datosUsuario.urut | rut"></ion-input>
       </div>
-      <div class="contenedor-flex letra-grande espacio-precio">
-        <p class="negrita2">Telefono:</p>
-        <p class="negrita margin-top">&nbsp;987762514</p>
+      <div class="letra-grande">
+        <ion-label class="custom-label">Telefono:</ion-label>
+        <ion-input class="custom-input" disabled="true" [value]="datosUsuario.utelefono"></ion-input>
       </div>
-      <div class="contenedor-flex letra-grande espacio-precio">
-        <p class="negrita2">Direccion:</p>
-        <p class="negrita margin-top">&nbsp;Calle 123</p>
+      <div class="letra-grande">
+        <ion-label class="custom-label">Direccion:</ion-label>
+        <ion-input class="custom-input" disabled="true" [value]="datosUsuario.ddireccion"></ion-input>
       </div>
-      <div class="contenedor-flex letra-grande espacio-precio">
-        <p class="negrita2">Fecha de nacimiento:</p>
-        <p class="negrita margin-top">&nbsp;21/09/2001</p>
+      <div class="letra-grande">
+        <ion-label class="custom-label">Fecha de nacimiento:</ion-label>
+        <ion-input class="custom-input" disabled="true" [value]="datosUsuario.ufechanac"></ion-input>
       </div>
 
       <div class="centrar espacio-abajo">
         <ion-button (click)="cerrarSesion()">
           <ion-icon slot="start" name="log-out"></ion-icon>
           Cerrar sesion
+        </ion-button>
+      </div>
+      <div class="centrar espacio-abajo">
+        <ion-button>
+          <ion-icon slot="start" name="pencil"></ion-icon>
+          Editar Perfil
         </ion-button>
       </div>
       <div class="centrar espacio-abajo">

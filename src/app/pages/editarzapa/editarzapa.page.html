@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <app-barranav titulo="Editar" [tipousuario]="idRol"></app-barranav>
+  <app-barranav titulo="Editar Zapatilla" [tipousuario]="idRol"></app-barranav>
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -11,59 +11,105 @@
 
       
       <div class="contenedor-input margin-auto">
-        <ion-input label="Nombre zapatilla" label-placement="floating" fill="outline" type="text" placeholder="Ingrese el nombre de la zapatilla." [(ngModel)]="zapatilla"></ion-input>
+        <form [formGroup]="modZapaForm" (ngSubmit)="validarZapatilla()">
+          <ion-input formControlName="nombre" label="Nombre zapatilla" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese el nombre de la zapatilla."></ion-input>
+          <div *ngIf="modZapaForm.get('nombre')?.invalid && (modZapaForm.get('nombre')?.dirty) || modZapaForm.get('nombre')?.touched">
+            <p *ngIf="modZapaForm.get('nombre')?.hasError('required')" class="color-negro negrita">El nombre de la Zapatilla no puede estar vacio.</p>
+          </div>
 
-        <br>
+          <ion-input formControlName="precio" label="Precio" label-placement="floating" fill="outline" type="Number" class="espacio" placeholder="Ingrese el precio."></ion-input>
+          <div *ngIf="modZapaForm.get('precio')?.invalid && (modZapaForm.get('precio')?.dirty) || modZapaForm.get('precio')?.touched">
+            <p *ngIf="modZapaForm.get('precio')?.hasError('required')" class="color-negro negrita">El precio no puede estar vacio.</p>
+            <p *ngIf="modZapaForm.get('precio')?.hasError('precioInvalido')" class="color-negro negrita">El precio no puede ser menor a 1.</p>
+          </div>
 
-        <ion-input label="Cantidad" label-placement="floating" fill="outline" type="Number" placeholder="Ingrese la cantidad." [(ngModel)]="cantidad"></ion-input>
+          <div class="margin-auto espacio">
+            <ion-list class="sin-padding">
+              <ion-item class="fondo">
+                <ion-select formControlName="marca" aria-label="Marca" interface="action-sheet" placeholder="Seleccione una Marca"  class="selecmarca">
+                  <ion-select-option *ngFor="let marca of arregloMarcas" [value]="marca.idmarca"> {{marca.mnombre}} </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-list>
+          </div>
+          <div *ngIf="modZapaForm.get('marca')?.invalid && (modZapaForm.get('marca')?.dirty) || modZapaForm.get('marca')?.touched">
+            <p *ngIf="modZapaForm.get('marca')?.hasError('required')" class="color-negro negrita">Debe seleccionar una marca.</p>
+          </div>
 
-        <br>
+          <div>
+            <p>Por favor, ingrese la cantidad por talla:</p>
+            <div class="contenedor-flex espacio">
+              <ion-input formControlName="talla1" class="contenedor-talla" type="number" fill="outline" label="Talla 7.5" label-placement="floating" placeholder="25.5cm"></ion-input>
+              <ion-input formControlName="talla2" class="contenedor-talla" type="number" fill="outline" label="Talla 8" label-placement="floating" placeholder="26cm"></ion-input>
+            </div>
+            <div *ngIf="modZapaForm.get('talla1')?.invalid && (modZapaForm.get('talla1')?.dirty) || modZapaForm.get('talla1')?.touched">
+              <p *ngIf="modZapaForm.get('talla1')?.hasError('required')" class="color-negro negrita">La cantidad no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla1')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+            <div *ngIf="modZapaForm.get('talla2')?.invalid && (modZapaForm.get('talla2')?.dirty) || modZapaForm.get('talla2')?.touched">
+              <p *ngIf="modZapaForm.get('talla2')?.hasError('required')" class="color-negro negrita">La talla no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla2')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+            <div class="linea"></div>
+            <div class="contenedor-flex espacio">
+              <ion-input formControlName="talla3" class="contenedor-talla" type="number" fill="outline" label="Talla 8.5" label-placement="floating" placeholder="26.5cm"></ion-input>
+              <ion-input formControlName="talla4" class="contenedor-talla" type="number" fill="outline" label="Talla 9" label-placement="floating" placeholder="27cm"></ion-input>
+            </div>
+            <div *ngIf="modZapaForm.get('talla3')?.invalid && (modZapaForm.get('talla3')?.dirty) || modZapaForm.get('talla3')?.touched">
+              <p *ngIf="modZapaForm.get('talla3')?.hasError('required')" class="color-negro negrita">La cantidad no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla3')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+            <div *ngIf="modZapaForm.get('talla4')?.invalid && (modZapaForm.get('talla4')?.dirty) || modZapaForm.get('talla4')?.touched">
+              <p *ngIf="modZapaForm.get('talla4')?.hasError('required')" class="color-negro negrita">La talla no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla4')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+            <div class="linea"></div>
+            <div class="contenedor-flex espacio">
+              <ion-input formControlName="talla5" class="contenedor-talla" type="number" fill="outline" label="Talla 9.5" label-placement="floating" placeholder="27.5cm"></ion-input>
+              <ion-input formControlName="talla6" class="contenedor-talla" type="number" fill="outline" label="Talla 10" label-placement="floating" placeholder="28cm"></ion-input>
+            </div>
+            <div *ngIf="modZapaForm.get('talla5')?.invalid && (modZapaForm.get('talla5')?.dirty) || modZapaForm.get('talla5')?.touched">
+              <p *ngIf="modZapaForm.get('talla5')?.hasError('required')" class="color-negro negrita">La cantidad no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla5')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+            <div *ngIf="modZapaForm.get('talla6')?.invalid && (modZapaForm.get('talla6')?.dirty) || modZapaForm.get('talla6')?.touched">
+              <p *ngIf="modZapaForm.get('talla6')?.hasError('required')" class="color-negro negrita">La talla no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla6')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+            <div class="linea"></div>
+            <div class="contenedor-flex espacio">
+              <ion-input formControlName="talla7" class="contenedor-talla" type="number" fill="outline" label="Talla 10.5" label-placement="floating" placeholder="28.5cm"></ion-input>
+              <ion-input formControlName="talla8" class="contenedor-talla" type="number" fill="outline" label="Talla 11" label-placement="floating" placeholder="29cm"></ion-input>
+            </div>
+            <div *ngIf="modZapaForm.get('talla7')?.invalid && (modZapaForm.get('talla7')?.dirty) || modZapaForm.get('talla7')?.touched">
+              <p *ngIf="modZapaForm.get('talla7')?.hasError('required')" class="color-negro negrita">La cantidad no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla7')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+            <div *ngIf="modZapaForm.get('talla8')?.invalid && (modZapaForm.get('talla8')?.dirty) || modZapaForm.get('talla8')?.touched">
+              <p *ngIf="modZapaForm.get('talla8')?.hasError('required')" class="color-negro negrita">La talla no puede estar vacia.</p>
+              <p *ngIf="modZapaForm.get('talla8')?.hasError('tallaInvalida')" class="color-negro negrita">La cantidad no puede ser números negativos.</p>
+            </div>
+          </div>
 
-        <div class="margin-auto">
-          <ion-list class="sin-padding">
-            <ion-item class="fondo">
-              <ion-select aria-label="Talla" interface="action-sheet" placeholder="Talla (US)" [(ngModel)]="talla">
-                <ion-select-option value="7.5">7.5 (25.5 cms)</ion-select-option>
-                <ion-select-option value="8">8 (26 cms)</ion-select-option>
-                <ion-select-option value="8.5">8.5 (26.5 cms)</ion-select-option>
-                <ion-select-option value="9">9 (27 cms)</ion-select-option>
-                <ion-select-option value="9.5">9.5 (27.5 cms)</ion-select-option>
-                <ion-select-option value="10">10 (28 cms)</ion-select-option>
-                <ion-select-option value="10.5">10.5 (28.5 cms)</ion-select-option>
-                <ion-select-option value="11">11 (29 cms)</ion-select-option>
-                <ion-select-option value="11.5">11.5 (29.5 cms)</ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-list>
-        </div>
+          <div class="contenedor-input margin-auto centrar espacio">
+            <ion-button class="color" (click)="takePicture()">
+              <ion-icon slot="start" name="add"></ion-icon>
+              Agregar imagen
+            </ion-button>
+          </div>
+          <div *ngIf="imagen">
+            <div class="contenedor-imagen margin-auto centrar"><img [src]="imagen" alt="Sin imagen" class="tamano-imagen"></div>
+          </div>
 
-        <br>
+          <div *ngIf="modZapaForm.hasError('tallasInvalidas') && (modZapaForm.get('talla8')?.dirty)">
+            <p class="color-negro negrita espacio-arriba2">Todas las tallas no pueden ser 0.</p>
+          </div>
 
-        <div class="margin-auto">
-          <ion-list class="sin-padding">
-            <ion-item class="fondo">
-              <ion-select aria-label="Marca" interface="action-sheet" placeholder="Marca" [(ngModel)]="marca">
-                <ion-select-option value="Puma">Puma</ion-select-option>
-                <ion-select-option value="Adidas">Adidas</ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-list>
-        </div>
+          <div class="contenedor-input margin-auto centrar espacio"><ion-button type="submit" [disabled]="modZapaForm.invalid" class="color"><ion-icon slot="start" name="Pencil"></ion-icon>Editar</ion-button></div>
+        </form>
 
-        <br>
-
-        Ingrese la imagen de la zapatilla:
-        <div class="contenedor-imagen margin-auto centrar"><img src="assets/sinimagen.png" alt="" class="tamano-imagen"></div>
       </div>
 
-      <br>
-
-      <div class="contenedor-input margin-auto centrar">
-        <ion-button class="color" (click)="validarZapatilla()">
-          <ion-icon slot="start" name="Pencil"></ion-icon>
-          Editar
-        </ion-button>
-      </div>
     </div>
   </div>
 

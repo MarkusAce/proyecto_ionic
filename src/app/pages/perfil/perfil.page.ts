@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
@@ -12,6 +11,8 @@ export class PerfilPage implements OnInit {
 
   idUsuario: string = '';
   idRol: string = '';
+
+  datosUsuario: any = {};
 
   
 
@@ -31,6 +32,12 @@ export class PerfilPage implements OnInit {
         });
       }
     });
+
+    this.bd.seleccionarUsuarioPorId(this.idUsuario).then(res =>{
+      this.datosUsuario = res;
+    }).catch(error =>{
+      this.bd.presentAlert('Error', 'Error al cargar los datos del usuario'+ JSON.stringify(error))
+    })
   }
   
   cerrarSesion(){

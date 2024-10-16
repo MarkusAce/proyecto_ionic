@@ -11,6 +11,7 @@ import { Rol } from './rol';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { Zapatilla } from './zapatilla';
 import { Talla } from './talla';
+import { Usuarioinfo } from './usuarioinfo';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class ServicesbdService {
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(idcomuna INTEGER PRIMARY KEY AUTOINCREMENT, comnombre VARCHAR(255) NOT NULL);";
   tablaMarca: string = "CREATE TABLE IF NOT EXISTS marca(idmarca INTEGER PRIMARY KEY AUTOINCREMENT,mnombre VARCHAR(255) NOT NULL);";
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(idusuario INTEGER PRIMARY KEY AUTOINCREMENT, uusuario VARCHAR(255) NOT NULL, ucorreo VARCHAR(255) NOT NULL, urut VARCHAR(20), utelefono INTEGER NOT NULL, ufechanac DATE NOT NULL, ucontrasena VARCHAR(255) NOT NULL, uimagen blob , idrol integer NOT NULL, FOREIGN KEY (idrol) REFERENCES rol(idrol));";
-  tablaDireccion: string = "CREATE TABLE IF NOT EXISTS direccion(iddireccion INTEGER PRIMARY KEY AUTOINCREMENT, ddireccion VARCHAR(255) NOT NULL, uimagen VARCHAR(255), idusuario INTEGER NOT NULL, idcomuna INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario), FOREIGN KEY(idcomuna) REFERENCES comuna(idcomuna));"
+  tablaDireccion: string = "CREATE TABLE IF NOT EXISTS direccion(iddireccion INTEGER PRIMARY KEY AUTOINCREMENT, ddireccion VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, idcomuna INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario), FOREIGN KEY(idcomuna) REFERENCES comuna(idcomuna));"
   tablaZapatilla: string = "CREATE TABLE IF NOT EXISTS zapatilla(idzapatilla INTEGER PRIMARY KEY AUTOINCREMENT, znombre VARCHAR(255) NOT NULL, zfoto blob NOT NULL, zprecio INTEGER NOT NULL, zestado BOOLEAN DEFAULT FALSE, idmarca INTEGER NOT NULL, FOREIGN KEY (idmarca) REFERENCES marca(idmarca));";
   tablaCompra: string = "CREATE TABLE IF NOT EXISTS compra(idcompra INTEGER PRIMARY KEY AUTOINCREMENT, cfechaventa DATE NOT NULL, ctotal INTEGER NOT NULL, cestatus VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario));";
   tablaDetalle: string = "CREATE TABLE IF NOT EXISTS detalle(iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, dcantidad INTEGER NOT NULL, dsubtotal INTEGER NOT NULL, idcompra INTEGER NOT NULL, idzapatilla INTEGER NOT NULL, FOREIGN KEY(idcompra) REFERENCES compra(idcompra), FOREIGN KEY(idzapatilla) REFERENCES zapatilla(idzapatilla));";
@@ -71,7 +72,9 @@ export class ServicesbdService {
   registroComuna32: string = "INSERT or IGNORE INTO comuna(idcomuna, comnombre) VALUES(32, 'Vitacura')"
 
   //registro Usuario
-  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', '999999999', '21/09/1990', 'Admin1234@', '3')"
+  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', '99999999', '21/09/1990', 'Admin1234@', '3')"
+
+  registroDireccion: string = "INSERT or IGNORE INTO direccion(iddireccion, ddireccion, idusuario, idcomuna) VALUES(1, 'La mejor calle 1234', 1000, 7)"
 
   listaMarca = new BehaviorSubject([]);
 
@@ -166,12 +169,16 @@ export class ServicesbdService {
       //tabla Usuario
       await this.database.executeSql(this.registroUsuario, []);
 
+      //tabla Direccion
+      await this.database.executeSql(this.registroDireccion, []);
+
       this.seleccionarRol();
       this.seleccionarComuna();
       this.seleccionarUsuario();
       this.seleccionarMarca();
       this.seleccionarZapatilla();
       this.seleccionarTalla();
+      this.seleccionarDireccion();
     }catch(e){
       this.presentAlert('Crear BD', 'Error: ' + JSON.stringify(e));
     }
@@ -343,11 +350,33 @@ export class ServicesbdService {
             utelefono: res.rows.item(i).utelefono,
             ufechanac: res.rows.item(i).ufechanac,
             ucontrasena: res.rows.item(i).ucontrasena,
+            uimagen: res.rows.item(i).uimagen,
             idrol: res.rows.item(i).idrol
           });
         }
       }
       this.listaUsuario.next(items as any);
+    })
+  }
+
+  seleccionarUsuarioPorId(id: string){
+    return this.database.executeSql('SELECT u.idusuario AS usuarioid, u.uusuario, u.ucorreo, u.urut, u.utelefono, d.ddireccion, u.ufechanac, u.ucontrasena, u.uimagen, u.idrol FROM usuario u JOIN direccion d ON u.idusuario = d.idusuario WHERE u.idusuario = ?', [id]).then(res=>{
+      let item: Usuarioinfo | null = null;
+      if (res.rows.length > 0){
+          item = {
+            idusuario: res.rows.item(0).usuarioid,
+            uusuario: res.rows.item(0).uusuario,
+            ucorreo: res.rows.item(0).ucorreo,
+            urut: res.rows.item(0).urut,
+            utelefono: res.rows.item(0).utelefono,
+            ddireccion: res.rows.item(0).ddireccion,
+            ufechanac: res.rows.item(0).ufechanac,
+            ucontrasena: res.rows.item(0).ucontrasena,
+            uimagen: res.rows.item(0).uimagen,
+            idrol: res.rows.item(0).idrol
+          };
+      }
+      return item;
     })
   }
 
@@ -378,12 +407,17 @@ export class ServicesbdService {
   }
 
   modificarMarca(id:string, nombre:string){
-    this.presentAlert("service", "ID: " + id);
     return this.database.executeSql('UPDATE marca SET mnombre = ? where idmarca = ?', [nombre, id]).then(res=>{
-      this.presentAlert("Modificar", "Noticia Modificar");
+      this.presentAlert("Modificar", "Marca Modificada");
       this.seleccionarMarca();
     }).catch(e =>{
       this.presentAlert("Error", "Error al modificar marca: " + JSON.stringify(e));
+    })
+  }
+
+  modificarZapatilla(id:string){
+    return this.database.executeSql('UPDATE zapatilla SET ', []).then(res =>{
+      
     })
   }
 

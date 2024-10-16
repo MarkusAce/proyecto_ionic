@@ -10,6 +10,7 @@ export class BarranavComponent  implements OnInit {
 
   @Input() titulo: string = "";
   @Input() tipousuario: string = "";
+  @Input() user: string = "";
   constructor(private router: Router) { }
 
   ngOnInit() {}

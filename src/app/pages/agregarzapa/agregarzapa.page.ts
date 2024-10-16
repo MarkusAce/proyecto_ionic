@@ -12,16 +12,6 @@ import { Camera, CameraResultType} from '@capacitor/camera'
 export class AgregarzapaPage implements OnInit {
 
   zapaForm!: FormGroup
-  zapatilla: string = '';
-  talla1: number = 0;
-  talla2: number = 0;
-  talla3: number = 0;
-  talla4: number = 0;
-  talla5: number = 0;
-  talla6: number = 0;
-  talla7: number = 0;
-  talla8: number = 0;
-  marca: string = '';
   idUsuario: string = '';
   idRol: string = '';
 

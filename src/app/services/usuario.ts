@@ -6,5 +6,6 @@ export class Usuario {
     utelefono!: string;
     ufechanac!: string;
     ucontrasena!: string;
+    uimagen!: any;
     idrol!: string;
 }

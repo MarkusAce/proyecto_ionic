@@ -13,7 +13,7 @@ ion-input{
 }
 
 .contenedor-pag{
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -23,7 +23,7 @@ ion-input{
 
 .contenedor-editar{
     width: 85%;
-    height: 95%;
+    min-height: 95%;
     background-color: #D03739;
 }
 
@@ -70,4 +70,51 @@ width: 55%;
 .tamano-imagen{
     width: 100%;
     height: auto;
+}
+
+.contenedor-imagen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+}
+    
+.tamano-imagen{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    height: auto;
+    width: auto;
+}
+
+.color-negro{
+    color: black;
+}
+.negrita{
+    font-weight: 500;
+}
+
+.linea{
+    border-top: 1px solid black;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.contenedor-flex{
+    display: flex;
+    justify-content: space-between;
+}
+
+.contenedor-talla{
+    width: 40%;
+}
+
+.espacio-arriba2{
+    margin-top: 5px;
+}
+
+.espacio{
+    margin-bottom: 5px;
 }

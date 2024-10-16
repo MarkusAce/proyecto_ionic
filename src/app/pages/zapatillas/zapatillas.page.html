@@ -113,11 +113,11 @@
         </div>
         <hr>
         <div class="centrar tamano-letras letras-negrita">
-          <p class="letras-negrita2">{{zapatilla.zprecio}} </p>
+          <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}} </p>
         </div>
       </div>
         <div *ngIf="idRol=='3'" class="contenedor-botones margin-auto contenedor-flex espacio-precio espacio2">
-          <ion-button class="boton-editar" (click)="irEditar()">
+          <ion-button class="boton-editar" (click)="irEditar(zapatilla.idzapatilla)">
             Editar
             <ion-icon slot="start" name="pencil"></ion-icon>
           </ion-button>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { PreciochilePipe } from 'src/app/pipes/preciochile.pipe';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
@@ -12,8 +13,22 @@ export class InicioPage implements OnInit {
   terminoBusqueda: string = "";
   idUsuario: string = '';
   idRol: string = '';
+
+  arregloZapatillas: any = [
+    {
+      id: '',
+      nombre: '',
+      foto: '',
+      precio: '',
+      stock: '',
+      estado: '',
+      talla: '',
+      idmarca:'',
+      mnombre: ''
+    }
+  ]
   
-  constructor(private router: Router, private activerouter: ActivatedRoute, private bd: ServicesbdService) {
+  constructor(private router: Router, private bd: ServicesbdService) {
    }
 
   ngOnInit() {
@@ -30,11 +45,23 @@ export class InicioPage implements OnInit {
         });
       }
     });
+
+    this.bd.dbState().subscribe(data=>{
+      if(data){
+        this.bd.fetchZapatilla().subscribe(res=>{
+          this.arregloZapatillas = res;
+        })
+      }
+    })
   }
 
-
-  irPagina(){
-    this.router.navigate(['/producto'])
+  irProducto(idzapatilla: string){
+    let navigationExtras: NavigationExtras = {
+      state: {
+        id: idzapatilla
+      }
+    }
+    this.router.navigate(['/producto'], navigationExtras)
   }
 }
 

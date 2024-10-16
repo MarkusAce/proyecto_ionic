@@ -70,7 +70,7 @@
       </div>
       <hr>
         <div class="centrar">
-          <p class="letras-negrita2 letras-grandes espacio">{{zapatillaSelec.zprecio}}</p>
+          <p class="letras-negrita2 letras-grandes espacio">{{zapatillaSelec.zprecio | preciochile}}</p>
         </div>
 
         <div class="contenedor-compra margin-auto centrar espacio"><ion-button type="submit" [disabled]="cantForm.invalid || cantSelec <=0" class="espacio"><ion-icon slot="start" name="cart"></ion-icon>Comprar</ion-button></div>
