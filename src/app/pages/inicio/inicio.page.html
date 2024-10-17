@@ -18,7 +18,7 @@
 
   <br>
 
-  <div *ngFor="let zapatilla of arregloZapatillas" class="contenedor-cards contenedor-flex espacio" (click)="irProducto(zapatilla.idzapatilla)">
+  <div *ngFor="let zapatilla of arregloFiltrado" class="contenedor-cards contenedor-flex espacio" (click)="irProducto(zapatilla.idzapatilla)">
     <div class="margin-auto centrar contenedor-imagen"><img [src]="zapatilla.zfoto" alt="" class="tamano-imagen margin-top"></div>
     <div>
       <p class="letras-negrita2 margin-top">{{zapatilla.znombre}}</p>

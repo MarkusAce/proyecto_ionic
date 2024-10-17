@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { PreciochilePipe } from 'src/app/pipes/preciochile.pipe';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
+import { Zapatilla } from 'src/app/services/zapatilla';
 
 @Component({
   selector: 'app-inicio',
@@ -14,19 +15,9 @@ export class InicioPage implements OnInit {
   idUsuario: string = '';
   idRol: string = '';
 
-  arregloZapatillas: any = [
-    {
-      id: '',
-      nombre: '',
-      foto: '',
-      precio: '',
-      stock: '',
-      estado: '',
-      talla: '',
-      idmarca:'',
-      mnombre: ''
-    }
-  ]
+  arregloZapatillas: Zapatilla[] = [];
+
+  arregloFiltrado: Zapatilla[] = [];
   
   constructor(private router: Router, private bd: ServicesbdService) {
    }
@@ -50,6 +41,7 @@ export class InicioPage implements OnInit {
       if(data){
         this.bd.fetchZapatilla().subscribe(res=>{
           this.arregloZapatillas = res;
+          this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
         })
       }
     })

@@ -39,7 +39,7 @@
           <ion-input formControlName="telefono" label="Telefono" label-placement="floating" fill="outline" class="espacio" type="number" placeholder="Ingrese su número Ej: 912341234"></ion-input>
             <div *ngIf="registroForm.get('telefono')?.invalid && (registroForm.get('telefono')?.dirty || registroForm.get('telefono')?.touched)">
               <p *ngIf="registroForm.get('telefono')?.hasError('required')" class="color-negro negrita">El teléfono no puede estar vacio.</p>
-              <p *ngIf="registroForm.get('telefono')?.hasError('pattern')" class="color-negro negrita">El teléfono debe tener entre 9 y 10 digitos.</p>
+              <p *ngIf="registroForm.get('telefono')?.hasError('pattern')" class="color-negro negrita">El teléfono debe tener 9 digitos y empezar con 9</p>
             </div>
 
             <ion-input formControlName="direccion" label="Direccion" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su dirección. Ej: Calle 123"></ion-input>

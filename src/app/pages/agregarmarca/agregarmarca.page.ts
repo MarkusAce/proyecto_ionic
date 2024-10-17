@@ -12,7 +12,6 @@ export class AgregarmarcaPage implements OnInit {
 
   marcaForm!: FormGroup;
 
-  marca: string = '';
   idUsuario: string = '';
   idRol: string = '';
   
@@ -40,14 +39,13 @@ export class AgregarmarcaPage implements OnInit {
 
   validarMarca(){
     if (this.marcaForm.valid){
-      this.bd.insertarMarca(this.marca)
+      const marca = this.marcaForm.value.marca;
+      this.bd.insertarMarca(marca)
+      this.bd.seleccionarMarca();
+      this.router.navigate(['/zapatillas']);
     }
   }
 
-  insertar(){
-    this.bd.insertarMarca(this.marca);
-    this.router.navigate(['/zapatillas']);
-  }
   validarExisteMarca(control: AbstractControl): Promise<ValidationErrors | null>{
 
     const marca = control?.value;

@@ -12,7 +12,7 @@
 
   <hr>
 
-  <div class="linea margin-auto bordear">
+  <div class="linea margin-auto bordear espacio">
     <form [formGroup]="cantForm" (ngSubmit)="validarProducto()">
     <div class="contenedor-cards bordear">
       <div class="margin-auto centrar contenedor-imagen espacio2"><img [src]="zapatillaSelec.zfoto" alt="" class="tamano-zapatilla margin-top bordear"></div>
@@ -73,9 +73,11 @@
           <p class="letras-negrita2 letras-grandes espacio">{{zapatillaSelec.zprecio | preciochile}}</p>
         </div>
 
-        <div class="contenedor-compra margin-auto centrar espacio"><ion-button type="submit" [disabled]="cantForm.invalid || cantSelec <=0" class="espacio"><ion-icon slot="start" name="cart"></ion-icon>Comprar</ion-button></div>
+        <div class="contenedor-compra margin-auto centrar espacio"><ion-button type="submit" [disabled]="cantForm.invalid || cantSelec <= 0" class="espacio"><ion-icon slot="start" name="cart"></ion-icon>Comprar</ion-button></div>
       </div>
       </form>
+      <hr>
+      <hr>
   </div>
 
 </ion-content>

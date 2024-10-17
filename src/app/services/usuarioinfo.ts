@@ -5,6 +5,7 @@ export class Usuarioinfo {
         urut!: string;
         utelefono!: string;
         ddireccion!: string;
+        idcomuna!: string;
         ufechanac!: string;
         ucontrasena!: string;
         uimagen!: any;

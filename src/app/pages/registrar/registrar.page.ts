@@ -32,7 +32,7 @@ export class RegistrarPage implements OnInit {
       usuario1: ['', [Validators.required, Validators.minLength(5)],[this.validarUsuario.bind(this)]],
       email1: ['', [Validators.required, Validators.email],[this.validarCorreo.bind(this)]],
       rut:['', [Validators.required, this.rutValidador.bind(this)], [this.validarExisteRut.bind(this)]],
-      telefono: ['',[Validators.required, Validators.pattern(/^[0-9]{9,10}$/)]],
+      telefono: ['',[Validators.required, Validators.pattern(/^9[0-9]{8}$/)]],
       direccion: ['', [Validators.required,Validators.minLength(5), Validators.pattern(/.*\d+.*/)]],
       comuna: ['', Validators.required],
       fechanac: ['', [Validators.required, this.validarFechaNac.bind(this)]],

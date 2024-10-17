@@ -84,15 +84,15 @@ export class AgregarzapaPage implements OnInit {
   validarZapatilla(){
     if(this.zapaForm.valid){
       const nombre = this.zapaForm.get('nombre')?.value;
-      const precio = this.zapaForm.get('precio')?.value;
-      const talla1 = this.zapaForm.get('talla1')?.value;
-      const talla2 = this.zapaForm.get('talla2')?.value;
-      const talla3 = this.zapaForm.get('talla3')?.value;
-      const talla4 = this.zapaForm.get('talla4')?.value;
-      const talla5 = this.zapaForm.get('talla5')?.value;
-      const talla6 = this.zapaForm.get('talla6')?.value;
-      const talla7 = this.zapaForm.get('talla7')?.value;
-      const talla8 = this.zapaForm.get('talla8')?.value;
+      const precio = Number(this.zapaForm.get('precio')?.value);
+      const talla1 = Number(this.zapaForm.get('talla1')?.value);
+      const talla2 = Number(this.zapaForm.get('talla2')?.value);
+      const talla3 = Number(this.zapaForm.get('talla3')?.value);
+      const talla4 = Number(this.zapaForm.get('talla4')?.value);
+      const talla5 = Number(this.zapaForm.get('talla5')?.value);
+      const talla6 = Number(this.zapaForm.get('talla6')?.value);
+      const talla7 = Number(this.zapaForm.get('talla7')?.value);
+      const talla8 = Number(this.zapaForm.get('talla8')?.value);
       const idmarca = this.zapaForm.get('marca')?.value;
       
       this.bd.insertarZapatilla(nombre, this.imagen, precio, idmarca).then(idZapatilla =>{

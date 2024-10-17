@@ -20,6 +20,8 @@ export class EditarzapaPage implements OnInit {
 
   zapatillaSelec: any = {};
 
+  datosEditados: any = {};
+
   arregloMarcas: any = [
     {
       id: '',
@@ -70,15 +72,15 @@ export class EditarzapaPage implements OnInit {
 
             this.modZapaForm.patchValue({
               nombre: this.zapatillaSelec.znombre,
-              precio: this.zapatillaSelec.zprecio,
-              talla1: this.zapatillaSelec.tallas[0].stock,
-              talla2: this.zapatillaSelec.tallas[1].stock,
-              talla3: this.zapatillaSelec.tallas[2].stock,
-              talla4: this.zapatillaSelec.tallas[3].stock,
-              Talla5: this.zapatillaSelec.tallas[4].stock,
-              talla6: this.zapatillaSelec.tallas[5].stock,
-              talla7: this.zapatillaSelec.tallas[6].stock,
-              talla8: this.zapatillaSelec.tallas[7].stock,
+              precio: Number(this.zapatillaSelec.zprecio),
+              talla1: Number(this.zapatillaSelec.tallas[0].stock),
+              talla2: Number(this.zapatillaSelec.tallas[1].stock),
+              talla3: Number(this.zapatillaSelec.tallas[2].stock),
+              talla4: Number(this.zapatillaSelec.tallas[3].stock),
+              Talla5: Number(this.zapatillaSelec.tallas[4].stock),
+              talla6: Number(this.zapatillaSelec.tallas[5].stock),
+              talla7: Number(this.zapatillaSelec.tallas[6].stock),
+              talla8: Number(this.zapatillaSelec.tallas[7].stock),
               marca: this.zapatillaSelec.idmarca,
               imagen: this.zapatillaSelec.zfoto
             })
@@ -96,8 +98,46 @@ export class EditarzapaPage implements OnInit {
     })
   }
 
-  validarZapatilla(){
+  async validarZapatilla(){
+    if(this.modZapaForm.valid){
     
+      const mnombre = await this.bd.seleccionarMarcaPorId(this.modZapaForm.value.marca);
+
+      this.datosEditados = {
+        idzapatilla: this.zapatillaSelec.idzapatilla,
+        znombre: this.modZapaForm.value.nombre,
+        zfoto: this.modZapaForm.value.imagen,
+        zprecio: this.modZapaForm.value.precio,
+        idmarca:this.modZapaForm.value.marca,
+        mnombre: mnombre,
+        tallas:[
+          {talla:this.zapatillaSelec.tallas[0].talla, stock: String(this.modZapaForm.value.talla1)},
+          {talla:this.zapatillaSelec.tallas[1].talla, stock: String(this.modZapaForm.value.talla2)},
+          {talla:this.zapatillaSelec.tallas[2].talla, stock: String(this.modZapaForm.value.talla3)},
+          {talla:this.zapatillaSelec.tallas[3].talla, stock: String(this.modZapaForm.value.talla4)},
+          {talla:this.zapatillaSelec.tallas[4].talla, stock: String(this.modZapaForm.value.talla5)},
+          {talla:this.zapatillaSelec.tallas[5].talla, stock: String(this.modZapaForm.value.talla6)},
+          {talla:this.zapatillaSelec.tallas[6].talla, stock: String(this.modZapaForm.value.talla7)},
+          {talla:this.zapatillaSelec.tallas[7].talla, stock: String(this.modZapaForm.value.talla8)},
+        ]
+      }
+
+      if (JSON.stringify(this.datosEditados) === JSON.stringify(this.zapatillaSelec)){
+        this.bd.presentAlert('Sin cambios Zapatilla', 'Usted no ha realizado cambios');
+        this.router.navigate(['/zapatillas']);
+      }else{
+        await this.bd.modificarZapatilla(this.modZapaForm.value.nombre, this.modZapaForm.value.imagen, this.modZapaForm.value.precio, this.modZapaForm.value.marca, this.zapatillaSelec.idzapatilla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[0].stock, this.zapatillaSelec.tallas[0].talla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[1].stock, this.zapatillaSelec.tallas[1].talla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[2].stock, this.zapatillaSelec.tallas[2].talla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[3].stock, this.zapatillaSelec.tallas[3].talla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[4].stock, this.zapatillaSelec.tallas[4].talla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[5].stock, this.zapatillaSelec.tallas[5].talla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[6].stock, this.zapatillaSelec.tallas[6].talla)
+        await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[7].stock, this.zapatillaSelec.tallas[7].talla)
+        this.router.navigate(['/zapatillas']);
+      }
+    }
   }
 
   validarPrecio(control: FormControl): ValidationErrors | null{
@@ -135,17 +175,9 @@ export class EditarzapaPage implements OnInit {
 
     const todoCero = [
       talla1, talla2, talla3, talla4, talla5, talla6, talla7, talla8
-    ].every(talla => talla ===0);
+    ].every(talla => talla === 0);
 
     return todoCero ? {tallasInvalidas: true} : null;
   }
-
-
-
-
-
-
-
-
 
 }

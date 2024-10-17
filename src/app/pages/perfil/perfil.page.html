@@ -21,7 +21,7 @@
 
     <hr>
 
-    <div class="contenedor-datos margin-auto">
+    <div class="contenedor-datos margin-auto espacio">
       
       <div class="letra-grande">
         <ion-label class="custom-label">Usuario:</ion-label>
@@ -55,7 +55,7 @@
         </ion-button>
       </div>
       <div class="centrar espacio-abajo">
-        <ion-button>
+        <ion-button (click)="editarPerfil()">
           <ion-icon slot="start" name="pencil"></ion-icon>
           Editar Perfil
         </ion-button>
@@ -75,6 +75,9 @@
       
       
     </div>
+
+    <hr>
+    <hr>
 
   </div>
 </ion-content>

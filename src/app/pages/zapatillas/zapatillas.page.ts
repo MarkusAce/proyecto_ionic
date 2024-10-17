@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
+import { Zapatilla } from 'src/app/services/zapatilla';
 
 @Component({
   selector: 'app-zapatillas',
@@ -12,19 +13,11 @@ export class ZapatillasPage implements OnInit {
   idRol: string = '';
   terminoBusqueda: string = "";
 
-  arregloZapatillas: any = [
-    {
-      id: '',
-      nombre: '',
-      foto: '',
-      precio: '',
-      stock: '',
-      estado: '',
-      talla: '',
-      idmarca:'',
-      mnombre: ''
-    }
-  ]
+  arregloZapatillas: Zapatilla[] = [];
+
+  arregloFiltrado: Zapatilla[] = [];
+
+
 
   constructor(private router: Router, private bd: ServicesbdService) { }
 
@@ -47,6 +40,7 @@ export class ZapatillasPage implements OnInit {
       if(data){
         this.bd.fetchZapatilla().subscribe(res=>{
           this.arregloZapatillas = res;
+          this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
         })
       }
     })
@@ -76,6 +70,11 @@ export class ZapatillasPage implements OnInit {
   }
   irAgregarMarca(){
     this.router.navigate(['/agregarmarca'])
+  }
+
+  async confirmarDeshabilitar(id:string){
+    this.bd.deshabilitarProducto(id)
+    this.router.navigate(['/zapatillas'])
   }
 
 }

@@ -1,0 +1,133 @@
+ion-content{
+    --background: linear-gradient(to bottom,#D7D7D7,#F44449);
+}
+
+ion-button{
+    --background: #F44449;
+    width: 100%;
+}
+
+ion-input{
+    --background: white;
+    color: black;
+    --highlight-color-valid: black;
+}
+
+.contenedor-perfil{
+    width: 90%;
+    min-height: 80%;
+    background-color: black;
+}
+
+.centrar{
+    text-align: center;
+}
+
+.margin-auto{
+    margin: auto;
+}
+
+.bordear{
+    border-radius: 10px;
+}
+
+.tamano-perfil{
+ width: 40%;
+ height: auto;   
+}
+
+.contenedor-flex{
+    display: flex;
+}
+
+.negrita{
+    font-weight: 500;
+}
+.negrita2{
+    font-weight: bold;
+}
+
+.contenedor-datos{
+    width: 80%;
+}
+
+.letra-grande{
+    font-size: 16px;
+}
+
+.espacio-abajo{
+    margin-bottom: 10px;
+
+}
+
+.precio{
+    text-align: right;
+}
+
+.espacio-precio{
+    justify-content: space-between;
+    align-items: center;
+}
+
+.trasparencia{
+    opacity: 0.8;
+}
+
+.custom-label{
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+  .custom-input{
+    --padding-top:0;
+    padding-top: 0;
+    margin-top:-8px;
+}
+
+.espacio{
+    margin-bottom: 5px;
+}
+
+.espacio-arriba{
+    margin-top: 10px;
+}
+
+.sin-padding{
+    padding: 0px;
+}
+
+.seleccomuna{
+    --background: white;
+    color: black;
+    --highlight-color-valid: black;
+    --border-color: white;
+    --color-focused: black;
+}
+
+.color-blanco{
+    color: white;
+}
+.negrita{
+    font-weight: 500;
+}
+
+.contenedor-input{
+    width: 90%;
+}
+
+.contenedor-imagen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+}
+    
+.tamano-imagen{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    height: auto;
+    width: auto;
+}

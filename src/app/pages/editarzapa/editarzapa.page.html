@@ -101,7 +101,7 @@
             <div class="contenedor-imagen margin-auto centrar"><img [src]="imagen" alt="Sin imagen" class="tamano-imagen"></div>
           </div>
 
-          <div *ngIf="modZapaForm.hasError('tallasInvalidas') && (modZapaForm.get('talla8')?.dirty)">
+          <div *ngIf="modZapaForm.hasError('tallasInvalidas')">
             <p class="color-negro negrita espacio-arriba2">Todas las tallas no pueden ser 0.</p>
           </div>
 

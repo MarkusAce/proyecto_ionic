@@ -24,13 +24,14 @@ export class ServicesbdService {
   tablaMarca: string = "CREATE TABLE IF NOT EXISTS marca(idmarca INTEGER PRIMARY KEY AUTOINCREMENT,mnombre VARCHAR(255) NOT NULL);";
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(idusuario INTEGER PRIMARY KEY AUTOINCREMENT, uusuario VARCHAR(255) NOT NULL, ucorreo VARCHAR(255) NOT NULL, urut VARCHAR(20), utelefono INTEGER NOT NULL, ufechanac DATE NOT NULL, ucontrasena VARCHAR(255) NOT NULL, uimagen blob , idrol integer NOT NULL, FOREIGN KEY (idrol) REFERENCES rol(idrol));";
   tablaDireccion: string = "CREATE TABLE IF NOT EXISTS direccion(iddireccion INTEGER PRIMARY KEY AUTOINCREMENT, ddireccion VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, idcomuna INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario), FOREIGN KEY(idcomuna) REFERENCES comuna(idcomuna));"
-  tablaZapatilla: string = "CREATE TABLE IF NOT EXISTS zapatilla(idzapatilla INTEGER PRIMARY KEY AUTOINCREMENT, znombre VARCHAR(255) NOT NULL, zfoto blob NOT NULL, zprecio INTEGER NOT NULL, zestado BOOLEAN DEFAULT FALSE, idmarca INTEGER NOT NULL, FOREIGN KEY (idmarca) REFERENCES marca(idmarca));";
+  tablaZapatilla: string = "CREATE TABLE IF NOT EXISTS zapatilla(idzapatilla INTEGER PRIMARY KEY AUTOINCREMENT, znombre VARCHAR(255) NOT NULL, zfoto blob NOT NULL, zprecio INTEGER NOT NULL, zestado INTEGER DEFAULT 0, idmarca INTEGER NOT NULL, FOREIGN KEY (idmarca) REFERENCES marca(idmarca));";
   tablaCompra: string = "CREATE TABLE IF NOT EXISTS compra(idcompra INTEGER PRIMARY KEY AUTOINCREMENT, cfechaventa DATE NOT NULL, ctotal INTEGER NOT NULL, cestatus VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario));";
   tablaDetalle: string = "CREATE TABLE IF NOT EXISTS detalle(iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, dcantidad INTEGER NOT NULL, dsubtotal INTEGER NOT NULL, idcompra INTEGER NOT NULL, idzapatilla INTEGER NOT NULL, FOREIGN KEY(idcompra) REFERENCES compra(idcompra), FOREIGN KEY(idzapatilla) REFERENCES zapatilla(idzapatilla));";
   tablaTalla: string = "CREATE TABLE IF NOT EXISTS talla(idtalla INTEGER PRIMARY KEY AUTOINCREMENT, idzapatilla INTEGER NOT NULL, tstock INTEGER NOT NULL, ttalla INTEGER NOT NULL, FOREIGN KEY(idzapatilla) REFERENCES zapatilla (idzapatilla));";
 
   //registro Marca
   registroMarca: string = "INSERT or IGNORE INTO marca(idmarca, mnombre) VALUES(1,'Adidas');";
+  registroMarca2: string = "INSERT or IGNORE INTO marca(idmarca, mnombre) VALUES(2,'Nike');";
 
   //Registro Rol
   registroRol: string = "INSERT or IGNORE INTO rol(idrol, rnombre, rtipo) VALUES(1,'Invitado', 1)"
@@ -100,7 +101,7 @@ export class ServicesbdService {
   crearBD(){
     this.platform.ready().then(()=>{
       this.sqlite.create({
-        name: 'bdzapfastt.db',
+        name: 'bdzapfasttttt.db',
         location: 'default'
       }).then((bd:SQLiteObject)=>{
         this.database = bd;
@@ -127,6 +128,7 @@ export class ServicesbdService {
 
       //Tabla Marca
       await this.database.executeSql(this.registroMarca, []);
+      await this.database.executeSql(this.registroMarca2, []);
       //Tabla rol
       await this.database.executeSql(this.registroRol, []);
       await this.database.executeSql(this.registroRol2, []);
@@ -236,6 +238,24 @@ export class ServicesbdService {
     })
   }
 
+  async seleccionarMarcaPorId(id:string): Promise<string | undefined>{
+    return this.database.executeSql('SELECT mnombre FROM marca WHERE idmarca = ?', [id]).then(res =>{
+      if (res.rows.length >0){
+        return res.rows.item(0).mnombre;
+      }
+      return undefined;
+    })
+  }
+
+  async seleccionarComunaPorId(id:string): Promise<string | undefined>{
+    return this.database.executeSql('SELECT comnombre FROM comuna WHERE idcomuna = ?', [id]).then(res =>{
+      if (res.rows.length >0){
+        return res.rows.item(0).comnombre;
+      }
+      return undefined;
+    })
+  }
+
   seleccionarComuna(){
     return this.database.executeSql('SELECT * FROM comuna', []).then(res=>{
       let items: Comuna[] = [];
@@ -284,6 +304,7 @@ export class ServicesbdService {
             znombre: res.rows.item(i).znombre,
             zfoto: res.rows.item(i).zfoto,
             zprecio: res.rows.item(i).zprecio,
+            zestado: res.rows.item(i).zestado,
             idmarca: res.rows.item(i).idmarca,
             mnombre: res.rows.item(i).mnombre,
             tallas: tallasStock
@@ -311,6 +332,7 @@ export class ServicesbdService {
             znombre: res.rows.item(0).znombre,
             zfoto: res.rows.item(0).zfoto,
             zprecio: res.rows.item(0).zprecio,
+            zestado: res.rows.item(0).zestado,
             idmarca: res.rows.item(0).idmarca,
             mnombre: res.rows.item(0).mnombre,
             tallas: tallasStock
@@ -360,7 +382,7 @@ export class ServicesbdService {
   }
 
   seleccionarUsuarioPorId(id: string){
-    return this.database.executeSql('SELECT u.idusuario AS usuarioid, u.uusuario, u.ucorreo, u.urut, u.utelefono, d.ddireccion, u.ufechanac, u.ucontrasena, u.uimagen, u.idrol FROM usuario u JOIN direccion d ON u.idusuario = d.idusuario WHERE u.idusuario = ?', [id]).then(res=>{
+    return this.database.executeSql('SELECT u.idusuario AS usuarioid, u.uusuario, u.ucorreo, u.urut, u.utelefono, d.ddireccion, d.idcomuna, u.ufechanac, u.ucontrasena, u.uimagen, u.idrol FROM usuario u JOIN direccion d ON u.idusuario = d.idusuario WHERE u.idusuario = ?', [id]).then(res=>{
       let item: Usuarioinfo | null = null;
       if (res.rows.length > 0){
           item = {
@@ -370,6 +392,7 @@ export class ServicesbdService {
             urut: res.rows.item(0).urut,
             utelefono: res.rows.item(0).utelefono,
             ddireccion: res.rows.item(0).ddireccion,
+            idcomuna: res.rows.item(0).idcomuna,
             ufechanac: res.rows.item(0).ufechanac,
             ucontrasena: res.rows.item(0).ucontrasena,
             uimagen: res.rows.item(0).uimagen,
@@ -407,7 +430,7 @@ export class ServicesbdService {
   }
 
   modificarMarca(id:string, nombre:string){
-    return this.database.executeSql('UPDATE marca SET mnombre = ? where idmarca = ?', [nombre, id]).then(res=>{
+    return this.database.executeSql('UPDATE marca SET mnombre = ? WHERE idmarca = ?', [nombre, id]).then(res=>{
       this.presentAlert("Modificar", "Marca Modificada");
       this.seleccionarMarca();
     }).catch(e =>{
@@ -415,9 +438,33 @@ export class ServicesbdService {
     })
   }
 
-  modificarZapatilla(id:string){
-    return this.database.executeSql('UPDATE zapatilla SET ', []).then(res =>{
-      
+  modificarZapatilla(nombre: string, imagen: any, zprecio:number, idmarca:string ,id:string){
+    return this.database.executeSql('UPDATE zapatilla SET znombre = ?, zfoto = ?, zprecio = ?, idmarca = ? WHERE idzapatilla = ?', [nombre, imagen, zprecio,idmarca,id]).then(res =>{
+      this.presentAlert('Modificar', 'Zapatilla modificada exitosamente')
+      this.seleccionarZapatilla();
+    }).catch(error =>{
+      this.presentAlert('Modificar', 'Error: '+ JSON.stringify(error));
+    })
+  }
+
+  modificarTalla(id:string, stock:number, talla: number){
+    return this.database.executeSql('UPDATE talla SET tstock = ? WHERE idzapatilla = ? AND ttalla = ?', [stock, id, talla]).then(res =>{
+    })
+  }
+
+  modificarUsuario(telefono: number, imagen: any ,id:string){
+    return this.database.executeSql('UPDATE usuario SET utelefono = ?,uimagen = ? WHERE idusuario = ?', [telefono, imagen, id]).then(res =>{
+      this.presentAlert('Modificar', 'Usuario modificado exitosamente')
+      return res;
+    })
+  }
+
+  modificarDireccion(direccion: string, comunaid: number,id:string){
+    return this.database.executeSql('UPDATE direccion SET ddireccion = ?, idcomuna = ? WHERE idusuario = ?', [direccion, comunaid, id]).then(res=>{
+      this.seleccionarUsuario();
+      this.seleccionarDireccion();
+
+      return res;
     })
   }
 
@@ -439,7 +486,7 @@ export class ServicesbdService {
   }
 
   insertarZapatilla(nombre:string,imagen:any,precio:number, idmarca:string){
-    return this.database.executeSql('INSERT INTO zapatilla (znombre, zfoto, zprecio, zestado, idmarca) VALUES (?,?,?,FALSE,?)', [nombre, imagen, precio, idmarca]).then(res=>{
+    return this.database.executeSql('INSERT INTO zapatilla (znombre, zfoto, zprecio, zestado, idmarca) VALUES (?,?,?,0,?)', [nombre, imagen, precio, idmarca]).then(res=>{
       const idZapatilla = res.insertId;
       this.presentAlert("Registrar", "Zapatilla Registrada");
       this.seleccionarZapatilla();
@@ -502,6 +549,38 @@ export class ServicesbdService {
         }
       }
       this.listaTipoUsuario.next(items as any);
+    })
+  }
+
+  async deshabilitarProducto(id:string){
+    const alert = await this.alertController.create({
+      header: 'Confirmar',
+      message: '¿Estás seguro de que deseas deshabilitar este producto?',
+      buttons:[
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secundary',
+          handler: () =>{
+          }
+        },
+        {
+          text: 'Deshabilitar',
+          handler: () =>{
+            this.deshabilitarProductoPorId(id).then(()=>{
+              this.presentAlert('Deshabilitar', 'Producto deshabilitado');
+            })
+            
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  deshabilitarProductoPorId(id: string){
+    return this.database.executeSql('UPDATE zapatilla SET zestado = 1 WHERE idzapatilla = ?', [id]).then(res =>{
+      this.seleccionarZapatilla();
     })
   }
 

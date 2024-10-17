@@ -1,13 +1,82 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>editarperfil</ion-title>
-  </ion-toolbar>
+<ion-header>
+
+  <app-barranav titulo="Editar Perfil" [tipousuario]="idRol"></app-barranav>
+
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">editarperfil</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <hr>
+  
+  <app-logo></app-logo>
+
+  <hr>
+
+  <div class="contenedor-perfil margin-auto bordear">
+
+    <div class="contenedor-datos margin-auto">
+      <form [formGroup]="perfilForm" (ngSubmit)="validarPerfil()">
+
+        <div class="centrar">
+          <hr>
+          <img *ngIf="!datosUsuario.uimagen" src="assets/imgperfil.png" alt="" class="tamano-perfil">
+          <img *ngIf="datosUsuario.uimagen" [src]="datosUsuario.uimagen" alt="" class="tamano-perfil">
+        </div>
+
+        <div class="contenedor-input margin-auto centrar espacio">
+          <ion-button (click)="takePicture()">
+            <ion-icon slot="start" name="add"></ion-icon>
+            Agregar imagen
+          </ion-button>
+        </div>
+      
+        <ion-input [disabled]="true" formControlName="usuario1" label="Usuario" label-placement="floating" fill="outline" class="espacio espacio-arriba trasparencia"></ion-input>
+
+        <ion-input [disabled]="true" formControlName="email1" label="Correo" label-placement="floating" fill="outline" class="espacio trasparencia"></ion-input>
+
+        <ion-input [disabled]="true" formControlName="rut" label="Rut" label-placement="floating" fill="outline" class="espacio trasparencia" [value]="datosUsuario.urut | rut"></ion-input>
+
+        <ion-input formControlName="telefono" label="Telefono" label-placement="floating" fill="outline" class="espacio" type="number" placeholder="Ingrese su número Ej: 912341234"></ion-input>
+        <div *ngIf="perfilForm.get('telefono')?.invalid && (perfilForm.get('telefono')?.dirty || perfilForm.get('telefono')?.touched)">
+          <p *ngIf="perfilForm.get('telefono')?.hasError('required')" class="color-blanco negrita">El teléfono no puede estar vacio.</p>
+          <p *ngIf="perfilForm.get('telefono')?.hasError('pattern')" class="color-blanco negrita">El teléfono debe tener 9 digitos y empezar con 9</p>
+        </div>
+
+        <ion-input formControlName="direccion" label="Direccion" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su dirección. Ej: Calle 123"></ion-input>
+        <div *ngIf="perfilForm.get('direccion')?.invalid && (perfilForm.get('direccion')?.dirty || perfilForm.get('direccion')?.touched)">
+          <p *ngIf="perfilForm.get('direccion')?.hasError('required')" class="color-blanco negrita">La dirección no puede estar vacia.</p>
+          <p *ngIf="perfilForm.get('direccion')?.hasError('minlength')" class="color-blanco negrita">La dirección no puede tener menos de 5 caracteres.</p>
+          <p *ngIf="perfilForm.get('direccion')?.hasError('pattern')" class="color-blanco negrita">La dirección tiene que contener números.</p>
+        </div>
+
+        <div class="margin-auto espacio">
+          <ion-list class="sin-padding">
+            <ion-item class="seleccomuna">
+              <ion-select aria-label="Comuna" interface="action-sheet" placeholder="Seleccione su comuna" formControlName="comuna" class="seleccomuna">
+                <ion-select-option *ngFor="let comuna of arregloComunas" [value]="comuna.idcomuna"> {{comuna.comnombre}} </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+        </div>
+        <div *ngIf="perfilForm.get('comuna')?.invalid && (perfilForm.get('comuna')?.dirty || perfilForm.get('comuna')?.touched)">
+          <p *ngIf="perfilForm.get('comuna')?.hasError('required')" class="color-negro negrita">Se debe seleccionar una comuna.</p>
+        </div>
+        
+        <ion-input [disabled]="true" formControlName="fechanac" label="Fecha de Nacimiento" label-placement="floating" fill="outline" class="espacio trasparencia" type="text"></ion-input>
+
+      <ion-button expand="full" type="submit" [disabled]="!validarFormulario()" class="espacio-arriba"><ion-icon slot="start" name="checkmark"></ion-icon>Confirmar</ion-button>
+      
+    </form>
+    </div>
+
+    <hr>
+    <hr>
+
+  </div>
 </ion-content>
+
+<ion-footer>
+
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
+  
+</ion-footer>
