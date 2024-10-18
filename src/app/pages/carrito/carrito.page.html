@@ -12,56 +12,26 @@
 
   <hr>
 
-  <div class="contenedor-cards bordear">
+  <div *ngFor="let zapatilla of productosCarrito; let i = index" class="contenedor-cards bordear">
     <hr>
-      <div class="margin-auto centrar"><img src="assets/zapatilla.png" alt="" class="tamano-zapatilla bordear"></div>
+      <div class="margin-auto centrar"><img [src]="zapatilla.imagen" alt="" class="tamano-zapatilla bordear"></div>
         <div class="contenedor-letras-card margin-auto">
-          <p class="letras-negrita2">RDB Game Hombre Celeste</p>
-          <p class="letras-negrita2">Puma</p>
+          <p class="letras-negrita2">{{zapatilla.nombre}}</p>
+          <p class="letras-negrita2">{{zapatilla.marca}}</p>
         </div>
         <div class="contenedor-flex contenedor-info margin-auto espacio-precio">
           <p class="letras-negrita tamano-letras">Talla:</p>
-          <p class="tamano-letras letras-negrita2">&nbsp;9 (27 cms)</p>
+          <p class="tamano-letras letras-negrita2">{{zapatilla.talla}}</p>
         </div>
         
         <div class="contenedor-flex contenedor-info margin-auto espacio-precio">
           <p class="letras-negrita tamano-letras">Cantidad:</p>
-          <p class="tamano-letras letras-negrita2">&nbsp; 1 Unidad</p>
+          <p class="tamano-letras letras-negrita2">{{zapatilla.cantidad}}</p>
         </div>
 
         <div class="contenedor-flex contenedor-info margin-auto espacio-precio">
           <p class="letras-negrita tamano-letras">Total:</p>
-          <p class="tamano-letras letras-negrita2">&nbsp;$33.590</p>
-        </div>
-
-        <div class="contenedor-quitar margin-auto margin-l">
-          <ion-button class="color">
-            <ion-icon slot="start" name="trash"></ion-icon>
-            Quitar
-          </ion-button>
-        </div>
-  </div>
-
-  <div class="contenedor-cards bordear">
-    <hr>
-      <div class="margin-auto centrar"><img src="assets/zapatilla.png" alt="" class="tamano-zapatilla bordear"></div>
-        <div class="contenedor-letras-card margin-auto">
-          <p class="letras-negrita2">RDB Game Hombre Celeste</p>
-          <p class="letras-negrita2">Puma</p>
-        </div>
-        <div class="contenedor-flex contenedor-info margin-auto espacio-precio">
-          <p class="letras-negrita tamano-letras">Talla:</p>
-          <p class="tamano-letras letras-negrita2">&nbsp;10 (28 cms)</p>
-        </div>
-        
-        <div class="contenedor-flex contenedor-info margin-auto espacio-precio">
-          <p class="letras-negrita tamano-letras">Cantidad:</p>
-          <p class="tamano-letras letras-negrita2">&nbsp; 3 Unidad</p>
-        </div>
-
-        <div class="contenedor-flex contenedor-info margin-auto espacio-precio">
-          <p class="letras-negrita tamano-letras">Total:</p>
-          <p class="tamano-letras letras-negrita2">&nbsp;$33.590</p>
+          <p class="tamano-letras letras-negrita2">{{zapatilla.total}}</p>
         </div>
 
         <div class="contenedor-quitar margin-auto margin-l">
