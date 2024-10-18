@@ -14,10 +14,14 @@ export class CarritoPage implements OnInit {
 
   idUsuario: string = '';
   idRol: string = '';
+
+  productosCarrito: any[] = [];
   
   constructor(private router: Router,private bd:ServicesbdService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.productosCarrito = await this.bd.obtenerCarrito();
+
     this.bd.dbState().subscribe(data =>{
       if(data){
         this.bd.fetchTipoUsuario().subscribe(res =>{
