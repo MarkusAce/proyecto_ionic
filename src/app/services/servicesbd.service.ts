@@ -95,6 +95,8 @@ export class ServicesbdService {
 
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  carrito: any[] = [];
+
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private nativeStorage: NativeStorage) { 
     this.crearBD();
   }
@@ -612,5 +614,41 @@ export class ServicesbdService {
     return this.database.executeSql('SELECT * FROM marca WHERE mnombre = ?', [marca]).then(res=>{
       return res.rows.length > 0;
     })
+  }
+
+  async agregarCarrito(producto: any){
+    this.carrito.push(producto);
+    try{
+      await this.nativeStorage.setItem('carrito', this.carrito);
+      this.presentAlert('Agregar al carrito', 'Su producto se ha agregado correctamente')
+    }catch(error){
+      this.presentAlert('Agregar al carrito', 'Hubo un error al agregar el producto al carrito:' +  JSON.stringify(error))
+    }
+  }
+
+  async obtenerCarrito(){
+    try{
+      const carritoGuardado = await this.nativeStorage.getItem('carrito');
+      this.carrito = carritoGuardado || [];
+      return this.carrito;
+    }catch(error){
+      this.presentAlert('Obtener carrito', 'Hubo un error al carrito:' + JSON.stringify(error));
+      return [];
+    }
+  }
+  eliminarDelCarrito(index: number){
+    this.carrito.splice(index, 1);
+
+    this.nativeStorage.setItem('carrito', this.carrito)
+  }
+
+  async vaciarCarrito(){
+    this.carrito = [];
+    try{
+      await this.nativeStorage.setItem('carrito', this.carrito);
+      this.presentAlert('Vaciar carrito', 'El carrito se ha vaciado correctamente')
+    } catch(error){
+      this.presentAlert('Vaciar carrito', 'Hubo un error al vaciar el carrito:' +  JSON.stringify(error))
+    }
   }
 }

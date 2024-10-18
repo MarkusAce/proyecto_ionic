@@ -70,7 +70,19 @@ export class ProductoPage implements OnInit {
       const talla = this.cantForm.get('talla')?.value;
       const cantidad = this.cantForm.get('cantidad')?.value;
 
+      const producto = {
+        imagen: this.zapatillaSelec.zfoto,
+        nombre: this.zapatillaSelec.znombre,
+        marca: this.zapatillaSelec.mnombre,
+        idzapatilla: this.zapatillaSelec.idzapatilla,
+        idusuario: this.idUsuario,
+        talla: talla,
+        cantidad: cantidad,
+        total: this.zapatillaSelec.zprecio * cantidad
+      }
 
+      this.bd.agregarCarrito(producto);
+      this.router.navigate(['/zapatillas'])
     }
     
     
