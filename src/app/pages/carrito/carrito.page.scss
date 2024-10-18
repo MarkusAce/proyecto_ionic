@@ -12,6 +12,10 @@ ion-content{
     --background: #F44449;
     width: 100%;
 }
+.boton-compra2{
+    --background: #F44449;
+    width: 70%;
+}
 
 .contenedor-cards{
     margin: auto;
@@ -59,11 +63,6 @@ ion-content{
     text-align: center;
 }
 
-.tamano-zapatilla{
-    width: 85%;
-    height: 85%;
-}
-
 .contenedor-letras-card{
     width: 75%;
     font-size: 18px;
@@ -95,4 +94,25 @@ ion-content{
 .espacio-precio{
     justify-content: space-between;
     align-items: center;
+}
+
+.tamano-zapatilla{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    height: auto;
+    width: auto;
+}
+
+.contenedor-imagen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
+
+.espacio-arriba{
+    margin-top: 5px;
 }

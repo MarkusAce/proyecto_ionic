@@ -49,18 +49,16 @@ export class LoginPage implements OnInit {
         if(res){
           this.bd.guardarTipoUsuario(usuario);
           this.bd.presentAlert('Acceso','Inicio de sesión exitoso.')
-          
-          let NavigationExtras: NavigationExtras = {
-            state:{
-              user: usuario
+          this.bd.seleccionaridUsuario(usuario).then(res =>{
+            if (res !== null){
+              this.bd.guardarCarrito(res);
+              this.router.navigate(['/inicio']);
             }
-          }
-          this.router.navigate(['/inicio'], NavigationExtras);
+          })
         }else{
           this.bd.presentAlert('Acceso denegado', 'Los datos son incorrectos.')
         }
       })
-      
     }
     }
   

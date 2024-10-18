@@ -12,6 +12,9 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { Zapatilla } from './zapatilla';
 import { Talla } from './talla';
 import { Usuarioinfo } from './usuarioinfo';
+import { Router } from '@angular/router';
+import { Detalle } from './detalle';
+import { Compra } from './compra';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +29,7 @@ export class ServicesbdService {
   tablaDireccion: string = "CREATE TABLE IF NOT EXISTS direccion(iddireccion INTEGER PRIMARY KEY AUTOINCREMENT, ddireccion VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, idcomuna INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario), FOREIGN KEY(idcomuna) REFERENCES comuna(idcomuna));"
   tablaZapatilla: string = "CREATE TABLE IF NOT EXISTS zapatilla(idzapatilla INTEGER PRIMARY KEY AUTOINCREMENT, znombre VARCHAR(255) NOT NULL, zfoto blob NOT NULL, zprecio INTEGER NOT NULL, zestado INTEGER DEFAULT 0, idmarca INTEGER NOT NULL, FOREIGN KEY (idmarca) REFERENCES marca(idmarca));";
   tablaCompra: string = "CREATE TABLE IF NOT EXISTS compra(idcompra INTEGER PRIMARY KEY AUTOINCREMENT, cfechaventa DATE NOT NULL, ctotal INTEGER NOT NULL, cestatus VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario));";
-  tablaDetalle: string = "CREATE TABLE IF NOT EXISTS detalle(iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, dcantidad INTEGER NOT NULL, dsubtotal INTEGER NOT NULL, idcompra INTEGER NOT NULL, idzapatilla INTEGER NOT NULL, FOREIGN KEY(idcompra) REFERENCES compra(idcompra), FOREIGN KEY(idzapatilla) REFERENCES zapatilla(idzapatilla));";
+  tablaDetalle: string = "CREATE TABLE IF NOT EXISTS detalle(iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, dcantidad INTEGER NOT NULL, dsubtotal INTEGER NOT NULL, dtalla INTEGER NOT NULL, dpreciounidad INTEGER NOT NULL, idcompra INTEGER NOT NULL, idzapatilla INTEGER NOT NULL, FOREIGN KEY(idcompra) REFERENCES compra(idcompra), FOREIGN KEY(idzapatilla) REFERENCES zapatilla(idzapatilla));";
   tablaTalla: string = "CREATE TABLE IF NOT EXISTS talla(idtalla INTEGER PRIMARY KEY AUTOINCREMENT, idzapatilla INTEGER NOT NULL, tstock INTEGER NOT NULL, ttalla INTEGER NOT NULL, FOREIGN KEY(idzapatilla) REFERENCES zapatilla (idzapatilla));";
 
   //registro Marca
@@ -73,10 +76,11 @@ export class ServicesbdService {
   registroComuna32: string = "INSERT or IGNORE INTO comuna(idcomuna, comnombre) VALUES(32, 'Vitacura')"
 
   //registro Usuario
-  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', '99999999', '21/09/1990', 'Admin1234@', '3')"
+  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', '99999999', '21/09/1990', 'Admin12@', '3')"
 
   registroDireccion: string = "INSERT or IGNORE INTO direccion(iddireccion, ddireccion, idusuario, idcomuna) VALUES(1, 'La mejor calle 1234', 1000, 7)"
 
+  //lista de observables
   listaMarca = new BehaviorSubject([]);
 
   listaRol = new BehaviorSubject([]);
@@ -93,11 +97,15 @@ export class ServicesbdService {
 
   listaTalla = new BehaviorSubject([]);
 
+  listaCompra = new BehaviorSubject([]);
+
+  listaDetalle = new BehaviorSubject([]);
+
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   carrito: any[] = [];
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private nativeStorage: NativeStorage) { 
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private nativeStorage: NativeStorage, private router: Router) { 
     this.crearBD();
   }
   crearBD(){
@@ -208,6 +216,13 @@ export class ServicesbdService {
   }
   fetchTalla(): Observable<Talla[]>{
     return this.listaTalla.asObservable();
+  }
+  fetchCompra(): Observable<Compra[]>{
+    return this.listaCompra.asObservable();
+  }
+
+  fetchDetalle(): Observable<Detalle[]>{
+    return this.listaDetalle.asObservable();
   }
   fetchTipoUsuario(): Observable<Tipousuario[]>{
     return this.listaTipoUsuario.asObservable();
@@ -383,6 +398,16 @@ export class ServicesbdService {
     })
   }
 
+  seleccionaridUsuario(uusername: string){
+    return this.database.executeSql('SELECT idusuario FROM usuario WHERE uusuario = ?', [uusername]).then(res =>{
+      if (res.rows.length > 0){
+        const idUsuario = res.rows.item(0).idusuario;
+        return String(idUsuario);
+      }
+      return null;
+    })
+  }
+
   seleccionarUsuarioPorId(id: string){
     return this.database.executeSql('SELECT u.idusuario AS usuarioid, u.uusuario, u.ucorreo, u.urut, u.utelefono, d.ddireccion, d.idcomuna, u.ufechanac, u.ucontrasena, u.uimagen, u.idrol FROM usuario u JOIN direccion d ON u.idusuario = d.idusuario WHERE u.idusuario = ?', [id]).then(res=>{
       let item: Usuarioinfo | null = null;
@@ -419,6 +444,44 @@ export class ServicesbdService {
         }
       }
       this.listaDireccion.next(items as any);
+    })
+  }
+
+  seleccionarCompra(){
+    return this.database.executeSql('SELECT * FROM compra', []).then(res=>{
+      let items: Compra[] = [];
+      if (res.rows.length > 0){
+        for (var i=0; i < res.rows.length; i++) {
+          items.push({
+            idcompra: res.rows.item(i).idcompra,
+            cfechaventa: res.rows.item(i).cfechaventa,
+            ctotal: res.rows.item(i).ctotal,
+            cestatus: res.rows.item(i).cestatus,
+            idusuario: res.rows.item(i).idusuario
+          });
+        }
+      }
+      this.listaCompra.next(items as any);
+    })
+  }
+
+  seleccionarDetalle(){
+    return this.database.executeSql('SELECT * FROM detalle', []).then(res =>{
+      let items: Detalle[] = [];
+      if (res.rows.length > 0){
+        for (var i=0; i < res.rows.length; i++) {
+          items.push({
+            iddetalle: res.rows.item(i).iddetalle,
+            dcantidad: res.rows.item(i).dcantidad,
+            dsubtotal: res.rows.item(i).dsubtotal,
+            dtalla: res.rows.item(i).dtalla,
+            dpreciounidad: res.rows.item(i).dpreciounidad,
+            idcompra: res.rows.item(i).idcompra,
+            idzapatilla: res.rows.item(i).idzapatilla
+          });
+        }
+      }
+      this.listaDetalle.next(items as any);
     })
   }
 
@@ -526,6 +589,22 @@ export class ServicesbdService {
     })
   }
 
+  insertarCompra(cfechaventa:string,ctotal: number, estado:string, idusuario: string){
+    return this.database.executeSql('INSERT INTO compra (cfechaventa, ctotal, cestatus, idusuario) VALUES (?, ?, ?, ?)', [cfechaventa, estado, ctotal, idusuario]).then(res=>{
+      const idCompra = res.insertId;
+      this.seleccionarCompra();
+      return idCompra;
+    }).catch(e =>{
+      this.presentAlert('Comprar', 'Error: ' + JSON.stringify(e));
+    })
+  }
+
+  insertarDetalle(detalle: any){
+    return this.database.executeSql('INSERT INTO detalle (dcantidad, dsubtotal, dtalla, dpreciounidad, idcompra, idzapatilla) VALUES (?, ?, ?, ?, ?, ?)', [detalle.cantidad, detalle.subtotal,detalle.talla, detalle.preciounidad, detalle.idcompra, detalle.idzapatilla]).then(res =>{
+      this.seleccionarDetalle();
+    })
+  }
+
   validarUsuarioLogin(usuario: string, contrasena: string){
     return this.database.executeSql('SELECT uusuario, ucontrasena FROM usuario WHERE uusuario = ? AND ucontrasena = ?', [usuario, contrasena]).then(res=>{
       if(res.rows.length > 0){
@@ -616,37 +695,85 @@ export class ServicesbdService {
     })
   }
 
-  async agregarCarrito(producto: any){
-    this.carrito.push(producto);
+  async guardarCarrito(idUsuario: string){
     try{
-      await this.nativeStorage.setItem('carrito', this.carrito);
-      this.presentAlert('Agregar al carrito', 'Su producto se ha agregado correctamente')
+      const exists = await this.nativeStorage.keys();
+
+      if (!exists.includes(`carrito_${idUsuario}`)){
+        await this.nativeStorage.setItem(`carrito_${idUsuario}`, []);
+      }
     }catch(error){
-      this.presentAlert('Agregar al carrito', 'Hubo un error al agregar el producto al carrito:' +  JSON.stringify(error))
+      this.presentAlert('Guardar carrito', 'Hubo un error al guardar el carrito:' + JSON.stringify(error))
+    }
+  }
+  async agregarCarrito(producto: any){
+    try{
+      const carritoGuardado = await this.nativeStorage.getItem(`carrito_${producto.idUsuario}`);
+      const carritoActual = carritoGuardado ? carritoGuardado : [];
+
+      const index = carritoActual.findIndex((item: { idZapatilla: string; talla: string; }) => item.idZapatilla === producto.idZapatilla && item.talla === producto.talla);
+
+      if (index !== -1){
+        if (carritoActual[index].cantidad + producto.cantidad > producto.stock){
+          this.presentAlert('Agregar carrito', 'No hay stock suficiente para este producto');
+          return;
+        }else{
+          carritoActual[index].cantidad += producto.cantidad;
+          carritoActual[index].total += producto.total;
+        }
+        
+      }else{
+        carritoActual.push(producto);
+      }
+      
+      await this.nativeStorage.setItem(`carrito_${producto.idUsuario}`, carritoActual);
+
+      this.presentAlert('Agregar carrito', 'Producto se ha agregado al carrito');
+      this.router.navigate(['/zapatillas'])
+    }catch(error){
+      this.presentAlert('Agregar carrito', 'Hubo un error al agregar el producto al carrito:' + JSON.stringify(error))
     }
   }
 
-  async obtenerCarrito(){
+  async obtenerCarrito(idUsuario: string){
     try{
-      const carritoGuardado = await this.nativeStorage.getItem('carrito');
-      this.carrito = carritoGuardado || [];
-      return this.carrito;
+      const exists = await this.nativeStorage.keys();
+      if ( exists.includes(`carrito_${idUsuario}`)){
+        const carritoGuardado = await this.nativeStorage.getItem(`carrito_${idUsuario}`);
+        this.carrito = carritoGuardado || [];
+        return this.carrito;
+      }else{
+        return this.carrito = [];
+      }
     }catch(error){
       this.presentAlert('Obtener carrito', 'Hubo un error al carrito:' + JSON.stringify(error));
       return [];
     }
   }
-  eliminarDelCarrito(index: number){
-    this.carrito.splice(index, 1);
+  async eliminarDelCarrito(index: number, idUsuario: string){
+    try{
+      const carritoGuardado = await this.nativeStorage.getItem(`carrito_${idUsuario}`);
+      const carritoActual: any[] = carritoGuardado || [];
 
-    this.nativeStorage.setItem('carrito', this.carrito)
+    if (index >= 0 && index < carritoActual.length){
+      carritoActual.splice(index, 1);
+
+      await this.nativeStorage.setItem(`carrito_${idUsuario}`, carritoActual);
+      this.presentAlert('Quitar producto', 'Producto quitado del carrito correctamente.')
+      return carritoActual;
+    }else{
+      this.presentAlert('Quitar producto', 'El índice no es válido.')
+    }
+    } catch(error){
+      this.presentAlert('Quitar producto', 'Hubo un error al quitar el producto del carrito:' + JSON.stringify(error))
+    }
+    return null;
+    
   }
 
-  async vaciarCarrito(){
-    this.carrito = [];
+  async vaciarCarrito(idUsuario: string){
     try{
-      await this.nativeStorage.setItem('carrito', this.carrito);
-      this.presentAlert('Vaciar carrito', 'El carrito se ha vaciado correctamente')
+      await this.nativeStorage.setItem(`carrito_${idUsuario}`, []);
     } catch(error){
       this.presentAlert('Vaciar carrito', 'Hubo un error al vaciar el carrito:' +  JSON.stringify(error))
     }

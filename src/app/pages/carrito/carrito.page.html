@@ -14,7 +14,7 @@
 
   <div *ngFor="let zapatilla of productosCarrito; let i = index" class="contenedor-cards bordear">
     <hr>
-      <div class="margin-auto centrar"><img [src]="zapatilla.imagen" alt="" class="tamano-zapatilla bordear"></div>
+      <div class="margin-auto centrar contenedor-imagen"><img [src]="zapatilla.imagen" alt="" class="tamano-zapatilla bordear"></div>
         <div class="contenedor-letras-card margin-auto">
           <p class="letras-negrita2">{{zapatilla.nombre}}</p>
           <p class="letras-negrita2">{{zapatilla.marca}}</p>
@@ -31,34 +31,42 @@
 
         <div class="contenedor-flex contenedor-info margin-auto espacio-precio">
           <p class="letras-negrita tamano-letras">Total:</p>
-          <p class="tamano-letras letras-negrita2">{{zapatilla.total}}</p>
+          <p class="tamano-letras letras-negrita2">{{zapatilla.total | preciochile}}</p>
         </div>
 
-        <div class="contenedor-quitar margin-auto margin-l">
+        <div class="contenedor-quitar margin-auto margin-l" (click)="quitar(i)">
           <ion-button class="color">
             <ion-icon slot="start" name="trash"></ion-icon>
             Quitar
           </ion-button>
         </div>
+        <br>
   </div>
 
-  <hr>
+  <div *ngIf="productosCarrito.length < 1" class="contenedor-total centrar margin-auto espacio-arriba bordear">
+    <br>
+    <h4>Tu carrito está vacío.</h4>
+    <ion-button class="boton-compra2" (click)="irZapatillas()">
+      <ion-icon slot="start" name="cart"></ion-icon>
+      Ir a comprar Zapatillas
+    </ion-button>
+  </div>
 
-  <div class="contenedor-total margin-auto bordear">
+  <div *ngIf="productosCarrito.length > 0" class="contenedor-total margin-auto bordear">
     <hr>
 
       <div class="contenedor-compra margin-auto">
         <div class="contenedor-flex espacio-precio">
           <p class="letras-negrita tamano-letras ">Subtotal:</p>
-          <p class="tamano-letras letras-negrita2 ">&nbsp;$112.908</p>
+          <p class="tamano-letras letras-negrita2">{{calcularSubtotalSinIVA() | preciochile}}</p>
         </div>
         <div class="contenedor-flex espacio-precio">
           <p class="letras-negrita tamano-letras ">IVA:</p>
-          <p class="tamano-letras letras-negrita2 ">&nbsp;$21.452</p>
+          <p class="tamano-letras letras-negrita2 ">{{calcularIVA() | preciochile}}</p>
         </div>
         <div class="contenedor-flex espacio-precio">
           <p class="letras-negrita tamano-letras ">Total:</p>
-          <p class="tamano-letras letras-negrita2 precio">&nbsp;$134.360</p>
+          <p class="tamano-letras letras-negrita2 precio">{{calcularTotal() | preciochile}} </p>
         </div>
   
         <div class="centrar margin-auto">

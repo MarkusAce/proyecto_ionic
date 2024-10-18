@@ -59,6 +59,8 @@ export class ProductoPage implements OnInit {
         }
       }
     })
+
+    this.bd.guardarCarrito
   }
 
   validarProducto(){
@@ -74,20 +76,19 @@ export class ProductoPage implements OnInit {
         imagen: this.zapatillaSelec.zfoto,
         nombre: this.zapatillaSelec.znombre,
         marca: this.zapatillaSelec.mnombre,
-        idzapatilla: this.zapatillaSelec.idzapatilla,
-        idusuario: this.idUsuario,
+        idZapatilla: this.zapatillaSelec.idzapatilla,
+        idUsuario: this.idUsuario,
         talla: talla,
+        stock: Number(this.cantSelec),
         cantidad: cantidad,
+        preciounidad: this.zapatillaSelec.zprecio,
         total: this.zapatillaSelec.zprecio * cantidad
       }
 
       this.bd.agregarCarrito(producto);
-      this.router.navigate(['/zapatillas'])
+      
     }
-    
-    
    }
-
   }
 
   calcularTotalStock(){

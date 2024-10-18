@@ -20,7 +20,6 @@ export class CarritoPage implements OnInit {
   constructor(private router: Router,private bd:ServicesbdService) { }
 
   async ngOnInit() {
-    this.productosCarrito = await this.bd.obtenerCarrito();
 
     this.bd.dbState().subscribe(data =>{
       if(data){
@@ -35,10 +34,67 @@ export class CarritoPage implements OnInit {
         });
       }
     });
+    this.productosCarrito = await this.bd.obtenerCarrito(this.idUsuario);
   }
 
   comprar(){
+
+    const fechaHoy = new Date();
+    const dia = String(fechaHoy.getDate()).padStart(2,'0');
+    const mes = String(fechaHoy.getMonth() + 1).padStart(2,'0');
+    const anio = fechaHoy.getFullYear();
+
+    const total = this.calcularTotal();
+
+    const fechaFormateada = `${dia}-${mes}-${anio}`;
+
+    const estado: string = 'Pendiente';
+    
+    
+    this.bd.insertarCompra(fechaFormateada, total,estado, this.idUsuario).then(res=>{
+      if(res){
+        this.productosCarrito.forEach(producto =>{
+          const detalle = {
+            idcompra: res,
+            idzapatilla: producto.idZapatilla,
+            cantidad: producto.cantidad,
+            subtotal: producto.total,
+            talla: producto.talla,
+            preciounidad: producto.preciounidad
+          }
+
+          this.bd.insertarDetalle(detalle).then(()=>{
+            // this.bd.actualizarStock(producto.idZapatilla, producto.talla, producto.cantidad * -1).then(()=>{}
+          })
+          
+        })
+          
+      }
+    })
+    this.bd.vaciarCarrito(this.idUsuario)
     this.bd.presentAlert('Aprobada','La compra ha sido realizada con exito.')
     this.router.navigate(['/inicio'])
+  }
+  quitar(index: number){
+    this.bd.eliminarDelCarrito(index, this.idUsuario).then(res =>{
+      if (res){
+        this.productosCarrito = res
+      }
+    })
+  }
+  irZapatillas(){
+    this.router.navigate(['/zapatillas'])
+  }
+
+  calcularSubtotalSinIVA(){
+    return this.productosCarrito.reduce((total, producto)=> total + (producto.total / 1.19), 0);
+  }
+
+  calcularTotal(){
+    return this.productosCarrito.reduce((total, producto)=> total + producto.total, 0);
+  }
+
+  calcularIVA(){
+    return this.calcularTotal() - this.calcularSubtotalSinIVA();
   }
 }
