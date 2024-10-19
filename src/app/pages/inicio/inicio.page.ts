@@ -43,6 +43,7 @@ export class InicioPage implements OnInit {
           this.arregloZapatillas = res;
           this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
           this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
+          
         })
       }
     })

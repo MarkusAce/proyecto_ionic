@@ -11,6 +11,10 @@ export class ListadocomprasPage implements OnInit {
   terminoBusqueda:string = "";
   idUsuario: string = '';
   idRol: string = '';
+  uNombre: string = '';
+
+  arregloCompra: any[] = [];
+  arregloUsuarioCompra: any[] = [];
   constructor(private router:Router, private bd: ServicesbdService) { }
 
   
@@ -28,10 +32,30 @@ export class ListadocomprasPage implements OnInit {
           }
         });
       }
+
+      if(this.idRol == '2'){
+          this.cargarComprasUsuario();
+      }
+      if(this.idRol == '3'){
+        this.cargarComprasAdministrador();
+      }
     });
+    
   }
+
   irInicio(){
     this.router.navigate(['/inicio'])
   }
-  
+
+  cargarComprasUsuario(){
+    this.bd.fetchComprasConDetalles().subscribe(res =>{
+      this.arregloUsuarioCompra = res.filter((compra: {idusuario:string} ) => compra.idusuario === this.idUsuario)
+    })
+  }
+
+  cargarComprasAdministrador(){
+    this.bd.fetchComprasConDetalles().subscribe(res =>{
+      this.arregloCompra = res;
+    })
+  }
 }

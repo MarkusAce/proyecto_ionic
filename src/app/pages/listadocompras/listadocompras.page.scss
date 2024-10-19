@@ -4,7 +4,7 @@ ion-content{
 
 .contenedor-cards{
     margin: auto;
-    width: 80%;
+    width: 90%;
     min-height: 72%;
     background-color: black;
     border-radius: 10px;
@@ -42,11 +42,6 @@ ion-content{
     text-align: center;
 }
 
-.tamano-zapatilla{
-    width: 85%;
-    height: 85%;
-}
-
 .contenedor-letras-card{
     width: 80%;
     font-size: 18px;
@@ -63,4 +58,28 @@ ion-content{
 .espacio-precio{
     justify-content: space-between;
     align-items: center;
+}
+.tamano-zapatilla{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    height: auto;
+    width: auto;
+}
+
+.contenedor-imagen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
+
+.espacio-arriba{
+    margin-top: 5px;
+}
+
+.espacio{
+    margin-bottom: 15px;
 }

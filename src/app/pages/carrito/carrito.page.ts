@@ -48,10 +48,9 @@ export class CarritoPage implements OnInit {
     const total = this.calcularTotal();
     const estado: string = 'Pendiente';
     
-    
     this.bd.insertarCompra(fechaFormateada, total,estado, this.idUsuario).then(res=>{
       if(res){
-        this.productosCarrito.forEach(producto =>{
+        const detallePromises = this.productosCarrito.map(producto =>{
           const detalle = {
             idcompra: res,
             idzapatilla: producto.idZapatilla,
@@ -59,21 +58,21 @@ export class CarritoPage implements OnInit {
             subtotal: producto.total,
             talla: producto.talla,
             preciounidad: producto.preciounidad
-          }
+          };
 
-          this.bd.insertarDetalle(detalle).then(()=>{
-            this.bd.modificarStock(producto.idZapatilla, producto.talla, producto.cantidad).then(()=>{
-              
-            }).catch(e =>{
-              this.bd.presentAlert('Error al modificar stock', 'Error: '+ JSON.stringify(e))
-            })
+          return this.bd.insertarDetalle(detalle).then(()=>{
+            return this.bd.modificarStock(producto.idzapatilla, producto.talla, producto.cantidad)
+          });
+        });
+          
+          Promise.all(detallePromises).then(()=>{
+            this.bd.vaciarCarrito(this.idUsuario)
+            this.bd.seleccionarComprasConDetalles();
+            this.bd.presentAlert('Aprobada','La compra ha sido realizada con exito.')
+            this.router.navigate(['/inicio'])
           })
-        })
       }
     })
-    this.bd.vaciarCarrito(this.idUsuario)
-    this.bd.presentAlert('Aprobada','La compra ha sido realizada con exito.')
-    this.router.navigate(['/inicio'])
   }
   quitar(index: number){
     this.bd.eliminarDelCarrito(index, this.idUsuario).then(res =>{

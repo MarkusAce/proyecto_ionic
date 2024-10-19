@@ -15,6 +15,7 @@ import { Usuarioinfo } from './usuarioinfo';
 import { Router } from '@angular/router';
 import { Detalle } from './detalle';
 import { Compra } from './compra';
+import { Detallescompra } from './detallescompra';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +101,8 @@ export class ServicesbdService {
   listaCompra = new BehaviorSubject([]);
 
   listaDetalle = new BehaviorSubject([]);
+
+  listaCompraDetalle = new BehaviorSubject([]);
 
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -191,6 +194,7 @@ export class ServicesbdService {
       this.seleccionarZapatilla();
       this.seleccionarTalla();
       this.seleccionarDireccion();
+      this.seleccionarComprasConDetalles();
     }catch(e){
       this.presentAlert('Crear BD', 'Error: ' + JSON.stringify(e));
     }
@@ -226,6 +230,9 @@ export class ServicesbdService {
   }
   fetchTipoUsuario(): Observable<Tipousuario[]>{
     return this.listaTipoUsuario.asObservable();
+  }
+  fetchComprasConDetalles(): Observable<Detallescompra[]>{
+    return this.listaCompraDetalle.asObservable();
   }
   dbState(){
     return this.isDBReady.asObservable();
@@ -359,6 +366,17 @@ export class ServicesbdService {
     })
   }
 
+  seleccionarNombrePorId(id: string){
+    return this.database.executeSql('SELECT znombre FROM zapatilla WHERE idzapatilla = ?', [id]).then(res=>{
+      if (res.rows.length > 0){
+        const znombre = res.rows.item(0).znombre;
+        return znombre;
+      }
+      return null;
+    })
+  }
+  
+
   seleccionarTalla(){
     return this.database.executeSql('SELECT * FROM talla', []).then(res=>{
       let items: Talla[] = [];
@@ -398,11 +416,31 @@ export class ServicesbdService {
     })
   }
 
+  seleccionarNombreUsuarioPorId(idusuario: string){
+    return this.database.executeSql('SELECT uusuario FROM usuario WHERE idusuario = ?', [idusuario]).then(res =>{
+      if (res.rows.length > 0){
+        const uusuario = res.rows.item(0).uusuario;
+        return uusuario;
+      }
+      return null;
+    })
+  }
+
   seleccionaridUsuario(uusername: string){
     return this.database.executeSql('SELECT idusuario FROM usuario WHERE uusuario = ?', [uusername]).then(res =>{
       if (res.rows.length > 0){
         const idUsuario = res.rows.item(0).idusuario;
         return String(idUsuario);
+      }
+      return null;
+    })
+  }
+
+  seleccionarMarcaZapatilla(id:string){
+    return this.database.executeSql('SELECT m.mnombre FROM zapatilla z JOIN marca m ON z.idzapatilla=m.idzapatilla WHERE z.idzapatilla = ?', [id]).then(res =>{
+      if (res.rows.length > 0){
+        const mnombre = res.rows.item(0).mnombre;
+        return mnombre;
       }
       return null;
     })
@@ -447,6 +485,15 @@ export class ServicesbdService {
     })
   }
 
+  seleccionarDireccionUsuario(id:string){
+    return this.database.executeSql('SELECT ddireccion FROM direccion WHERE idusuario = ?', [id]).then(res=>{
+      if (res.rows.length >0){
+        const ddireccion = res.rows.item(0).ddireccion;
+        return ddireccion;
+      }
+    })
+  }
+
   seleccionarCompra(){
     return this.database.executeSql('SELECT * FROM compra', []).then(res=>{
       let items: Compra[] = [];
@@ -482,6 +529,66 @@ export class ServicesbdService {
         }
       }
       this.listaDetalle.next(items as any);
+    })
+  }
+
+  seleccionarComprasConDetalles(){
+    return this.database.executeSql('SELECT c.idcompra, c.cfechaventa, c.ctotal, c.cestatus, c.idusuario, d.iddetalle, d.dcantidad, d.dsubtotal, d.dtalla, d.dpreciounidad, d.idzapatilla, u.uusuario AS nombreUsuario,dir.ddireccion AS direccionUsuario, znombre AS nombreZapatilla, b.mnombre AS nombreMarca, z.zfoto AS fotoZapatilla  FROM compra c JOIN detalle d ON c.idcompra = d.idcompra JOIN usuario u ON c.idusuario = u.idusuario JOIN direccion dir ON u.idusuario = dir.idusuario JOIN zapatilla z ON d.idzapatilla = z.idzapatilla JOIN marca b ON z.idmarca = b.idmarca', []).then(res =>{
+      let items: any[] = [];
+      if (res.rows.length > 0){
+        for (var i=0; i < res.rows.length; i++){
+          const compra = res.rows.item(i);
+
+          const existingCompra = items.find(item => item.idcompra === compra.idcompra)
+
+          if (existingCompra){
+            existingCompra.detalles.push({
+              iddetalle: compra.iddetalle,
+              dcantidad: compra.dcantidad,
+              dsubtotal: compra.dsubtotal,
+              dtalla: compra.dtalla,
+              dpreciounidad: compra.dpreciounidad,
+              idzapatilla: compra.idzapatilla,
+              nombreZapatilla: compra.nombreZapatilla,
+              nombreMarca: compra.nombreMarca,
+              fotoZapatilla: compra.fotoZapatilla
+            });
+          }else{
+            items.push({
+              idcompra: compra.idcompra,
+              cfechaventa: compra.cfechaventa,
+              ctotal: compra.ctotal,
+              cestatus: compra.cestatus,
+              idusuario: compra.idusuario,
+              nombreUsuario: compra.nombreUsuario,
+              direccionUsuario: compra.direccionUsuario,
+              detalles: [{
+                iddetalle: compra.iddetalle,
+                dcantidad: compra.dcantidad,
+                dsubtotal: compra.dsubtotal,
+                dtalla: compra.dtalla,
+                dpreciounidad: compra.dpreciounidad,
+                idzapatilla: compra.idzapatilla,
+                nombreZapatilla: compra.nombreZapatilla,
+                nombreMarca: compra.nombreMarca,
+                fotoZapatilla: compra.fotoZapatilla
+              }]
+            })
+          }
+        }
+      }
+      this.listaCompraDetalle.next(items as any);
+    }).catch(e=>{
+      this.presentAlert("Error", "Error al obtener compras con detalles: " + JSON.stringify(e));
+    })
+  }
+
+  seleccionarFoto(id:string){
+    return this.database.executeSql('SELECT zfoto FROM zapatilla WHERE idzapatilla = ?', [id]).then(res=>{
+      if (res.rows.length >0){
+        const zfoto = res.rows.item(0).zfoto;
+        return zfoto;
+      }
     })
   }
 
@@ -599,7 +706,7 @@ export class ServicesbdService {
   }
 
   insertarCompra(cfechaventa:string,ctotal: number, estado:string, idusuario: string){
-    return this.database.executeSql('INSERT INTO compra (cfechaventa, ctotal, cestatus, idusuario) VALUES (?, ?, ?, ?)', [cfechaventa, estado, ctotal, idusuario]).then(res=>{
+    return this.database.executeSql('INSERT INTO compra (cfechaventa, ctotal, cestatus, idusuario) VALUES (?, ?, ?, ?)', [cfechaventa,ctotal, estado , idusuario]).then(res=>{
       const idCompra = res.insertId;
       this.seleccionarCompra();
       return idCompra;
