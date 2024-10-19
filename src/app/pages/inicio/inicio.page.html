@@ -18,12 +18,25 @@
 
   <br>
 
-  <div *ngFor="let zapatilla of arregloFiltrado" class="contenedor-cards contenedor-flex espacio" (click)="irProducto(zapatilla.idzapatilla)">
-    <div class="margin-auto centrar contenedor-imagen"><img [src]="zapatilla.zfoto" alt="" class="tamano-imagen margin-top"></div>
-    <div>
-      <p class="letras-negrita2 margin-top">{{zapatilla.znombre}}</p>
-      <p class="letras-negrita2">{{zapatilla.mnombre}}</p>
-      <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}}</p>
+  <div *ngIf="idRol == '1' || idRol == '2'">
+    <div *ngFor="let zapatilla of arregloUsuario" class="contenedor-cards contenedor-flex espacio" (click)="irProducto(zapatilla.idzapatilla)">
+      <div class="margin-auto centrar contenedor-imagen"><img [src]="zapatilla.zfoto" alt="" class="tamano-imagen margin-top"></div>
+      <div>
+        <p class="letras-negrita2 margin-top">{{zapatilla.znombre}}</p>
+        <p class="letras-negrita2">{{zapatilla.mnombre}}</p>
+        <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="idRol == '3'">
+    <div *ngFor="let zapatilla of arregloFiltrado" class="contenedor-cards contenedor-flex espacio" (click)="irProducto(zapatilla.idzapatilla)">
+      <div class="margin-auto centrar contenedor-imagen"><img [src]="zapatilla.zfoto" alt="" class="tamano-imagen margin-top"></div>
+      <div>
+        <p class="letras-negrita2 margin-top">{{zapatilla.znombre}}</p>
+        <p class="letras-negrita2">{{zapatilla.mnombre}}</p>
+        <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}}</p>
+      </div>
     </div>
   </div>
 

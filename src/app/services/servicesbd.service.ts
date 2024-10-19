@@ -533,6 +533,15 @@ export class ServicesbdService {
     })
   }
 
+  modificarStock(idZapatilla: string, talla:string, cantidadComprada: number){
+    return this.database.executeSql('UPDATE talla SET tstock = tstock - ? WHERE idzapatilla = ? AND ttalla = ?', [cantidadComprada, idZapatilla, talla]).then(res =>{
+      this.seleccionarZapatilla();
+      this.seleccionarTalla();
+    }).catch(e =>{
+      this.presentAlert('Error', 'Error al modificar stock: '+ JSON.stringify(e));
+    })
+  }
+
   insertarMarca(nombre:string){
     return this.database.executeSql('INSERT INTO marca (mnombre) VALUES (?)', [nombre]).then(res=>{
       this.presentAlert("Registrar", "Marca Registrada");

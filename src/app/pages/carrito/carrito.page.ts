@@ -44,10 +44,8 @@ export class CarritoPage implements OnInit {
     const mes = String(fechaHoy.getMonth() + 1).padStart(2,'0');
     const anio = fechaHoy.getFullYear();
 
-    const total = this.calcularTotal();
-
     const fechaFormateada = `${dia}-${mes}-${anio}`;
-
+    const total = this.calcularTotal();
     const estado: string = 'Pendiente';
     
     
@@ -64,11 +62,13 @@ export class CarritoPage implements OnInit {
           }
 
           this.bd.insertarDetalle(detalle).then(()=>{
-            // this.bd.actualizarStock(producto.idZapatilla, producto.talla, producto.cantidad * -1).then(()=>{}
+            this.bd.modificarStock(producto.idZapatilla, producto.talla, producto.cantidad).then(()=>{
+              
+            }).catch(e =>{
+              this.bd.presentAlert('Error al modificar stock', 'Error: '+ JSON.stringify(e))
+            })
           })
-          
         })
-          
       }
     })
     this.bd.vaciarCarrito(this.idUsuario)

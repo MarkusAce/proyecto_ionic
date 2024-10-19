@@ -9,15 +9,16 @@ import { Zapatilla } from 'src/app/services/zapatilla';
   styleUrls: ['./zapatillas.page.scss'],
 })
 export class ZapatillasPage implements OnInit {
+
+  terminoBusqueda: string = "";
   idUsuario: string = '';
   idRol: string = '';
-  terminoBusqueda: string = "";
 
   arregloZapatillas: Zapatilla[] = [];
 
   arregloFiltrado: Zapatilla[] = [];
 
-
+  arregloUsuario: Zapatilla[] = [];
 
   constructor(private router: Router, private bd: ServicesbdService) { }
 
@@ -40,12 +41,13 @@ export class ZapatillasPage implements OnInit {
       if(data){
         this.bd.fetchZapatilla().subscribe(res=>{
           this.arregloZapatillas = res;
+          this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
           this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
         })
       }
     })
-
   }
+
   irProducto(idzapatilla: string){
     let navigationExtras: NavigationExtras = {
       state: {

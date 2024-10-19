@@ -102,30 +102,51 @@
 
   <hr>
 
-  <div *ngFor="let zapatilla of arregloFiltrado" class="contenedor-cards espacio">
-    <div  (click)="irProducto(zapatilla.idzapatilla)">
-      <div class="margin-auto centrar contenedor-imagen espacio2">
-          <img [src]="zapatilla.zfoto" alt="Zapatilla" class="tamano-zapatilla margin-top">    
-      </div>
-        <div class="contenedor-letras-card margin-auto">
-          <p class="letras-negrita2">{{zapatilla.znombre}}</p>
-          <p class="letras-negrita2">{{zapatilla.mnombre}}</p>
+  <div *ngIf="idRol == '1' || idRol == '2'">
+    <div *ngFor="let zapatilla of arregloUsuario" class="contenedor-cards espacio">
+      <div  (click)="irProducto(zapatilla.idzapatilla)">
+        <div class="margin-auto centrar contenedor-imagen espacio2">
+            <img [src]="zapatilla.zfoto" alt="Zapatilla" class="tamano-zapatilla margin-top">    
         </div>
-        <hr>
-        <div class="centrar tamano-letras letras-negrita espacio">
-          <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}} </p>
+          <div class="contenedor-letras-card margin-auto">
+            <p class="letras-negrita2">{{zapatilla.znombre}}</p>
+            <p class="letras-negrita2">{{zapatilla.mnombre}}</p>
+          </div>
+          <hr>
+          <div class="centrar tamano-letras letras-negrita espacio">
+            <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}} </p>
+            <br>
+          </div>
         </div>
-      </div>
-        <div *ngIf="idRol=='3'" class="contenedor-botones margin-auto contenedor-flex espacio-precio espacio2">
-          <ion-button class="boton-editar" (click)="irEditar(zapatilla.idzapatilla)">
-            Editar
-            <ion-icon slot="start" name="pencil"></ion-icon>
-          </ion-button>
-          <ion-button class="boton-deshabilitar" (click)="confirmarDeshabilitar(zapatilla.idzapatilla)">
-            Deshabilitar
-            <ion-icon slot="start" name="ban"></ion-icon>
-          </ion-button>
+    </div>
+  </div>
+
+  <div *ngIf="idRol == '3'">
+    <div *ngFor="let zapatilla of arregloFiltrado" class="contenedor-cards espacio">
+      <div  (click)="irProducto(zapatilla.idzapatilla)">
+        <div class="margin-auto centrar contenedor-imagen espacio2">
+            <img [src]="zapatilla.zfoto" alt="Zapatilla" class="tamano-zapatilla margin-top">    
         </div>
+          <div class="contenedor-letras-card margin-auto">
+            <p class="letras-negrita2">{{zapatilla.znombre}}</p>
+            <p class="letras-negrita2">{{zapatilla.mnombre}}</p>
+          </div>
+          <hr>
+          <div class="centrar tamano-letras letras-negrita espacio">
+            <p class="letras-negrita2">{{zapatilla.zprecio | preciochile}} </p>
+          </div>
+        </div>
+          <div class="contenedor-botones margin-auto contenedor-flex espacio-precio espacio2">
+            <ion-button class="boton-editar" (click)="irEditar(zapatilla.idzapatilla)">
+              Editar
+              <ion-icon slot="start" name="pencil"></ion-icon>
+            </ion-button>
+            <ion-button class="boton-deshabilitar" (click)="confirmarDeshabilitar(zapatilla.idzapatilla)">
+              Deshabilitar
+              <ion-icon slot="start" name="ban"></ion-icon>
+            </ion-button>
+          </div>
+    </div>
   </div>
 
 </ion-content>
