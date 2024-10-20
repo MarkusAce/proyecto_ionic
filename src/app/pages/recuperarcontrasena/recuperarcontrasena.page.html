@@ -1,13 +1,50 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>recuperarcontrasena</ion-title>
-  </ion-toolbar>
+
+  <app-barranav titulo="Recuperar Contraseña" [tipousuario]="idRol"></app-barranav>
+
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">recuperarcontrasena</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <div class="contenedor-pag">
+    <div class="contenedor-login centrar-eje margin-auto">
+      <br>
+      <app-logo></app-logo>
+
+      <br>
+
+      <div class="contenedor-input margin-auto">
+        
+
+        <ion-input label="Email" label-placement="floating" fill="outline" type="email" placeholder="Ingrese su email. Ej: correo@gmail.com"></ion-input>
+
+        <br>
+
+      </div>
+
+      <div class="contenedor-input margin-auto centrar">
+        <p>Al ingresar su correo electronico, recibira un mail con el enlace para cambiar la contraseña.</p>
+      </div>
+
+      <br>
+
+      <br>
+
+      <div class="contenedor-input margin-auto centrar">
+        <ion-button class="color" >
+          <ion-icon slot="start" name="pencil"></ion-icon>
+          Cambiar contraseña
+        </ion-button>
+      </div>
+
+    </div>
+  </div>
+  
+
 </ion-content>
+
+<ion-footer>
+
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
+  
+</ion-footer>

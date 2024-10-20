@@ -77,8 +77,9 @@ export class ServicesbdService {
   registroComuna32: string = "INSERT or IGNORE INTO comuna(idcomuna, comnombre) VALUES(32, 'Vitacura')"
 
   //registro Usuario
-  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', '99999999', '21/09/1990', 'Admin12@', '3')"
+  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', 99999999, '21/09/1990', 'Admin12@', '3')"
 
+  //Registro Direccion
   registroDireccion: string = "INSERT or IGNORE INTO direccion(iddireccion, ddireccion, idusuario, idcomuna) VALUES(1, 'La mejor calle 1234', 1000, 7)"
 
   //lista de observables
@@ -142,6 +143,7 @@ export class ServicesbdService {
       //Tabla Marca
       await this.database.executeSql(this.registroMarca, []);
       await this.database.executeSql(this.registroMarca2, []);
+
       //Tabla rol
       await this.database.executeSql(this.registroRol, []);
       await this.database.executeSql(this.registroRol2, []);
@@ -224,7 +226,6 @@ export class ServicesbdService {
   fetchCompra(): Observable<Compra[]>{
     return this.listaCompra.asObservable();
   }
-
   fetchDetalle(): Observable<Detalle[]>{
     return this.listaDetalle.asObservable();
   }
@@ -416,16 +417,6 @@ export class ServicesbdService {
     })
   }
 
-  seleccionarNombreUsuarioPorId(idusuario: string){
-    return this.database.executeSql('SELECT uusuario FROM usuario WHERE idusuario = ?', [idusuario]).then(res =>{
-      if (res.rows.length > 0){
-        const uusuario = res.rows.item(0).uusuario;
-        return uusuario;
-      }
-      return null;
-    })
-  }
-
   seleccionaridUsuario(uusername: string){
     return this.database.executeSql('SELECT idusuario FROM usuario WHERE uusuario = ?', [uusername]).then(res =>{
       if (res.rows.length > 0){
@@ -583,11 +574,26 @@ export class ServicesbdService {
     })
   }
 
-  seleccionarFoto(id:string){
-    return this.database.executeSql('SELECT zfoto FROM zapatilla WHERE idzapatilla = ?', [id]).then(res=>{
-      if (res.rows.length >0){
-        const zfoto = res.rows.item(0).zfoto;
-        return zfoto;
+  seleccionarComparar(id:string, contra:string){
+    return this.database.executeSql('SELECT ucontrasena FROM usuario WHERE idusuario = ? AND ucontrasena = ?', [id, contra]).then(res =>{
+      if (res.rows.length > 0){
+        return true;
+      }else{
+        return null;
+      }
+    })
+  }
+
+  seleccionarSesion(usuario:string){
+    return this.database.executeSql('SELECT idusuario, idrol, uusuario FROM usuario WHERE uusuario = ?', [usuario]).then(res=>{
+      if (res.rows.length > 0){
+        return {
+          idusuario: res.rows.item(0).idusuario,
+          idrol: res.rows.item(0).idrol,
+          uusuario: res.rows.item(0).uusuario
+        }
+      }else{
+        return null;
       }
     })
   }
@@ -646,6 +652,15 @@ export class ServicesbdService {
       this.seleccionarTalla();
     }).catch(e =>{
       this.presentAlert('Error', 'Error al modificar stock: '+ JSON.stringify(e));
+    })
+  }
+
+  modificarContrasena(id:string, contrasena:string){
+    return this.database.executeSql('UPDATE usuario SET ucontrasena = ? WHERE idusuario = ?', [contrasena, id]).then(res=>{
+      this.presentAlert('Modificar', 'Contraseña modificada exitosamente')
+      return res;
+    }).catch(e =>{
+      this.presentAlert('Error', 'Error al modificar contraseña: '+ JSON.stringify(e));
     })
   }
 
@@ -800,11 +815,13 @@ export class ServicesbdService {
       return res.rows.length > 0;
     })
   }
+  
   verificarExisteRut(rut:string){
     return this.database.executeSql('SELECT * FROM usuario WHERE urut = ?',[rut]).then(res=>{
       return res.rows.length > 0;
     })
   }
+
   verificarMarca(marca:string){
     return this.database.executeSql('SELECT * FROM marca WHERE mnombre = ?', [marca]).then(res=>{
       return res.rows.length > 0;
@@ -822,6 +839,7 @@ export class ServicesbdService {
       this.presentAlert('Guardar carrito', 'Hubo un error al guardar el carrito:' + JSON.stringify(error))
     }
   }
+
   async agregarCarrito(producto: any){
     try{
       const carritoGuardado = await this.nativeStorage.getItem(`carrito_${producto.idUsuario}`);
@@ -866,6 +884,7 @@ export class ServicesbdService {
       return [];
     }
   }
+
   async eliminarDelCarrito(index: number, idUsuario: string){
     try{
       const carritoGuardado = await this.nativeStorage.getItem(`carrito_${idUsuario}`);
@@ -884,7 +903,6 @@ export class ServicesbdService {
       this.presentAlert('Quitar producto', 'Hubo un error al quitar el producto del carrito:' + JSON.stringify(error))
     }
     return null;
-    
   }
 
   async vaciarCarrito(idUsuario: string){
@@ -892,6 +910,40 @@ export class ServicesbdService {
       await this.nativeStorage.setItem(`carrito_${idUsuario}`, []);
     } catch(error){
       this.presentAlert('Vaciar carrito', 'Hubo un error al vaciar el carrito:' +  JSON.stringify(error))
+    }
+  }
+
+  async guardarSesion(usuario: string){
+    try
+    {
+      const usuarioSelec = await this.seleccionarSesion(usuario)
+      if (usuarioSelec){
+        await this.nativeStorage.setItem('usuario', JSON.stringify(usuarioSelec));
+      }
+    }catch(error){
+      this.presentAlert('Iniciar sesión', 'Hubo un error al iniciar sesión:' + JSON.stringify(error))
+    }
+  }
+
+  async traerSesion(){
+    try
+    {
+      const exists = await this.nativeStorage.keys();
+      if (exists.includes('usuario')){
+        const usuarioGuardado = await this.nativeStorage.getItem('usuario');
+        return JSON.parse(usuarioGuardado);
+      }
+    }catch(error){
+    }
+  }
+
+  async cerrarSesion(){
+    try
+    {
+      await this.nativeStorage.remove('usuario');
+      this.router.navigate(['/login']);
+    }catch(error){
+      this.presentAlert('Cerrar sesión', 'Hubo un error al cerrar la sesión:' + JSON.stringify(error))
     }
   }
 }

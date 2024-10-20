@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
 
-  <app-barranav titulo="Cambiar Contraseña" [tipousuario]="idRol"></app-barranav>
+  <app-barranav titulo="Cambiar contraseña Perfil" [tipousuario]="idRol"></app-barranav>
 
 </ion-header>
 
@@ -11,32 +11,35 @@
       <br>
       <app-logo></app-logo>
 
-      <br>
-
       <div class="contenedor-input margin-auto">
-        
+        <form [formGroup]="contrasenaForm" (ngSubmit)="validarCambioContra()">
 
-        <ion-input label="Email" label-placement="floating" fill="outline" type="email" placeholder="Ingrese su email. Ej: correo@gmail.com" [(ngModel)]="email1"></ion-input>
+          <ion-input formControlName="antigua" label="Contraseña actual" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese su contraseña"></ion-input>
+          <div *ngIf="contrasenaForm.get('antigua')?.invalid && (contrasenaForm.get('antigua')?.dirty) || contrasenaForm.get('antigua')?.touched">
+            <p *ngIf="contrasenaForm.get('antigua')?.hasError('required')" class="color-negro negrita">La contraseña no puede estar vacia.</p>
+          </div>
+
+        <br>
+        <ion-input formControlName="nueva" label="Nueva contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese su nueva contraseña."></ion-input>
+        <div *ngIf="contrasenaForm.get('nueva')?.invalid && (contrasenaForm.get('nueva')?.dirty || contrasenaForm.get('nueva')?.touched)">
+          <p *ngIf="contrasenaForm.get('nueva')?.hasError('required')" class="color-negro negrita">La contraseña no puede estar vacia.</p>
+          <p *ngIf="contrasenaForm.get('nueva')?.hasError('minimo')" class="color-negro negrita">La contraseña debe tener al menos 8 caracteres.</p>
+          <p *ngIf="contrasenaForm.get('nueva')?.hasError('mayuscula')" class="color-negro negrita">La contraseña debe contener una mayuscula.</p>
+          <p *ngIf="contrasenaForm.get('nueva')?.hasError('minuscula')" class="color-negro negrita">La contraseña debe contener una minuscula.</p>
+          <p *ngIf="contrasenaForm.get('nueva')?.hasError('numero')" class="color-negro negrita">La contraseña debe contener un número.</p>
+          <p *ngIf="contrasenaForm.get('nueva')?.hasError('especial')" class="color-negro negrita">La contraseña debe contener un caracter especial.</p>
+        </div>
 
         <br>
 
+        <ion-input formControlName="confirmar" label="Nueva contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese nuevamente la contraseña."></ion-input>
+        <div *ngIf="contrasenaForm.hasError('mismatch') && contrasenaForm.get('confirmar')?.touched">
+          <p class="color-negro negrita">Las contraseñas no coinciden</p>
+        </div>
+
+        <ion-button expand="full" type="submit" [disabled]="contrasenaForm.invalid" class="btn-color"><ion-icon slot="start" name="pencil"></ion-icon>Confirmar cambio</ion-button>
+      </form>
       </div>
-
-      <div class="contenedor-input margin-auto centrar">
-        <p>Al ingresar su correo electronico, recibira un mail con el enlace para cambiar la contraseña.</p>
-      </div>
-
-      <br>
-
-      <br>
-
-      <div class="contenedor-input margin-auto centrar">
-        <ion-button class="color" (click)="validarCambioContra()">
-          <ion-icon slot="start" name="pencil"></ion-icon>
-          Cambiar contraseña
-        </ion-button>
-      </div>
-
     </div>
   </div>
   

@@ -51,6 +51,7 @@ export class PerfilPage implements OnInit {
   
   cerrarSesion(){
     this.bd.defaultTipoUsuario();
+    this.bd.cerrarSesion();
     this.bd.presentAlert('Cerrando Sesion', 'Usted ha cerrado sesión')
     this.router.navigate(['/inicio']);
   }
@@ -62,4 +63,8 @@ export class PerfilPage implements OnInit {
   editarPerfil(){
     this.router.navigate(['/editarperfil'])
   }
+  cambiarContrasena(){
+    this.router.navigate(['/cambiarcontra'])
+  }
+  
 }

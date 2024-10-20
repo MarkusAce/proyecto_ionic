@@ -30,8 +30,16 @@ export class InicioPage implements OnInit {
             this.idUsuario = res[0].idUsuario;
             this.idRol = res[0].idRol;
           }else{
-            this.idUsuario = '';
-            this.idRol = '1';
+            this.bd.traerSesion().then(res =>{
+              if(res){
+                this.idUsuario = res.idusuario;
+                this.idRol = res.idrol;
+                this.bd.guardarTipoUsuario(res.uusuario);
+              }else{
+                this.idUsuario = '';
+                this.idRol = '1';
+              }
+            })
           }
         });
       }

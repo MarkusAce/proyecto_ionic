@@ -1,0 +1,50 @@
+ion-content{
+    --background: linear-gradient(to bottom,#D7D7D7,#F44449);
+}
+.contenedor-login{
+    width: 85%;
+    height: 60%;
+    background-color: #D03739;
+}
+
+.margin-auto{
+    margin: auto;
+}
+
+.contenedor-pag{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.contenedor-input{
+    width: 90%;
+}
+
+.centrar-eje{
+    align-items: center;
+}
+
+.centrar{
+    text-align: center;
+}
+
+.color{
+    --background: black;
+    color: white;
+    font-size: 16px;
+}
+
+ion-input{
+    --background: white;
+    color: black;
+    --highlight-color-valid: black;
+
+}
+
+.tamano-letras{
+    font-size: 13px;
+}

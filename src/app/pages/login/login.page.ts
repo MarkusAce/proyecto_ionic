@@ -48,6 +48,7 @@ export class LoginPage implements OnInit {
       this.bd.validarUsuarioLogin(usuario, contrasena).then(res =>{
         if(res){
           this.bd.guardarTipoUsuario(usuario);
+          this.bd.guardarSesion(usuario);
           this.bd.presentAlert('Acceso','Inicio de sesión exitoso.')
           this.bd.seleccionaridUsuario(usuario).then(res =>{
             if (res !== null){
@@ -66,6 +67,6 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/registrar']);
   }
   irCambiarContra(){
-    this.router.navigate(['/cambiarcontra']);
+    this.router.navigate(['/recuperarcontrasena']);
   }
 }
