@@ -135,6 +135,8 @@ export class EditarzapaPage implements OnInit {
         await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[5].stock, this.zapatillaSelec.tallas[5].talla)
         await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[6].stock, this.zapatillaSelec.tallas[6].talla)
         await this.bd.modificarTalla(this.zapatillaSelec.idzapatilla, this.datosEditados.tallas[7].stock, this.zapatillaSelec.tallas[7].talla)
+        this.bd.seleccionarZapatilla();
+        this.bd.seleccionarTalla();
         this.router.navigate(['/zapatillas']);
       }
     }

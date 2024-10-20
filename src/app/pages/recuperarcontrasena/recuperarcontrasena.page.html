@@ -16,7 +16,7 @@
       <div class="contenedor-input margin-auto">
         
 
-        <ion-input label="Email" label-placement="floating" fill="outline" type="email" placeholder="Ingrese su email. Ej: correo@gmail.com"></ion-input>
+        <ion-input label="Email" label-placement="floating" fill="outline" type="email" placeholder="Ingrese su email. Ej: correo@gmail.com" [(ngModel)]="email"></ion-input>
 
         <br>
 
@@ -31,7 +31,7 @@
       <br>
 
       <div class="contenedor-input margin-auto centrar">
-        <ion-button class="color" >
+        <ion-button class="color" (click)="recuperarContrasena()">
           <ion-icon slot="start" name="pencil"></ion-icon>
           Cambiar contraseña
         </ion-button>

@@ -42,11 +42,6 @@ export class InicioPage implements OnInit {
             })
           }
         });
-      }
-    });
-
-    this.bd.dbState().subscribe(data=>{
-      if(data){
         this.bd.fetchZapatilla().subscribe(res=>{
           this.arregloZapatillas = res;
           this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
@@ -54,7 +49,7 @@ export class InicioPage implements OnInit {
           
         })
       }
-    })
+    });
   }
 
   irProducto(idzapatilla: string){

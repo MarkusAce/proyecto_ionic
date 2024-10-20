@@ -59,9 +59,9 @@ export class CarritoPage implements OnInit {
             talla: producto.talla,
             preciounidad: producto.preciounidad
           };
-
           return this.bd.insertarDetalle(detalle).then(()=>{
-            return this.bd.modificarStock(producto.idzapatilla, producto.talla, producto.cantidad)
+            return this.bd.modificarStock(producto.idZapatilla, producto.talla, producto.cantidad).then(()=>{
+            })
           });
         });
           
@@ -69,6 +69,7 @@ export class CarritoPage implements OnInit {
             this.bd.vaciarCarrito(this.idUsuario)
             this.bd.seleccionarComprasConDetalles();
             this.bd.presentAlert('Aprobada','La compra ha sido realizada con exito.')
+            this.bd.NotificacionCompra();
             this.router.navigate(['/inicio'])
           })
       }

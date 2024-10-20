@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { Detalle } from './detalle';
 import { Compra } from './compra';
 import { Detallescompra } from './detallescompra';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 @Injectable({
   providedIn: 'root'
@@ -269,6 +270,15 @@ export class ServicesbdService {
         return res.rows.item(0).mnombre;
       }
       return undefined;
+    })
+  }
+
+  async seleccionarCorreo(id:string): Promise<string | string>{
+    return this.database.executeSql('SELECT ucorreo FROM usuario WHERE idusuario = ?', [id]).then(res =>{
+      if (res.rows.length >0){
+        return res.rows.item(0).ucorreo;
+      }
+      return '';
     })
   }
 
@@ -733,6 +743,8 @@ export class ServicesbdService {
   insertarDetalle(detalle: any){
     return this.database.executeSql('INSERT INTO detalle (dcantidad, dsubtotal, dtalla, dpreciounidad, idcompra, idzapatilla) VALUES (?, ?, ?, ?, ?, ?)', [detalle.cantidad, detalle.subtotal,detalle.talla, detalle.preciounidad, detalle.idcompra, detalle.idzapatilla]).then(res =>{
       this.seleccionarDetalle();
+    }).catch(e =>{
+      this.presentAlert('Detalle', 'Error: ' + JSON.stringify(e));
     })
   }
 
@@ -944,6 +956,22 @@ export class ServicesbdService {
       this.router.navigate(['/login']);
     }catch(error){
       this.presentAlert('Cerrar sesión', 'Hubo un error al cerrar la sesión:' + JSON.stringify(error))
+    }
+  }
+
+  async NotificacionCompra() {
+    const permStatus = await LocalNotifications.requestPermissions();
+    if (permStatus.display === 'granted') {
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            id: 1,
+            title: "Compra realizada",
+            body: "Se ha realizado una compra en tu cuenta.",
+            schedule: { at: new Date(Date.now() + 1000 * 1) },
+          }
+        ]
+      });
     }
   }
 }
