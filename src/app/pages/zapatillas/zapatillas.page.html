@@ -12,9 +12,8 @@
       <div class="contenedor-lista margin-auto">
         <ion-list class="sin-padding">
           <ion-item>
-            <ion-select aria-label="Marca" interface="action-sheet" placeholder="Marca">
-              <ion-select-option value="Adidas">Adidas</ion-select-option>
-              <ion-select-option value="Puma">Puma</ion-select-option>
+            <ion-select aria-label="Marca" interface="action-sheet" placeholder="Marca" [(ngModel)]="marcaSeleccionada" (ionChange)="filtrarZapatillas()">
+              <ion-select-option *ngFor="let marca of arregloMarcas" [value]="marca.idmarca">{{marca.mnombre}} </ion-select-option>
             </ion-select>
           </ion-item>
         </ion-list>
@@ -23,35 +22,15 @@
 
       <br>
 
-      <p class="color-negro negrita">Filtrar por talla</p>
-
-      <ion-list class="sin-padding">
-        <ion-item>
-          <ion-select aria-label="Talla" interface="action-sheet" placeholder="Talla (US)">
-            <ion-select-option value="7.5">7.5 (25.5 cms)</ion-select-option>
-            <ion-select-option value="8">8 (26 cms)</ion-select-option>
-            <ion-select-option value="8.5">8.5 (26.5 cms)</ion-select-option>
-            <ion-select-option value="9">9 (27 cms)</ion-select-option>
-            <ion-select-option value="9.5">9.5 (27.5 cms)</ion-select-option>
-            <ion-select-option value="10">10 (28 cms)</ion-select-option>
-            <ion-select-option value="10.5">10.5 (28.5 cms)</ion-select-option>
-            <ion-select-option value="11">11 (29 cms)</ion-select-option>
-            <ion-select-option value="11.5">11.5 (29.5 cms)</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-list>
-
-      <br>
-
       
     <ion-menu-toggle>
-      <ion-button class="boton-vaciar">
+      <ion-button class="boton-vaciar" (click)="limpiarFiltro()">
         Limpiar
         <ion-icon slot="start" name="trash"></ion-icon>
       </ion-button>
     </ion-menu-toggle>
     <ion-menu-toggle>
-      <ion-button class="boton-filtro">
+      <ion-button class="boton-filtro" (click)="filtrarZapatillas()">
         Filtrar
         <ion-icon slot="start" name="filter"></ion-icon>
       </ion-button>
@@ -70,7 +49,10 @@
 
   <hr>
 
-  <app-barrabusqueda mensaje="Buscar zapatilla..."></app-barrabusqueda>
+  <div class="cuadrado-busqueda margin-auto contenedor-flex">
+    <input type="text" class="barra-busqueda margin-auto" placeholder="Buscar zapatilla por nombre..." [(ngModel)]="terminoBusqueda">
+    <img src="assets/lupa.png" alt="" class="tamano-lupa margin-topbot-auto"(click)="irBusqueda()">
+  </div>
 
   <hr>
     
@@ -100,6 +82,12 @@
     </div>
   </div>
 
+  <hr>
+
+  <div *ngIf="resultado !== ''">
+    <p class="color-negro tamano-letras">Resultados para la busqueda: "{{resultado}}"</p>
+  </div>
+  
   <hr>
 
   <div *ngIf="idRol == '1' || idRol == '2'">

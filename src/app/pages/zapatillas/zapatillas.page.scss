@@ -169,3 +169,39 @@ ion-title{
 .espacio2{
     margin-bottom: 5px;
 }
+
+.cuadrado-busqueda{
+    width: 90%;
+    height: 60px;
+    background-color: #D03739;
+    border-radius: 10px;
+}
+
+
+.barra-busqueda{
+    height: 100%;
+    width: 90%;
+    background-color: #D03739;
+    color: white;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    margin-left: 2px;
+    font-weight: 500;
+
+}
+.barra-busqueda::placeholder{
+    color: white;
+    opacity: 0.9;
+}
+
+.tamano-lupa{
+    width: 12%;
+    height: 65%;
+    margin-right: 6px;
+}
+
+.margin-topbot-auto{
+    margin-top: auto;
+    margin-bottom: auto;
+}

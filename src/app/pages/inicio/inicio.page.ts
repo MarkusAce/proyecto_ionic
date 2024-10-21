@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
+import { Usuario } from 'src/app/services/usuario';
 import { Zapatilla } from 'src/app/services/zapatilla';
 
 @Component({
@@ -59,6 +60,16 @@ export class InicioPage implements OnInit {
       }
     }
     this.router.navigate(['/producto'], navigationExtras)
+  }
+
+  irBusqueda(){
+    let navigationExtras: NavigationExtras = {
+      state: {
+        termino: this.terminoBusqueda
+      }
+    }
+    this.terminoBusqueda= ''
+    this.router.navigate(['/zapatillas'], navigationExtras)
   }
 }
 

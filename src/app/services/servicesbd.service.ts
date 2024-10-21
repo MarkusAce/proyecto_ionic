@@ -78,10 +78,10 @@ export class ServicesbdService {
   registroComuna32: string = "INSERT or IGNORE INTO comuna(idcomuna, comnombre) VALUES(32, 'Vitacura')"
 
   //registro Usuario
-  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1000, 'Admin', 'Admin@gmail.com', '999999999', 99999999, '21/09/1990', 'Admin12@', '3')"
+  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1, 'admin', 'admin@gmail.com', '999999999', 99999999, '21/09/1990', 'Admin12@', 3)"
 
   //Registro Direccion
-  registroDireccion: string = "INSERT or IGNORE INTO direccion(iddireccion, ddireccion, idusuario, idcomuna) VALUES(1, 'La mejor calle 1234', 1000, 7)"
+  registroDireccion: string = "INSERT or IGNORE INTO direccion(iddireccion, ddireccion, idusuario, idcomuna) VALUES(1, 'La mejor calle 1234', 1, 7)"
 
   //lista de observables
   listaMarca = new BehaviorSubject([]);
@@ -116,7 +116,7 @@ export class ServicesbdService {
   crearBD(){
     this.platform.ready().then(()=>{
       this.sqlite.create({
-        name: 'bdzapfasttttt.db',
+        name: 'bdzapfastttttt.db',
         location: 'default'
       }).then((bd:SQLiteObject)=>{
         this.database = bd;
@@ -447,8 +447,24 @@ export class ServicesbdService {
     })
   }
 
+  async seleccionarIdPorCorreo(id:string): Promise <string | null>{
+    try {
+      return this.database.executeSql('SELECT idusuario FROM usuario WHERE ucorreo = ?', [id]).then(res=>{
+        if (res.rows.length > 0){
+          const idUsuario = res.rows.item(0).idusuario;
+          return String(idUsuario);
+        }
+        return null;
+      })
+    }catch(error){
+      this.presentAlert('Error ID', JSON.stringify(error))
+      return null;
+    }
+  }
+
   seleccionarUsuarioPorId(id: string){
     return this.database.executeSql('SELECT u.idusuario AS usuarioid, u.uusuario, u.ucorreo, u.urut, u.utelefono, d.ddireccion, d.idcomuna, u.ufechanac, u.ucontrasena, u.uimagen, u.idrol FROM usuario u JOIN direccion d ON u.idusuario = d.idusuario WHERE u.idusuario = ?', [id]).then(res=>{
+
       let item: Usuarioinfo | null = null;
       if (res.rows.length > 0){
           item = {
@@ -466,8 +482,12 @@ export class ServicesbdService {
           };
       }
       return item;
+    }).catch(e =>{
+      this.presentAlert('Error', JSON.stringify(e))
+      return null;
     })
   }
+
 
   seleccionarDireccion(){
     return this.database.executeSql('SELECT * FROM direccion', []).then(res=>{
@@ -581,6 +601,15 @@ export class ServicesbdService {
       this.listaCompraDetalle.next(items as any);
     }).catch(e=>{
       this.presentAlert("Error", "Error al obtener compras con detalles: " + JSON.stringify(e));
+    })
+  }
+
+  seleccionarStock(id:string, talla:number){
+    return this.database.executeSql('SELECT tstock FROM talla WHERE idzapatilla = ? AND ttalla = ?', [id, talla]).then(res=>{
+      if(res.rows.length> 0){
+        return res.rows.item(0).tstock;
+      }
+      return 0;
     })
   }
 
@@ -974,4 +1003,5 @@ export class ServicesbdService {
       });
     }
   }
+
 }

@@ -40,6 +40,7 @@ export class PerfilPage implements OnInit {
           }
 
           this.bd.seleccionarUsuarioPorId(this.idUsuario).then(res =>{
+            console.log(res);
             this.datosUsuario = res;
           }).catch(error =>{
             this.bd.presentAlert('Error', 'Error al cargar los datos del usuario'+ JSON.stringify(error))

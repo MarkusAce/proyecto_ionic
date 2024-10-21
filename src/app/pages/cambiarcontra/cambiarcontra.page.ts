@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
@@ -12,13 +12,30 @@ import { ServicesbdService } from 'src/app/services/servicesbd.service';
 export class CambiarcontraPage implements OnInit {
 
   contrasenaForm!: FormGroup;
+  contrasenacodigoForm!: FormGroup;
 
   idUsuario: string = '';
   idRol: string = '';
 
-  constructor(private router: Router,private bd: ServicesbdService, private formBuilder: FormBuilder) { }
+  codigo: string = '';
+  email: string = '';
+
+  constructor(private router: Router,private bd: ServicesbdService, private formBuilder: FormBuilder, private activerouter: ActivatedRoute) { }
 
   ngOnInit() {
+    this.activerouter.queryParams.subscribe(params => {
+      if(this.router.getCurrentNavigation()?.extras.state){
+        this.codigo = this.router.getCurrentNavigation()?.extras?.state?.['codigo'];
+        this.email = this.router.getCurrentNavigation()?.extras?.state?.['email'];
+      }
+    })
+     
+    this.contrasenacodigoForm = this.formBuilder.group({
+      codigo: ['', [Validators.required]],
+      nueva: [null, [Validators.required, this.contrasenaValidador]],
+      confirmar: ['', Validators.required]
+    }, {validator: this.contrasenasIguales});
+
     this.contrasenaForm = this.formBuilder.group({
       antigua: ['', [Validators.required]],
       nueva: [null, [Validators.required, this.contrasenaValidador]],
@@ -54,6 +71,24 @@ export class CambiarcontraPage implements OnInit {
         }
       }else{
         this.bd.presentAlert('Error', 'La contraseña antigua es incorrecta');
+      }
+    }
+  }
+
+  async validarCambioContraCodigo(){
+    if (this.contrasenacodigoForm.valid){
+      const {codigo, nueva} = this.contrasenacodigoForm.value;
+      if(codigo == this.codigo){
+        const idUsuario = await this.bd.seleccionarIdPorCorreo(this.email);
+        if (idUsuario){
+          const actualizado = await this.bd.modificarContrasena(idUsuario, nueva);
+          if(actualizado){
+            this.bd.seleccionarUsuario();
+            this.router.navigate(['/login'])
+          } else{
+            this.bd.presentAlert('Error', 'La contraseña no se pudo actualizar');
+          }
+        }
       }
     }
   }

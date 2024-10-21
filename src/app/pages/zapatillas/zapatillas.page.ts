@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { Marca } from 'src/app/services/marca';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 import { Zapatilla } from 'src/app/services/zapatilla';
 
@@ -10,7 +11,8 @@ import { Zapatilla } from 'src/app/services/zapatilla';
 })
 export class ZapatillasPage implements OnInit {
 
-  terminoBusqueda: string = "";
+  terminoBusqueda: string = '';
+  resultado: string = '';
   idUsuario: string = '';
   idRol: string = '';
 
@@ -20,9 +22,23 @@ export class ZapatillasPage implements OnInit {
 
   arregloUsuario: Zapatilla[] = [];
 
-  constructor(private router: Router, private bd: ServicesbdService) { }
+  marcaSeleccionada: string | null = null;
+
+  arregloMarcas: any = [
+    {
+      id: '',
+      nombre: ''
+    }
+  ];
+
+  constructor(private router: Router, private bd: ServicesbdService, private activerouter: ActivatedRoute) { }
 
   ngOnInit() {
+    this.activerouter.queryParams.subscribe(params => {
+      if(this.router.getCurrentNavigation()?.extras.state){
+        this.terminoBusqueda = this.router.getCurrentNavigation()?.extras?.state?.['termino'];
+      }
+    })
     this.bd.dbState().subscribe(data =>{
       if(data){
         this.bd.fetchTipoUsuario().subscribe(res =>{
@@ -34,18 +50,18 @@ export class ZapatillasPage implements OnInit {
             this.idRol = '1';
           }
         });
+        this.cargarZapatillas();
+        if (this.terminoBusqueda !== ''){
+          this.irBusqueda();
+        }
+        this.bd.fetchMarca().subscribe(res=>{
+          this.arregloMarcas = res;
+        })
+        
       }
+      
     });
 
-    this.bd.dbState().subscribe(data=>{
-      if(data){
-        this.bd.fetchZapatilla().subscribe(res=>{
-          this.arregloZapatillas = res;
-          this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
-          this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
-        })
-      }
-    })
   }
 
   irProducto(idzapatilla: string){
@@ -79,4 +95,57 @@ export class ZapatillasPage implements OnInit {
     this.router.navigate(['/zapatillas'])
   }
 
+  cargarZapatillas(){
+    this.bd.fetchZapatilla().subscribe(res=>{
+      this.arregloZapatillas = res;
+
+      if (this.idRol == '1' || this.idRol == '2'){
+        this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
+      }else if (this.idRol == '3'){
+        this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
+      }
+    })
+  }
+
+  filtrarZapatillas(){
+    if ( this.idRol == '1' || this.idRol == '2' ){
+        this.arregloUsuario = this.arregloZapatillas.filter(zapatilla =>{
+        const marcaCoincide = this.marcaSeleccionada ? zapatilla.idmarca === this.marcaSeleccionada : true;
+  
+        return zapatilla.zestado === 0 && marcaCoincide;
+      });
+    }else if (this.idRol == '3'){
+      this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla =>{
+        const marcaCoincide = this.marcaSeleccionada? zapatilla.idmarca === this.marcaSeleccionada : true;
+
+        return marcaCoincide;
+      })
+    }
+      
+  }
+
+  limpiarFiltro(){
+    this.marcaSeleccionada = null;
+    if (this.idRol== '1' || this.idRol == '2'){
+      this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
+    } else if (this.idRol == '3'){
+      this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0);
+    }
+  }
+
+  irBusqueda(){
+    this.resultado = this.terminoBusqueda;
+    if (this.terminoBusqueda == ''){
+      this.cargarZapatillas();
+    }else{
+      if(this.idRol == '1' || this.idRol == '2'){
+        this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla. znombre.toLowerCase(). includes(this.terminoBusqueda.toLowerCase()) && zapatilla.zestado === 0 && zapatilla.tallas.some(t =>t.stock > 0));
+        
+        this.terminoBusqueda = '';
+      } else if (this.idRol == '3'){
+        this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.znombre.toLowerCase().includes(this.terminoBusqueda.toLowerCase()) && zapatilla.zestado === 0);
+        this.terminoBusqueda = '';
+      }
+    }
+  }
 }

@@ -41,7 +41,7 @@ export class LoginPage implements OnInit {
 
   
   validarLogin(){
-    const usuario: string = this.loginForm.get('usuario')?.value;
+    const usuario: string = this.loginForm.get('usuario')?.value.toLowerCase();
     const contrasena: string = this.loginForm.get('contrasena')?.value;
 
     if (this.loginForm.valid){

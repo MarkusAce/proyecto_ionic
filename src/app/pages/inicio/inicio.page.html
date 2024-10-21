@@ -10,7 +10,10 @@
   
   <app-logo></app-logo>
 
-   <app-barrabusqueda mensaje="Buscar zapatilla..."></app-barrabusqueda>
+  <div class="cuadrado-busqueda margin-auto contenedor-flex">
+    <input type="text" class="barra-busqueda margin-auto" placeholder="Buscar zapatilla por nombre..." [(ngModel)]="terminoBusqueda">
+    <img src="assets/lupa.png" alt="" class="tamano-lupa margin-topbot-auto"(click)="irBusqueda()">
+  </div>
 
    <br>
   

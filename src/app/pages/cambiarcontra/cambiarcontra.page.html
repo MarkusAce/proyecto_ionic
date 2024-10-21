@@ -11,7 +11,7 @@
       <br>
       <app-logo></app-logo>
 
-      <div class="contenedor-input margin-auto">
+      <div *ngIf="idRol == '2' || idRol == '3'" class="contenedor-input margin-auto">
         <form [formGroup]="contrasenaForm" (ngSubmit)="validarCambioContra()">
 
           <ion-input formControlName="antigua" label="Contraseña actual" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese su contraseña"></ion-input>
@@ -32,12 +32,42 @@
 
         <br>
 
-        <ion-input formControlName="confirmar" label="Nueva contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese nuevamente la contraseña."></ion-input>
+        <ion-input formControlName="confirmar" label="Repita su contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese nuevamente la contraseña."></ion-input>
         <div *ngIf="contrasenaForm.hasError('mismatch') && contrasenaForm.get('confirmar')?.touched">
           <p class="color-negro negrita">Las contraseñas no coinciden</p>
         </div>
 
         <ion-button expand="full" type="submit" [disabled]="contrasenaForm.invalid" class="btn-color"><ion-icon slot="start" name="pencil"></ion-icon>Confirmar cambio</ion-button>
+      </form>
+      </div>
+
+      <div *ngIf="idRol == '1'" class="contenedor-input margin-auto">
+        <form [formGroup]="contrasenacodigoForm" (ngSubmit)="validarCambioContraCodigo()">
+
+          <ion-input formControlName="codigo" label="Codigo recibido" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese el codigo enviado"></ion-input>
+          <div *ngIf="contrasenacodigoForm.get('codigo')?.invalid && (contrasenacodigoForm.get('codigo')?.dirty) || contrasenacodigoForm.get('codigo')?.touched">
+            <p *ngIf="contrasenacodigoForm.get('codigo')?.hasError('required')" class="color-negro negrita">La contraseña no puede estar vacia.</p>
+          </div>
+
+        <br>
+        <ion-input formControlName="nueva" label="Nueva contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese su nueva contraseña."></ion-input>
+        <div *ngIf="contrasenacodigoForm.get('nueva')?.invalid && (contrasenacodigoForm.get('nueva')?.dirty || contrasenacodigoForm.get('nueva')?.touched)">
+          <p *ngIf="contrasenacodigoForm.get('nueva')?.hasError('required')" class="color-negro negrita">La contraseña no puede estar vacia.</p>
+          <p *ngIf="contrasenacodigoForm.get('nueva')?.hasError('minimo')" class="color-negro negrita">La contraseña debe tener al menos 8 caracteres.</p>
+          <p *ngIf="contrasenacodigoForm.get('nueva')?.hasError('mayuscula')" class="color-negro negrita">La contraseña debe contener una mayuscula.</p>
+          <p *ngIf="contrasenacodigoForm.get('nueva')?.hasError('minuscula')" class="color-negro negrita">La contraseña debe contener una minuscula.</p>
+          <p *ngIf="contrasenacodigoForm.get('nueva')?.hasError('numero')" class="color-negro negrita">La contraseña debe contener un número.</p>
+          <p *ngIf="contrasenacodigoForm.get('nueva')?.hasError('especial')" class="color-negro negrita">La contraseña debe contener un caracter especial.</p>
+        </div>
+
+        <br>
+
+        <ion-input formControlName="confirmar" label="Repita su contraseña" label-placement="floating" fill="outline" class="espacio" type="password" placeholder="Ingrese nuevamente la contraseña."></ion-input>
+        <div *ngIf="contrasenacodigoForm.hasError('mismatch') && contrasenaForm.get('confirmar')?.touched">
+          <p class="color-negro negrita">Las contraseñas no coinciden</p>
+        </div>
+
+        <ion-button expand="full" type="submit" [disabled]="contrasenacodigoForm.invalid" class="btn-color"><ion-icon slot="start" name="pencil"></ion-icon>Confirmar cambio</ion-button>
       </form>
       </div>
     </div>

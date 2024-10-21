@@ -50,27 +50,43 @@ export class CarritoPage implements OnInit {
     
     this.bd.insertarCompra(fechaFormateada, total,estado, this.idUsuario).then(res=>{
       if(res){
-        const detallePromises = this.productosCarrito.map(producto =>{
-          const detalle = {
-            idcompra: res,
-            idzapatilla: producto.idZapatilla,
-            cantidad: producto.cantidad,
-            subtotal: producto.total,
-            talla: producto.talla,
-            preciounidad: producto.preciounidad
-          };
-          return this.bd.insertarDetalle(detalle).then(()=>{
-            return this.bd.modificarStock(producto.idZapatilla, producto.talla, producto.cantidad).then(()=>{
-            })
-          });
+        const detallePromises = this.productosCarrito.map((producto, index) =>{
+          return this.bd.seleccionarStock(producto.idZapatilla, producto.talla).then(res =>{
+            if (res >= producto.cantidad){
+              const detalle = {
+                idcompra: res,
+                idzapatilla: producto.idZapatilla,
+                cantidad: producto.cantidad,
+                subtotal: producto.total,
+                talla: producto.talla,
+                preciounidad: producto.preciounidad
+              };
+              return this.bd.insertarDetalle(detalle).then(()=>{
+                return this.bd.modificarStock(producto.idZapatilla, producto.talla, producto.cantidad).then(()=>{
+                })
+              });
+
+            }else{
+              const mensaje = `No hay stock suficiente el producto Número ${index + 1} en el carrito`
+              this.bd.presentAlert('Comprar producto', mensaje);
+
+              return null;
+            }
+          })
+          
         });
           
-          Promise.all(detallePromises).then(()=>{
-            this.bd.vaciarCarrito(this.idUsuario)
-            this.bd.seleccionarComprasConDetalles();
-            this.bd.presentAlert('Aprobada','La compra ha sido realizada con exito.')
-            this.bd.NotificacionCompra();
-            this.router.navigate(['/inicio'])
+          Promise.all(detallePromises).then((res)=>{
+            const agregado = res.filter(res => res !== null);
+            if (agregado.length ===detallePromises.length){
+              
+              this.bd.vaciarCarrito(this.idUsuario)
+              this.bd.seleccionarComprasConDetalles();
+              this.bd.presentAlert('Aprobada','La compra ha sido realizada con exito.')
+              this.bd.NotificacionCompra();
+              this.router.navigate(['/inicio'])
+            }
+            
           })
       }
     })

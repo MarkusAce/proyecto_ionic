@@ -28,6 +28,6 @@ export class ApirestService {
         "codigo": codigo,
       }
     }
-    return this.http.post(this.API_URL, body, {headers});
+    return this.http.post(this.API_URL, body, {headers, responseType:'text'});
   }
 }

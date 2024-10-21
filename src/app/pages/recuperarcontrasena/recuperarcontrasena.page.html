@@ -15,28 +15,24 @@
 
       <div class="contenedor-input margin-auto">
         
+        <form [formGroup]="emailForm" (ngSubmit)="recuperarContrasena()">
 
-        <ion-input label="Email" label-placement="floating" fill="outline" type="email" placeholder="Ingrese su email. Ej: correo@gmail.com" [(ngModel)]="email"></ion-input>
+        <ion-input formControlName="email" label="Correo" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su email. Ej: correo@gmail.com"></ion-input>
+        <div *ngIf="emailForm.get('email')?.invalid && (emailForm.get('email')?.dirty) || emailForm.get('email')?.touched">
+          <p *ngIf="emailForm.get('email')?.hasError('required')" class="color-negro negrita">El email no puede estar vacio </p>
+          <p *ngIf="emailForm.get('email')?.hasError('email')" class="color-negro negrita">Por favor ingrese un email valido.</p>
+        </div>
+        
+        <br>
+        <div class="contenedor-input margin-auto centrar">
+          <p>Al ingresar su correo electronico, recibira un correo con un codigo que debe ingresar a continuacion.</p>
+        </div>
 
         <br>
 
+        <ion-button expand="full" type="submit" [disabled]="emailForm.invalid" class="btn-color"><ion-icon slot="start" name="pencil"></ion-icon>Cambiar contraseña</ion-button>
+      </form>
       </div>
-
-      <div class="contenedor-input margin-auto centrar">
-        <p>Al ingresar su correo electronico, recibira un mail con el enlace para cambiar la contraseña.</p>
-      </div>
-
-      <br>
-
-      <br>
-
-      <div class="contenedor-input margin-auto centrar">
-        <ion-button class="color" (click)="recuperarContrasena()">
-          <ion-icon slot="start" name="pencil"></ion-icon>
-          Cambiar contraseña
-        </ion-button>
-      </div>
-
     </div>
   </div>
   

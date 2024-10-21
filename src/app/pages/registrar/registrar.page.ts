@@ -72,7 +72,7 @@ export class RegistrarPage implements OnInit {
 
    validarUsuario(control: AbstractControl): Promise<ValidationErrors | null>{
      
-     const usuario = control?.value;
+     const usuario = control?.value.toLowerCase();
      
      if (usuario){
         return this.bd.verificarUsuario(usuario).then(existe =>{
@@ -87,7 +87,7 @@ export class RegistrarPage implements OnInit {
 
   validarCorreo(control: AbstractControl): Promise<ValidationErrors | null>{
 
-    const email = control?.value;
+    const email = control?.value.toLowerCase();
 
     if (email){
       return this.bd.verificarEmail(email).then(existe =>{
@@ -244,8 +244,8 @@ export class RegistrarPage implements OnInit {
 
   validarRegistro(){
     if (this.registroForm.valid){
-      const usuario = this.registroForm.get('usuario1')?.value;
-      const email = this.registroForm.get('email1')?.value;
+      const usuario = this.registroForm.get('usuario1')?.value.toLowerCase();
+      const email = this.registroForm.get('email1')?.value.toLowerCase();
       const rut = this.registroForm.get('rut')?.value;
       const telefono = this.registroForm.get('telefono')?.value;
       const fechanac = this.registroForm.get('fechanac')?.value;
@@ -263,8 +263,8 @@ export class RegistrarPage implements OnInit {
 
   validarRegistroAdmin(){
     if (this.registroForm.valid){
-      const usuario = this.registroForm.get('usuario1')?.value;
-      const email = this.registroForm.get('email1')?.value;
+      const usuario = this.registroForm.get('usuario1')?.value.toLowerCase();
+      const email = this.registroForm.get('email1')?.value.toLowerCase();
       const rut = this.registroForm.get('rut')?.value;
       const telefono = this.registroForm.get('telefono')?.value;
       const fechanac = this.registroForm.get('fechanac')?.value;
