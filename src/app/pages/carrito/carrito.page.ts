@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
@@ -38,59 +38,38 @@ export class CarritoPage implements OnInit {
   }
 
   comprar(){
-
-    const fechaHoy = new Date();
-    const dia = String(fechaHoy.getDate()).padStart(2,'0');
-    const mes = String(fechaHoy.getMonth() + 1).padStart(2,'0');
-    const anio = fechaHoy.getFullYear();
-
-    const fechaFormateada = `${dia}-${mes}-${anio}`;
     const total = this.calcularTotal();
-    const estado: string = 'Pendiente';
-    
-    this.bd.insertarCompra(fechaFormateada, total,estado, this.idUsuario).then(res=>{
-      if(res){
-        const detallePromises = this.productosCarrito.map((producto, index) =>{
-          return this.bd.seleccionarStock(producto.idZapatilla, producto.talla).then(res =>{
-            if (res >= producto.cantidad){
-              const detalle = {
-                idcompra: res,
-                idzapatilla: producto.idZapatilla,
-                cantidad: producto.cantidad,
-                subtotal: producto.total,
-                talla: producto.talla,
-                preciounidad: producto.preciounidad
-              };
-              return this.bd.insertarDetalle(detalle).then(()=>{
-                return this.bd.modificarStock(producto.idZapatilla, producto.talla, producto.cantidad).then(()=>{
-                })
-              });
 
-            }else{
-              const mensaje = `No hay stock suficiente el producto Número ${index + 1} en el carrito`
-              this.bd.presentAlert('Comprar producto', mensaje);
-
-              return null;
-            }
-          })
-          
-        });
-          
-          Promise.all(detallePromises).then((res)=>{
-            const agregado = res.filter(res => res !== null);
-            if (agregado.length ===detallePromises.length){
-              
-              this.bd.vaciarCarrito(this.idUsuario)
-              this.bd.seleccionarComprasConDetalles();
-              this.bd.presentAlert('Aprobada','La compra ha sido realizada con exito.')
-              this.bd.NotificacionCompra();
-              this.router.navigate(['/inicio'])
-            }
-            
-          })
+    let navigationExtras: NavigationExtras = {
+      state: {
+        total: total,
+        productos: this.productosCarrito,
       }
+    };
+
+    const stockPromises = this.productosCarrito.map((producto)=>{
+      return this.bd.seleccionarStock(producto.idZapatilla, producto.talla);
+    });
+
+    Promise.all(stockPromises).then((res)=>{
+      const mensajeSinStock: string[] = [];
+
+      res.forEach((stock, index)=>{
+        if (stock < this.productosCarrito[index].cantidad){
+          mensajeSinStock.push(`No hay suficiente stock para el producto número ${index +1}` );
+        }
+      });
+
+      if(mensajeSinStock.length > 0){
+        const mensaje = mensajeSinStock.join('n');
+        this.bd.presentAlert('Sin stock', mensaje);
+      }else{
+        this.router.navigate(['/pasarela'], navigationExtras);
+      }
+
     })
   }
+
   quitar(index: number){
     this.bd.eliminarDelCarrito(index, this.idUsuario).then(res =>{
       if (res){

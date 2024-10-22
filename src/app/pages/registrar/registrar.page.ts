@@ -122,7 +122,7 @@ export class RegistrarPage implements OnInit {
       errors['vacia'] = true;
       return errors;
     }
-    const mayusculaValid = /[A-Z]/.test(contrasena);
+    const mayusculaValid = /[A-Z]/.test(contrasena);  
     const minusculaValid = /[a-z]/.test(contrasena);
     const numeroValid = /\d/.test(contrasena);
     const especialValid = /[@$!%*?&]/.test(contrasena);

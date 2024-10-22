@@ -84,8 +84,8 @@
 
   <hr>
 
-  <div *ngIf="resultado !== ''">
-    <p class="color-negro tamano-letras">Resultados para la busqueda: "{{resultado}}"</p>
+  <div *ngIf="resultado !== ''" class="contenedor-resultado redondear margin-auto">
+    <p class="color-negro tamano-letras negrita2 centrar">Resultados para la busqueda: "{{resultado}}"</p>
   </div>
   
   <hr>
@@ -136,6 +136,39 @@
           </div>
     </div>
   </div>
+
+  <div *ngIf="tamanoListaUsuario === 0 && (idRol == '1' || idRol == '2')">
+    <br>
+    <br>
+    <div class="contenedor-resultado redondear margin-auto">
+      <p class="color-negro tamano-letras negrita2 centrar">No se han encontrado resultados."</p>
+    </div>
+  </div>
+  
+  <div *ngIf="tamanoListaAdmin === 0 && idRol== '3'">
+    <br>
+    <br>
+    <div class="contenedor-resultado redondear margin-auto">
+      <p class="color-negro tamano-letras negrita2 centrar">No se han encontrado resultados."</p>
+    </div>
+  </div>
+
+  <div *ngIf="noResultados && (idRol == '1' || idRol == '2')">
+    <br>
+    <br>
+    <div class="contenedor-resultado redondear margin-auto">
+      <p class="color-negro tamano-letras negrita2 centrar">No se han encontrado resultados."</p>
+    </div>
+  </div>
+  
+  <div *ngIf="noResultados && idRol== '3'">
+    <br>
+    <br>
+    <div class="contenedor-resultado redondear margin-auto">
+      <p class="color-negro tamano-letras negrita2 centrar">No se han encontrado resultados."</p>
+    </div>
+  </div>
+ 
 
 </ion-content>
 

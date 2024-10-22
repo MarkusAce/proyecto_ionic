@@ -1,0 +1,75 @@
+ion-content{
+    --background: linear-gradient(to bottom,#D7D7D7,#F44449);
+}
+.contenedor-pasarela{
+    width: 85%;
+    min-height: 70%;
+    background-color: #D03739;
+}
+
+.margin-auto{
+    margin: auto;
+}
+
+.contenedor-pag{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.contenedor-input{
+    width: 90%;
+}
+
+.centrar-eje{
+    align-items: center;
+}
+
+.centrar{
+    text-align: center;
+}
+
+.color{
+    --background: black;
+    color: white;
+    font-size: 16px;
+}
+
+ion-input{
+    --background: white;
+    color: black;
+    --highlight-color-valid: black;
+}
+
+.seleccomuna{
+    --background: white;
+    color: black;
+    --highlight-color-valid: black;
+    --border-color: white;
+    --color-focused: black;
+}
+
+.sin-padding{
+    padding: 0px;
+}
+
+.tamano-letras{
+    font-size: 20px;
+}
+
+.espacio{
+    margin-bottom: 5px;
+}
+.btn-color{
+    --background: black;
+    color: white;
+}
+.color-negro{
+    color: black;
+}
+.negrita{
+    font-weight: 500;
+}

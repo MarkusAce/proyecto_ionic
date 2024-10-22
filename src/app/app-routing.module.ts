@@ -68,9 +68,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/recuperarcontrasena/recuperarcontrasena.module').then( m => m.RecuperarcontrasenaPageModule)
   },
   {
+    path: 'pasarela',
+    loadChildren: () => import('./pages/pasarela/pasarela.module').then( m => m.PasarelaPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
-  }
+  },
   
   
 ];

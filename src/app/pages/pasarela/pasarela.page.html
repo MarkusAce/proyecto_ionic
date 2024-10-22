@@ -1,0 +1,57 @@
+<ion-header >
+  <app-barranav titulo="Pasarela" [tipousuario]="idRol"></app-barranav>
+</ion-header>
+
+<ion-content>
+  <div class="contenedor-pag">
+    <div class="contenedor-pasarela margin-auto centrar-eje">
+
+      <br>
+      <app-logo></app-logo>
+
+      <div class="centrar">
+        <p class="tamano-letras negrita">Monto total a pagar: {{total | preciochile}}</p>
+      </div>
+
+      <div>
+        <form [formGroup]="pasarelaForm" (ngSubmit)="validarPasarela()">
+
+          <div class="contenedor-input margin-auto">
+            <ion-input formControlName="nombre" label="Nombre del titular" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese su Nombre..." ></ion-input>
+          <div *ngIf="pasarelaForm.get('nombre')?.invalid && (pasarelaForm.get('nombre')?.dirty) || pasarelaForm.get('nombre')?.touched">
+            <p *ngIf="pasarelaForm.get('nombre')?.hasError('required')" class="color-negro negrita">El Nombre del titular no puede estar vacio</p>
+            <p *ngIf="pasarelaForm.get('nombre')?.hasError('minlength')" class="color-negro negrita">El Nombre del titular no puede ser inferior a 3 letras.</p>
+          </div>
+
+
+          <ion-input formControlName="tarjeta" label="Tarjeta" label-placement="floating" fill="outline" type="number" class="espacio" maxlength="16" placeholder="Ingrese su número de tarjeta..."></ion-input>
+          <div *ngIf="pasarelaForm.get('tarjeta')?.invalid && (pasarelaForm.get('tarjeta')?.dirty) || pasarelaForm.get('tarjeta')?.touched">
+            <p *ngIf="pasarelaForm.get('tarjeta')?.hasError('required')" class="color-negro negrita">Los números de la tarjeta no pueden estar vacio</p>
+            <p *ngIf="pasarelaForm.get('tarjeta')?.hasError('pattern')" class="color-negro negrita">Los números de la tarjeta no pueden ser inferiores a 16 digitos.</p>
+          </div>
+
+    
+
+          <ion-input formControlName="cvv" label="CVV" label-placement="floating" fill="outline" class="espacio" type="number" placeholder="Ingrese su CVV. Ej: 123" maxlength="4"></ion-input>
+          <div *ngIf="pasarelaForm.get('cvv')?.invalid && (pasarelaForm.get('cvv')?.dirty) || pasarelaForm.get('cvv')?.touched">
+            <p *ngIf="pasarelaForm.get('cvv')?.hasError('required')" class="color-negro negrita">Los números de la CVV no pueden estar vacio</p>
+            <p *ngIf="pasarelaForm.get('cvv')?.hasError('pattern')" class="color-negro negrita">Los números del CVV tiene que estar en un rango de 3 a 4 digitos.</p>
+          </div>
+
+          <br>
+
+          <ion-button expand="full" type="submit" [disabled]="pasarelaForm.invalid" class="btn-color centrar"><ion-icon slot="start" name="cart"></ion-icon>Realizar comprar</ion-button>
+          <br>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+
+<ion-footer>
+
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
+  
+</ion-footer>

@@ -837,6 +837,12 @@ export class ServicesbdService {
     })
   }
 
+  habilitarProductoPorId(id: string){
+    return this.database.executeSql('UPDATE zapatilla SET zestado = 0 WHERE idzapatilla = ?', [id]).then(res =>{
+      this.seleccionarZapatilla();
+    })
+  }
+
   defaultTipoUsuario(){
     const tipoUsuario = {
       idUsuario: '',
