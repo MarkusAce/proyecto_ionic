@@ -14,6 +14,7 @@ export class InicioPage implements OnInit {
   terminoBusqueda: string = "";
   idUsuario: string = '';
   idRol: string = '';
+  uusuario!: string;
 
   arregloZapatillas: Zapatilla[] = [];
 
@@ -30,6 +31,7 @@ export class InicioPage implements OnInit {
           if(res.length> 0){
             this.idUsuario = res[0].idUsuario;
             this.idRol = res[0].idRol;
+            this.uusuario = res[0].uusuario;
           }else{
             this.bd.traerSesion().then(res =>{
               if(res){
@@ -39,6 +41,7 @@ export class InicioPage implements OnInit {
               }else{
                 this.idUsuario = '';
                 this.idRol = '1';
+                this.uusuario = '';
               }
             })
           }

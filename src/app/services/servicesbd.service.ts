@@ -797,7 +797,8 @@ export class ServicesbdService {
         for (var i=0; i < res.rows.length; i++) {
           items.push({
             idUsuario: res.rows.item(i).idusuario,
-            idRol: res.rows.item(i).idrol
+            idRol: res.rows.item(i).idrol,
+            uusuario: res.rows.item(i).uusuario
           });
         }
       }

@@ -15,6 +15,7 @@ export class ZapatillasPage implements OnInit {
   resultado: string = '';
   idUsuario: string = '';
   idRol: string = '';
+  uusuario!: string;
 
   noResultados: boolean = false;
 
@@ -49,9 +50,11 @@ export class ZapatillasPage implements OnInit {
           if(res.length> 0){
             this.idUsuario = res[0].idUsuario;
             this.idRol = res[0].idRol;
+            this.uusuario = res[0].uusuario;
           }else{
             this.idUsuario = '';
             this.idRol = '1';
+            this.uusuario = '';
           }
         });
         this.cargarZapatillas();
@@ -119,7 +122,7 @@ export class ZapatillasPage implements OnInit {
         this.arregloUsuario = this.arregloZapatillas.filter(zapatilla =>{
         const marcaCoincide = this.marcaSeleccionada ? zapatilla.idmarca === this.marcaSeleccionada : true;
   
-        return zapatilla.zestado === 0 && marcaCoincide;
+        return zapatilla.zestado === 0 && marcaCoincide && zapatilla.tallas.some(t => t.stock > 0);
       });
       this.noResultados = this.arregloUsuario.length === 0;
       
@@ -128,7 +131,7 @@ export class ZapatillasPage implements OnInit {
         const marcaCoincide = this.marcaSeleccionada ? zapatilla.idmarca === this.marcaSeleccionada : true;
         return marcaCoincide
       })
-      this.noResultados = this.arregloUsuario.length === 0;
+      this.noResultados = this.arregloZapatillas.length === 0;
     }
       
   }

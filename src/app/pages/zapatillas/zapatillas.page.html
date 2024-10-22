@@ -12,7 +12,7 @@
       <div class="contenedor-lista margin-auto">
         <ion-list class="sin-padding">
           <ion-item>
-            <ion-select aria-label="Marca" interface="action-sheet" placeholder="Marca" [(ngModel)]="marcaSeleccionada" (ionChange)="filtrarZapatillas()">
+            <ion-select aria-label="Marca" interface="action-sheet" placeholder="Marca" [(ngModel)]="marcaSeleccionada">
               <ion-select-option *ngFor="let marca of arregloMarcas" [value]="marca.idmarca">{{marca.mnombre}} </ion-select-option>
             </ion-select>
           </ion-item>
@@ -30,7 +30,7 @@
       </ion-button>
     </ion-menu-toggle>
     <ion-menu-toggle>
-      <ion-button class="boton-filtro" (click)="filtrarZapatillas()">
+      <ion-button [disabled]="!marcaSeleccionada" class="boton-filtro" (click)="filtrarZapatillas()">
         Filtrar
         <ion-icon slot="start" name="filter"></ion-icon>
       </ion-button>
@@ -39,7 +39,7 @@
 </ion-menu>
 
 <ion-header id="menuFiltro">
-  <app-barranav titulo="Zapatillas {{ idRol }}" [tipousuario]="idRol"></app-barranav>
+  <app-barranav titulo="Zapatillas" [tipousuario]="idRol"></app-barranav>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
