@@ -821,6 +821,7 @@ export class ServicesbdService {
           text: 'Deshabilitar',
           handler: () =>{
             this.deshabilitarProductoPorId(id).then(()=>{
+              this.quitarProductoCarritos(id);
               this.presentAlert('Deshabilitar', 'Producto deshabilitado');
             })
             
@@ -830,6 +831,25 @@ export class ServicesbdService {
     });
     await alert.present();
   }
+
+  async quitarProductoCarritos(id:string){
+    try{
+      const claves = await this.nativeStorage.keys();
+
+      const clavesCarritos = claves.filter((clave: string) => clave.startsWith('carrito_'));
+
+      for (const clave of clavesCarritos){
+        const carrito = await this.nativeStorage.getItem(clave);
+
+        const carritoActualizado = carrito.filter((item:any)=> item.idZapatilla !== id)
+
+        await this.nativeStorage.setItem(clave, carritoActualizado);
+      }
+    }catch(e){
+      console.error('Error al quitar productos de carrito: ', e);
+    }
+  }
+
 
   deshabilitarProductoPorId(id: string){
     return this.database.executeSql('UPDATE zapatilla SET zestado = 1 WHERE idzapatilla = ?', [id]).then(res =>{

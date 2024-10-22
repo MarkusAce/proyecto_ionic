@@ -24,8 +24,6 @@ export class ZapatillasPage implements OnInit {
 
   arregloZapatillas: Zapatilla[] = [];
 
-  arregloFiltrado: Zapatilla[] = [];
-
   arregloUsuario: Zapatilla[] = [];
 
   marcaSeleccionada: string | null = null;
@@ -101,14 +99,17 @@ export class ZapatillasPage implements OnInit {
     this.router.navigate(['/zapatillas'])
   }
 
+  async habilitar(id:string){
+    this.bd.habilitarProductoPorId(id);
+    this.router.navigate(['/zapatillas'])
+  }
+
   cargarZapatillas(){
     this.bd.fetchZapatilla().subscribe(res=>{
       this.arregloZapatillas = res;
 
       if (this.idRol == '1' || this.idRol == '2'){
         this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
-      }else if (this.idRol == '3'){
-        this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
       }
     })
   }
@@ -121,11 +122,11 @@ export class ZapatillasPage implements OnInit {
         return zapatilla.zestado === 0 && marcaCoincide;
       });
       this.noResultados = this.arregloUsuario.length === 0;
+      
     }else if (this.idRol == '3'){
-      this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla =>{
-        const marcaCoincide = this.marcaSeleccionada? zapatilla.idmarca === this.marcaSeleccionada : true;
-
-        return marcaCoincide;
+      this.arregloZapatillas = this.arregloZapatillas.filter(zapatilla =>{
+        const marcaCoincide = this.marcaSeleccionada ? zapatilla.idmarca === this.marcaSeleccionada : true;
+        return marcaCoincide
       })
       this.noResultados = this.arregloUsuario.length === 0;
     }
@@ -138,7 +139,6 @@ export class ZapatillasPage implements OnInit {
       this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
       this.noResultados = false;
     } else if (this.idRol == '3'){
-      this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0);
       this.noResultados = false;
     }
   }
@@ -155,8 +155,8 @@ export class ZapatillasPage implements OnInit {
         this.terminoBusqueda = '';
         this.noResultados = false;
       } else if (this.idRol == '3'){
-        this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.znombre.toLowerCase().includes(this.terminoBusqueda.toLowerCase()) && zapatilla.zestado === 0);
-        this.tamanoListaAdmin = this.arregloFiltrado.length;
+        this.arregloZapatillas = this.arregloZapatillas.filter(zapatilla => zapatilla.znombre.toLowerCase().includes(this.terminoBusqueda.toLowerCase()));
+        this.tamanoListaAdmin = this.arregloZapatillas.length;
         this.terminoBusqueda = '';
         this.noResultados = false;
       }

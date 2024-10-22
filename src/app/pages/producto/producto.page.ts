@@ -85,7 +85,11 @@ export class ProductoPage implements OnInit {
         total: this.zapatillaSelec.zprecio * cantidad
       }
 
-      this.bd.agregarCarrito(producto);
+      if(this.zapatillaSelec.zestado === 1){
+        this.bd.presentAlert('Error', 'Este producto esta deshabilitado');
+      }else if (this.zapatillaSelec.zestado === 0){
+        this.bd.agregarCarrito(producto);
+      }
       
     }
    }

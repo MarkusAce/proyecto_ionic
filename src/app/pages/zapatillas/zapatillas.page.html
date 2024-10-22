@@ -110,7 +110,7 @@
   </div>
 
   <div *ngIf="idRol == '3'">
-    <div *ngFor="let zapatilla of arregloFiltrado" class="contenedor-cards espacio">
+    <div *ngFor="let zapatilla of arregloZapatillas" class="contenedor-cards espacio">
       <div  (click)="irProducto(zapatilla.idzapatilla)">
         <div class="margin-auto centrar contenedor-imagen espacio2">
             <img [src]="zapatilla.zfoto" alt="Zapatilla" class="tamano-zapatilla margin-top">    
@@ -129,9 +129,13 @@
               Editar
               <ion-icon slot="start" name="pencil"></ion-icon>
             </ion-button>
-            <ion-button class="boton-deshabilitar" (click)="confirmarDeshabilitar(zapatilla.idzapatilla)">
+            <ion-button *ngIf="zapatilla.zestado == 0" class="boton-deshabilitar" (click)="confirmarDeshabilitar(zapatilla.idzapatilla)">
               Deshabilitar
               <ion-icon slot="start" name="ban"></ion-icon>
+            </ion-button>
+            <ion-button *ngIf="zapatilla.zestado == 1" class="boton-deshabilitar" (click)="habilitar(zapatilla.idzapatilla)">
+              Habilitar
+              <ion-icon slot="start" name="checkmark"></ion-icon>
             </ion-button>
           </div>
     </div>
