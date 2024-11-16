@@ -17,7 +17,7 @@ export class EditarperfilPage implements OnInit {
 
   datosUsuario: any = {};
 
-  arregloComunas: any = {};
+  arregloComunas: any []= [];
 
   primeraImagen: any;
 
@@ -39,14 +39,14 @@ export class EditarperfilPage implements OnInit {
     this.bd.dbState().subscribe(data=>{
       if(data){
         this.bd.fetchComuna().subscribe(res=>{
-          this.arregloComunas = res;
+          this.arregloComunas = res || [];
         })
       }
     })
 
     this.bd.dbState().subscribe(data =>{
       if(data){
-        this.bd.fetchTipoUsuario().subscribe(res =>{
+        this.bd.fetchTipoUsuario().subscribe(async res =>{
           if(res.length> 0){
             this.idUsuario = res[0].idUsuario;
             this.idRol = res[0].idRol;
@@ -54,26 +54,28 @@ export class EditarperfilPage implements OnInit {
             this.idUsuario = '';
             this.idRol = '1';
           }
+
+          if (this.idUsuario){
+            try{
+              const usuario = await this.bd.seleccionarUsuarioPorId(this.idUsuario);
+              this.datosUsuario = usuario;
+              this.perfilForm.patchValue({
+                usuario1: usuario?.uusuario,
+                email1: usuario?.ucorreo,
+                telefono: usuario?.utelefono,
+                direccion: usuario?.ddireccion,
+                comuna: usuario?.idcomuna,
+                fechanac: usuario?.ufechanac,
+                imagen: usuario?.uimagen
+              });
+              this.primeraImagen = usuario?.uimagen;
+            } catch(error){
+              this.bd.presentAlert('Error', 'Error al cargar los datos del usuario'+ JSON.stringify(error))
+            }
+          }
         });
       }
     });
-
-    this.bd.seleccionarUsuarioPorId(this.idUsuario).then(res =>{
-      this.datosUsuario = res;
-      this.perfilForm.patchValue({
-        usuario1: this.datosUsuario.uusuario,
-        email1: this.datosUsuario.ucorreo,
-        telefono: this.datosUsuario.utelefono,
-        direccion: this.datosUsuario.ddireccion,
-        comuna: this.datosUsuario.idcomuna,
-        fechanac: this.datosUsuario.ufechanac,
-        imagen: this.datosUsuario.uimagen
-      })
-      this.primeraImagen = this.datosUsuario.uimagen;
-    }).catch(error =>{
-      this.bd.presentAlert('Error', 'Error al cargar los datos del usuario'+ JSON.stringify(error))
-    })
-    
   }
 
   validarPerfil(){

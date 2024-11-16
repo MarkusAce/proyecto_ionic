@@ -3,7 +3,6 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors,
 import { ActivatedRoute, Router } from '@angular/router';
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
-import { Talla } from 'src/app/services/talla';
 
 @Component({
   selector: 'app-editarzapa',

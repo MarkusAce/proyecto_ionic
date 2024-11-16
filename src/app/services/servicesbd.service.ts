@@ -78,7 +78,7 @@ export class ServicesbdService {
   registroComuna32: string = "INSERT or IGNORE INTO comuna(idcomuna, comnombre) VALUES(32, 'Vitacura')"
 
   //registro Usuario
-  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1, 'admin', 'admin@gmail.com', '999999999', 99999999, '21/09/1990', 'Admin12@', 3)"
+  registroUsuario: string = "INSERT or IGNORE INTO usuario(idusuario, uusuario, ucorreo, urut,utelefono,ufechanac, ucontrasena, idrol) VALUES(1, 'admin', 'admin@gmail.com', '999999999', 999999999, '21/09/1990', 'Admin12@', 3)"
 
   //Registro Direccion
   registroDireccion: string = "INSERT or IGNORE INTO direccion(iddireccion, ddireccion, idusuario, idcomuna) VALUES(1, 'La mejor calle 1234', 1, 7)"
