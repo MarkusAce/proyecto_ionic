@@ -29,17 +29,12 @@
         <ion-list class="sin-padding">
           <ion-item>
             <ion-select formControlName="talla" aria-label="Talla" interface="action-sheet" placeholder="Talla (US)" [(ngModel)]="talla" (ionChange)="onTallaChange()">
-              <ion-select-option value="7.5">7.5 (25.5 cms)</ion-select-option>
-              <ion-select-option value="8">8 (26 cms)</ion-select-option>
-              <ion-select-option value="8.5">8.5 (26.5 cms)</ion-select-option>
-              <ion-select-option value="9">9 (27 cms)</ion-select-option>
-              <ion-select-option value="9.5">9.5 (27.5 cms)</ion-select-option>
-              <ion-select-option value="10">10 (28 cms)</ion-select-option>
-              <ion-select-option value="10.5">10.5 (28.5 cms)</ion-select-option>
-              <ion-select-option value="11">11 (29 cms)</ion-select-option>
+              <ion-select-option *ngFor="let talla of tallasFiltradas" [value]="talla.talla">
+                {{talla.talla}} ({{talla.stock}} disponibles)
+              </ion-select-option>
             </ion-select>
           </ion-item>
-        </ion-list>
+        </ion-list> 
       </div>
       <div class="contenedor-compra centrar margin-auto" *ngIf="cantForm.get('talla')?.invalid && (cantForm.get('talla')?.dirty) || cantForm.get('talla')?.touched">
         <p *ngIf="cantForm.get('talla')?.hasError('required')" class="color-negro negrita">Debe seleccionar una talla.</p>

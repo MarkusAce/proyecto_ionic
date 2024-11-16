@@ -39,7 +39,7 @@ export class AgregarmarcaPage implements OnInit {
 
   validarMarca(){
     if (this.marcaForm.valid){
-      const marca = this.marcaForm.value.marca;
+      const marca = this.marcaForm.value.marca.toLowerCase();
       this.bd.insertarMarca(marca)
       this.bd.seleccionarMarca();
       this.router.navigate(['/zapatillas']);

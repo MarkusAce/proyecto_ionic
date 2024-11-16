@@ -1,0 +1,50 @@
+<ion-header [translucent]="true">
+
+  <app-barranav titulo="Editar Marca" [tipousuario]="idRol"></app-barranav>
+
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="contenedor-pag">
+    <div class="contenedor-login centrar-eje margin-auto">
+      <br>
+      <app-logo></app-logo>
+
+      <div class="contenedor-input margin-auto">
+        <form [formGroup]="marcaForm" (ngSubmit)="validarEditarMarca()">
+
+          <div class="margin-auto espacio">
+            <ion-list class="sin-padding">
+              <ion-item class="fondo">
+                <ion-select formControlName="marca" aria-label="Marca" interface="action-sheet" placeholder="Seleccione una Marca"  class="selecmarca" (ionChange)="actualizarEstado()">
+                  <ion-select-option *ngFor="let marca of arregloMarcas" [value]="marca.idmarca"> {{marca.mnombre}} </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-list>
+          </div>
+          <div *ngIf="marcaForm.get('marca')?.invalid && (marcaForm.get('marca')?.dirty) || marcaForm.get('marca')?.touched">
+            <p *ngIf="marcaForm.get('marca')?.hasError('required')" class="color-negro negrita">Debe seleccionar una marca.</p>
+          </div>
+
+          <ion-input formControlName="nuevamarca" label="Nueva marca" label-placement="floating" fill="outline" class="espacio" placeholder="Ingrese el nombre nuevo."></ion-input>
+          <div *ngIf="marcaForm.get('nuevamarca')?.invalid && (marcaForm.get('nuevamarca')?.dirty || marcaForm.get('nuevamarca')?.touched)">
+            <p *ngIf="marcaForm.get('nuevamarca')?.hasError('required')">El nombre de la marca no puede estar vacio.</p>
+            <p *ngIf="marcaForm.get('nuevamarca')?.hasError('marcaExiste')">El nombre de la marca ya existe.</p>
+          </div>
+
+          <ion-button expand="full" type="submit" [disabled]="marcaForm.invalid" class="color"><ion-icon slot="start" name="pencil"></ion-icon>Editar Marca</ion-button>
+
+          <ion-button *ngIf="marcaForm.value.estado ==0" expand="full" class="color" (click)="deshabilitarMarca()"><ion-icon slot="start" name="ban"></ion-icon>Deshabilitar Marca</ion-button>
+          <ion-button *ngIf="marcaForm.value.estado == 1" expand="full" class="color" (click)="habilitarMarca()"><ion-icon slot="start" name="checkmark"></ion-icon>Habilitar Marca</ion-button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+</ion-content>
+
+<ion-footer>
+
+  <app-barrafooter [tipoUsuario]="idRol"></app-barrafooter>
+  
+</ion-footer>

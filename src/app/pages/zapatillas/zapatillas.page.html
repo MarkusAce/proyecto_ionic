@@ -82,6 +82,15 @@
     </div>
   </div>
 
+  <div *ngIf="idRol=='3'" class=" ancho margin-auto">
+    <div class="contenedor-botones margin-auto contenedor-flex">
+      <ion-button class="boton-agregar" (click)="irEditarMarca()">
+        Editar marca
+        <ion-icon slot="start" name="pencil"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
   <hr>
 
   <div *ngIf="resultado !== ''" class="contenedor-resultado redondear margin-auto">

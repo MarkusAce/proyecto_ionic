@@ -25,6 +25,8 @@ export class ProductoPage implements OnInit {
 
   zapatillaSelec: any = {};
 
+  tallasFiltradas: any[]= [];
+
   constructor(private router: Router,private bd:ServicesbdService, private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder) { }
   
 
@@ -55,12 +57,31 @@ export class ProductoPage implements OnInit {
           this.bd.seleccionarZapaId(id).then(res =>{
             this.zapatillaSelec = res;
             this.calcularTotalStock();
+            this.filtrarTallas();
           })
         }
       }
     })
 
     this.bd.guardarCarrito
+  }
+
+  filtrarTallas(){
+    if(this.zapatillaSelec && this.zapatillaSelec.tallas){
+      this.tallasFiltradas = this.zapatillaSelec.tallas.filter((t:any)=> t.stock > 0);
+    }
+  }
+
+  onTallaChange(){
+    const tallaData = this.tallasFiltradas.find((t:any)=> t.talla === this.talla);
+    this.cantSelec = tallaData ? tallaData.stock : 0;
+
+    if (this.cantSelec > 0){
+      this.cantForm.get('cantidad')?.enable();
+    }else{
+      this.cantForm.get('cantidad')?.disable();
+      this.cantForm.get('cantidad')?.setValue('');
+    }
   }
 
   validarProducto(){
@@ -102,19 +123,7 @@ export class ProductoPage implements OnInit {
       }, 0);
     }
   }
-
-  onTallaChange(){
-    const tallaData = this.zapatillaSelec.tallas.find((t: any)=> t.talla === this.talla)
-    this.cantSelec = tallaData? tallaData.stock : 0;
-
-    if (this.cantSelec > 0){
-      this.cantForm.get('cantidad')?.enable();
-    }else{
-      this.cantForm.get('cantidad')?.disable();
-      this.cantForm.get('cantidad')?.setValue('');
-    }
-  }
-
+  
   validadorCantidad(control: AbstractControl): ValidationErrors | null{
     const cantidad = control.value;
 

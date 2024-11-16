@@ -26,7 +26,7 @@ export class ServicesbdService {
 
   tablaRol: string = "CREATE TABLE IF NOT EXISTS rol(idrol INTEGER PRIMARY KEY AUTOINCREMENT, rnombre VARCHAR(255) NOT NULL, rtipo INTEGER);";
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(idcomuna INTEGER PRIMARY KEY AUTOINCREMENT, comnombre VARCHAR(255) NOT NULL);";
-  tablaMarca: string = "CREATE TABLE IF NOT EXISTS marca(idmarca INTEGER PRIMARY KEY AUTOINCREMENT,mnombre VARCHAR(255) NOT NULL);";
+  tablaMarca: string = "CREATE TABLE IF NOT EXISTS marca(idmarca INTEGER PRIMARY KEY AUTOINCREMENT,mnombre VARCHAR(255) NOT NULL, mestado INTEGER DEFAULT 0 NOT NULL);";
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(idusuario INTEGER PRIMARY KEY AUTOINCREMENT, uusuario VARCHAR(255) NOT NULL, ucorreo VARCHAR(255) NOT NULL, urut VARCHAR(20), utelefono INTEGER NOT NULL, ufechanac DATE NOT NULL, ucontrasena VARCHAR(255) NOT NULL, uimagen blob , idrol integer NOT NULL, FOREIGN KEY (idrol) REFERENCES rol(idrol));";
   tablaDireccion: string = "CREATE TABLE IF NOT EXISTS direccion(iddireccion INTEGER PRIMARY KEY AUTOINCREMENT, ddireccion VARCHAR(255) NOT NULL, idusuario INTEGER NOT NULL, idcomuna INTEGER NOT NULL, FOREIGN KEY(idusuario) REFERENCES usuario(idusuario), FOREIGN KEY(idcomuna) REFERENCES comuna(idcomuna));"
   tablaZapatilla: string = "CREATE TABLE IF NOT EXISTS zapatilla(idzapatilla INTEGER PRIMARY KEY AUTOINCREMENT, znombre VARCHAR(255) NOT NULL, zfoto blob NOT NULL, zprecio INTEGER NOT NULL, zestado INTEGER DEFAULT 0, idmarca INTEGER NOT NULL, FOREIGN KEY (idmarca) REFERENCES marca(idmarca));";
@@ -35,8 +35,8 @@ export class ServicesbdService {
   tablaTalla: string = "CREATE TABLE IF NOT EXISTS talla(idtalla INTEGER PRIMARY KEY AUTOINCREMENT, idzapatilla INTEGER NOT NULL, tstock INTEGER NOT NULL, ttalla INTEGER NOT NULL, FOREIGN KEY(idzapatilla) REFERENCES zapatilla (idzapatilla));";
 
   //registro Marca
-  registroMarca: string = "INSERT or IGNORE INTO marca(idmarca, mnombre) VALUES(1,'Adidas');";
-  registroMarca2: string = "INSERT or IGNORE INTO marca(idmarca, mnombre) VALUES(2,'Nike');";
+  registroMarca: string = "INSERT or IGNORE INTO marca(idmarca, mnombre, mestado) VALUES(1,'adidas', 0);";
+  registroMarca2: string = "INSERT or IGNORE INTO marca(idmarca, mnombre, mestado) VALUES(2,'nike', 0);";
 
   //Registro Rol
   registroRol: string = "INSERT or IGNORE INTO rol(idrol, rnombre, rtipo) VALUES(1,'Invitado', 1)"
@@ -116,7 +116,7 @@ export class ServicesbdService {
   crearBD(){
     this.platform.ready().then(()=>{
       this.sqlite.create({
-        name: 'bdzapfastttttt.db',
+        name: 'bdzappfast.db',
         location: 'default'
       }).then((bd:SQLiteObject)=>{
         this.database = bd;
@@ -256,7 +256,8 @@ export class ServicesbdService {
         for (var i=0; i <res.rows.length; i++) {
           items.push({
             idmarca: res.rows.item(i).idmarca,
-            mnombre: res.rows.item(i).mnombre
+            mnombre: res.rows.item(i).mnombre,
+            mestado: res.rows.item(i).mestado
           });
         }
       }
@@ -646,15 +647,6 @@ export class ServicesbdService {
     })
   }
 
-  modificarMarca(id:string, nombre:string){
-    return this.database.executeSql('UPDATE marca SET mnombre = ? WHERE idmarca = ?', [nombre, id]).then(res=>{
-      this.presentAlert("Modificar", "Marca Modificada");
-      this.seleccionarMarca();
-    }).catch(e =>{
-      this.presentAlert("Error", "Error al modificar marca: " + JSON.stringify(e));
-    })
-  }
-
   modificarZapatilla(nombre: string, imagen: any, zprecio:number, idmarca:string ,id:string){
     return this.database.executeSql('UPDATE zapatilla SET znombre = ?, zfoto = ?, zprecio = ?, idmarca = ? WHERE idzapatilla = ?', [nombre, imagen, zprecio,idmarca,id]).then(res =>{
       this.presentAlert('Modificar', 'Zapatilla modificada exitosamente')
@@ -700,6 +692,35 @@ export class ServicesbdService {
       return res;
     }).catch(e =>{
       this.presentAlert('Error', 'Error al modificar contraseña: '+ JSON.stringify(e));
+    })
+  }
+
+  modificarMarca(id:string, nombre:string){
+    return this.database.executeSql('UPDATE marca SET mnombre = ? WHERE idmarca = ?', [nombre, id]).then(res=>{
+      this.presentAlert("Modificar", "Marca Modificada correctamente.");
+      this.seleccionarMarca();
+    }).catch(e =>{
+      this.presentAlert("Error", "Error al modificar marca: " + JSON.stringify(e));
+    })
+  }
+
+  deshabilitarMarca(id:string){
+    return this.database.executeSql('UPDATE marca set mestado = 1 WHERE idmarca = ?', [id]).then(res =>{
+      this.presentAlert('Deshabilitado', 'La marca seleccionada fue deshabilitada correctamente')
+      this.seleccionarMarca();
+      return res;
+    }).catch(e=>{
+      this.presentAlert('Deshabilitado', 'Error al deshabilitar marca: '+ JSON.stringify(e));
+    })
+  }
+
+  habilitarMarca(id:string){
+    return this.database.executeSql('UPDATE marca set mestado = 0 WHERE idmarca = ?', [id]).then(res =>{
+      this.presentAlert('Habilitado', 'La marca seleccionada fue habilitada correctamente')
+      this.seleccionarMarca();
+      return res;
+    }).catch(e=>{
+      this.presentAlert('Habilitado', 'Error al habilitar marca: '+ JSON.stringify(e));
     })
   }
 

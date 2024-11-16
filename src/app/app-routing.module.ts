@@ -72,11 +72,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/pasarela/pasarela.module').then( m => m.PasarelaPageModule)
   },
   {
+    path: 'editarmarca',
+    loadChildren: () => import('./pages/editarmarca/editarmarca.module').then( m => m.EditarmarcaPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
-  
-  
 ];
 
 @NgModule({

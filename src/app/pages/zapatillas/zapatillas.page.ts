@@ -97,6 +97,10 @@ export class ZapatillasPage implements OnInit {
     this.router.navigate(['/agregarmarca'])
   }
 
+  irEditarMarca(){
+    this.router.navigate(['/editarmarca'])
+  }
+
   async confirmarDeshabilitar(id:string){
     this.bd.deshabilitarProducto(id)
     this.router.navigate(['/zapatillas'])
