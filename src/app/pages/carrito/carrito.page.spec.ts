@@ -9,12 +9,19 @@ describe('CarritoPage', () => {
   let fixture: ComponentFixture<CarritoPage>;
 
   beforeEach( async() => {
+    const nativeStorageMock = {
+      keys: jasmine.createSpy('keys').and.returnValue(Promise.resolve(['carrito_test_user'])),
+      getItem: jasmine.createSpy('getItem').and.returnValue(Promise.resolve([]))
+    }
+
     await TestBed.configureTestingModule({
       declarations: [ CarritoPage ],
       imports: [
         IonicModule.forRoot()
       ],
-      providers: [SQLite, NativeStorage]
+      providers: [SQLite, 
+        {provide: NativeStorage, useValue: nativeStorageMock}
+      ]
     })
     fixture = TestBed.createComponent(CarritoPage);
     component = fixture.componentInstance;

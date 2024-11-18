@@ -3,6 +3,7 @@ import { LoginPage } from './login.page';
 import { IonicModule } from '@ionic/angular';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -12,7 +13,9 @@ describe('LoginPage', () => {
     await TestBed.configureTestingModule({
       declarations: [ LoginPage ],
       imports: [
-        IonicModule.forRoot()
+        IonicModule.forRoot(),
+        ReactiveFormsModule,
+        FormsModule
       ],
       providers: [SQLite, NativeStorage]
     }).compileComponents();
@@ -24,4 +27,13 @@ describe('LoginPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Validar formulario vacio', () =>{
+    component.loginForm.controls['usuario'].setValue('');
+    component.loginForm.controls['contrasena'].setValue('');
+    
+    expect(component.loginForm.valid).toBeFalsy();
+    expect(component.loginForm.controls['usuario'].hasError('required')).toBeTruthy();
+    expect(component.loginForm.controls['contrasena'].hasError('required')).toBeTruthy();
+  })
 });
