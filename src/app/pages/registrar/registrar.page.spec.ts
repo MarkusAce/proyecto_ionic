@@ -24,4 +24,27 @@ describe('RegistrarPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Validar formulario registro vacio', () =>{
+    component.registroForm.controls['usuario1'].setValue('');
+    component.registroForm.controls['email1'].setValue('');
+    component.registroForm.controls['rut'].setValue('');
+    component.registroForm.controls['telefono'].setValue('');
+    component.registroForm.controls['direccion'].setValue('');
+    component.registroForm.controls['comuna'].setValue('');
+    component.registroForm.controls['fechanac'].setValue('');
+    component.registroForm.controls['contrasena1'].setValue('');
+    component.registroForm.controls['contrasenarepetida'].setValue('');
+    
+    expect(component.registroForm.valid).toBeFalsy();
+    expect(component.registroForm.controls['usuario1'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['email1'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['rut'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['telefono'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['direccion'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['comuna'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['fechanac'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['contrasena1'].hasError('required')).toBeTruthy();
+    expect(component.registroForm.controls['contrasenarepetida'].hasError('required')).toBeTruthy();
+  })
 });

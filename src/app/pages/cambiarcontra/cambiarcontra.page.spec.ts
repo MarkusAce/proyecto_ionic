@@ -30,4 +30,26 @@ describe('CambiarcontraPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Validar formulario recuperarcontrasena vacio', () =>{
+    component.contrasenacodigoForm.controls['codigo'].setValue('');
+    component.contrasenacodigoForm.controls['nueva'].setValue('');
+    component.contrasenacodigoForm.controls['confirmar'].setValue('');
+    
+    expect(component.contrasenacodigoForm.valid).toBeFalsy();
+    expect(component.contrasenacodigoForm.controls['codigo'].hasError('required')).toBeTruthy();
+    expect(component.contrasenacodigoForm.controls['nueva'].hasError('required')).toBeTruthy();
+    expect(component.contrasenacodigoForm.controls['confirmar'].hasError('required')).toBeTruthy();
+  })
+
+  it('Validar formulario cambiarcontrasena vacio', () =>{
+    component.contrasenaForm.controls['antigua'].setValue('');
+    component.contrasenaForm.controls['nueva'].setValue('');
+    component.contrasenaForm.controls['confirmar'].setValue('');
+    
+    expect(component.contrasenaForm.valid).toBeFalsy();
+    expect(component.contrasenaForm.controls['antigua'].hasError('required')).toBeTruthy();
+    expect(component.contrasenaForm.controls['nueva'].hasError('required')).toBeTruthy();
+    expect(component.contrasenaForm.controls['confirmar'].hasError('required')).toBeTruthy();
+  })
 });

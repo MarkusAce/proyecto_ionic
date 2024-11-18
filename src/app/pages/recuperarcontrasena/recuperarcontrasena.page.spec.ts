@@ -26,4 +26,5 @@ describe('RecuperarcontrasenaPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

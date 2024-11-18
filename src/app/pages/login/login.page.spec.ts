@@ -28,7 +28,7 @@ describe('LoginPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Validar formulario vacio', () =>{
+  it('Validar formulario login vacio', () =>{
     component.loginForm.controls['usuario'].setValue('');
     component.loginForm.controls['contrasena'].setValue('');
     
@@ -36,4 +36,6 @@ describe('LoginPage', () => {
     expect(component.loginForm.controls['usuario'].hasError('required')).toBeTruthy();
     expect(component.loginForm.controls['contrasena'].hasError('required')).toBeTruthy();
   })
+
+
 });

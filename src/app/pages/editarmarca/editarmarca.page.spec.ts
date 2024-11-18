@@ -42,4 +42,13 @@ describe('EditarmarcaPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Validar formulario editarmarca vacio', () =>{
+    component.marcaForm.controls['marca'].setValue('');
+    component.marcaForm.controls['nuevamarca'].setValue('');
+    
+    expect(component.marcaForm.valid).toBeFalsy();
+    expect(component.marcaForm.controls['marca'].hasError('required')).toBeTruthy();
+    expect(component.marcaForm.controls['nuevamarca'].hasError('required')).toBeTruthy();
+  })
 });
