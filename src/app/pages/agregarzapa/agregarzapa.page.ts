@@ -81,32 +81,33 @@ export class AgregarzapaPage implements OnInit {
     return null;
   }
 
-  validarZapatilla(){
+  async validarZapatilla(){
     if(this.zapaForm.valid){
       const nombre = this.zapaForm.get('nombre')?.value;
       const precio = Number(this.zapaForm.get('precio')?.value);
-      const talla1 = Number(this.zapaForm.get('talla1')?.value);
-      const talla2 = Number(this.zapaForm.get('talla2')?.value);
-      const talla3 = Number(this.zapaForm.get('talla3')?.value);
-      const talla4 = Number(this.zapaForm.get('talla4')?.value);
-      const talla5 = Number(this.zapaForm.get('talla5')?.value);
-      const talla6 = Number(this.zapaForm.get('talla6')?.value);
-      const talla7 = Number(this.zapaForm.get('talla7')?.value);
-      const talla8 = Number(this.zapaForm.get('talla8')?.value);
+      const tallas = [
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '7.5'},
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '8'},
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '8.5'},
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '9'},
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '9.5'},
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '10'},
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '10.5'},
+        {stock: Number(this.zapaForm.get('talla1')?.value), talla: '11'},
+      ];
       const idmarca = this.zapaForm.get('marca')?.value;
       
-      this.bd.insertarZapatilla(nombre, this.imagen, precio, idmarca).then(idZapatilla =>{
-        this.bd.insertarTalla(idZapatilla, talla1, '7.5');
-        this.bd.insertarTalla(idZapatilla, talla2, '8');
-        this.bd.insertarTalla(idZapatilla, talla3, '8.5');
-        this.bd.insertarTalla(idZapatilla, talla4, '9');
-        this.bd.insertarTalla(idZapatilla, talla5, '9.5');
-        this.bd.insertarTalla(idZapatilla, talla6, '10');
-        this.bd.insertarTalla(idZapatilla, talla7, '10.5');
-        this.bd.insertarTalla(idZapatilla, talla8, '11');
-      })
-      this.bd.seleccionarZapatilla();
-      this.router.navigate(['/zapatillas']);
+      try{
+        const idZapatilla = await this.bd.insertarZapatilla(nombre, this.imagen, precio, idmarca);
+
+        const insercionesTallas = tallas.map(t => this.bd.insertarTalla(idZapatilla,t.stock, t.talla));
+        await Promise.all(insercionesTallas);
+
+        await this.bd.seleccionarZapatilla();
+        this.router.navigate(['/zapatillas']);
+      } catch(error){
+        this.bd.presentAlert('Error al guardar zapatilla', JSON.stringify(error));
+      }
     }
   }
 

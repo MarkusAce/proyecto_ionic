@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
 import { ServicesbdService } from 'src/app/services/servicesbd.service';
 
 @Component({
@@ -17,7 +16,7 @@ export class CarritoPage implements OnInit {
 
   productosCarrito: any[] = [];
   
-  constructor(private router: Router,private bd:ServicesbdService) { }
+  constructor(private router: Router,private bd:ServicesbdService, private changedetec: ChangeDetectorRef) { }
 
   async ngOnInit() {
 
@@ -35,6 +34,14 @@ export class CarritoPage implements OnInit {
       }
     });
     this.productosCarrito = await this.bd.obtenerCarrito(this.idUsuario);
+
+    this.changedetec.detectChanges();
+  }
+
+  async ionViewWillEnter(){
+    this.productosCarrito = await this.bd.obtenerCarrito(this.idUsuario);
+
+    this.changedetec.detectChanges();
   }
 
   comprar(){
@@ -74,6 +81,8 @@ export class CarritoPage implements OnInit {
     this.bd.eliminarDelCarrito(index, this.idUsuario).then(res =>{
       if (res){
         this.productosCarrito = res
+
+        this.changedetec.detectChanges();
       }
     })
   }

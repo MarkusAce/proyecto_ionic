@@ -47,6 +47,7 @@ export class InicioPage implements OnInit {
           }
         });
         this.bd.fetchZapatilla().subscribe(res=>{
+          this.bd.presentAlert('base', JSON.stringify(res));
           this.arregloZapatillas = res;
           this.arregloUsuario = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0 && zapatilla.tallas.some(t => t.stock > 0));
           this.arregloFiltrado = this.arregloZapatillas.filter(zapatilla => zapatilla.zestado === 0)
